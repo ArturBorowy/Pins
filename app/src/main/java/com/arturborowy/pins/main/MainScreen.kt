@@ -1,6 +1,5 @@
 package com.arturborowy.pins.main
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,43 +17,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arturborowy.pins.ui.theme.PinsTheme
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen() {
+    val navController = rememberNavController()
     PinsTheme {
         Surface(
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
             Scaffold(bottomBar = { BottomAppBar(navController) },
-                content = { innerPadding -> Map(innerPadding) })
+                content = { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = BottomNavItem.MAP.name,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        BottomNavItem.values().forEach { screen ->
+                            composable(screen.name) { screen.screenComposable() }
+                        }
+                    }
+                })
         }
-    }
-}
-
-@Composable
-fun Map(innerPadding: PaddingValues) {
-    val singapore = LatLng(1.35, 103.87)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(singapore, 10f)
-    }
-    GoogleMap(
-        modifier = Modifier.padding(innerPadding), cameraPositionState = cameraPositionState
-    ) {
-        Marker(
-            state = MarkerState(position = singapore),
-            title = "Singapore",
-            snippet = "Marker in Singapore"
-        )
     }
 }
 
@@ -69,7 +58,7 @@ fun BottomAppBar(navController: NavController) {
             val selected = item.name == backStackEntry.value?.destination?.route
 
             NavigationBarItem(selected = selected,
-                onClick = { navController.navigate(item.route) },
+                onClick = { navController.navigate(item.name) },
                 label = {
                     Text(
                         text = stringResource(item.textResId),
@@ -92,5 +81,5 @@ fun BottomAppBar(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(rememberNavController())
+    MainScreen()
 }
