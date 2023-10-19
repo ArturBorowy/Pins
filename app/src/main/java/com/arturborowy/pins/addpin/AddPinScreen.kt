@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import com.arturborowy.pins.R
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -36,7 +35,6 @@ import kotlin.coroutines.suspendCoroutine
 fun AddPinScreen() {
     val scope = rememberCoroutineScope()
 
-    Places.initialize(LocalContext.current, stringResource(R.string.maps_api_key))
     val placesClient = Places.createClient(LocalContext.current)
 
     var text by remember { mutableStateOf("") }
