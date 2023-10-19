@@ -1,4 +1,4 @@
-package com.arturborowy.pins
+package com.arturborowy.pins.pinslist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,17 +12,18 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.arturborowy.pins.R
 
 @Composable
-fun AddPinScreen() {
+fun PinsListScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.teal_700))
+            .background(colorResource(id = R.color.purple_700))
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Add",
+            text = "Pins list",
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
