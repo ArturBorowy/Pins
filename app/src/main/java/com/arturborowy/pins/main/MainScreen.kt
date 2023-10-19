@@ -3,10 +3,6 @@ package com.arturborowy.pins.main
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AddCircle
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.List
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -37,13 +33,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MainScreen(navController: NavController) {
     PinsTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
-            Scaffold(
-                bottomBar = { BottomAppBar(navController) },
-                content = { innerPadding -> Map(innerPadding) }
-            )
+            Scaffold(bottomBar = { BottomAppBar(navController) },
+                content = { innerPadding -> Map(innerPadding) })
         }
     }
 }
@@ -55,8 +48,7 @@ fun Map(innerPadding: PaddingValues) {
         position = CameraPosition.fromLatLngZoom(singapore, 10f)
     }
     GoogleMap(
-        modifier = Modifier.padding(innerPadding),
-        cameraPositionState = cameraPositionState
+        modifier = Modifier.padding(innerPadding), cameraPositionState = cameraPositionState
     ) {
         Marker(
             state = MarkerState(position = singapore),
@@ -66,31 +58,6 @@ fun Map(innerPadding: PaddingValues) {
     }
 }
 
-data class BottomNavItem(
-    val name: String,
-    val route: String,
-    val icon: ImageVector,
-)
-
-val bottomNavItems = listOf(
-    BottomNavItem(
-        name = "Home",
-        route = "Home",
-        icon = Icons.Rounded.Home,
-    ),
-    BottomNavItem(
-        name = "Add",
-        route = "AddPin",
-        icon = Icons.Rounded.AddCircle,
-    ),
-    BottomNavItem(
-        name = "List",
-        route = "PinsList",
-        icon = Icons.Rounded.List,
-    ),
-)
-
-
 @Composable
 fun BottomAppBar(navController: NavController) {
     val backStackEntry = navController.currentBackStackEntryAsState()
@@ -98,15 +65,14 @@ fun BottomAppBar(navController: NavController) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.primary,
     ) {
-        bottomNavItems.forEach { item ->
-            val selected = item.route == backStackEntry.value?.destination?.route
+        BottomNavItem.values().forEach { item ->
+            val selected = item.name == backStackEntry.value?.destination?.route
 
-            NavigationBarItem(
-                selected = selected,
+            NavigationBarItem(selected = selected,
                 onClick = { navController.navigate(item.route) },
                 label = {
                     Text(
-                        text = item.name,
+                        text = stringResource(item.textResId),
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -117,8 +83,7 @@ fun BottomAppBar(navController: NavController) {
                         tint = Color.White,
                         contentDescription = "${item.name} Icon",
                     )
-                }
-            )
+                })
         }
     }
 }
@@ -126,6 +91,6 @@ fun BottomAppBar(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MainScreenPreview() {
     MainScreen(rememberNavController())
 }

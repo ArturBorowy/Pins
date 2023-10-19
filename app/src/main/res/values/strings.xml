@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Pins</string>
+
+    <string name="main_bottom_nav_label_home">Home</string>
+    <string name="main_bottom_nav_label_add">Add new</string>
+    <string name="main_bottom_nav_label_list">Pins</string>
 </resources>
