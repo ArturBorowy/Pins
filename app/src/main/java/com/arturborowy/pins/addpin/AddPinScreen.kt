@@ -26,6 +26,7 @@ import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.ultimatelogger.android.output.ALog
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -53,7 +54,7 @@ fun AddPinScreen() {
                 scope.launch {
                     getAddressPredictions(placesClient, inputString = value)
                         .forEach {
-                            Log.e("PLACES", it.toString())
+                            ALog.e(it)
                         }
                 }
             })
@@ -79,7 +80,7 @@ suspend fun getAddressPredictions(
         if (completedTask.exception == null) {
             it.resume(completedTask.result.autocompletePredictions)
         } else {
-            Log.e("PLACES", completedTask.exception?.stackTraceToString().orEmpty())
+            ALog.e(completedTask.exception?.stackTraceToString().orEmpty())
             it.resume(listOf())
         }
     }
