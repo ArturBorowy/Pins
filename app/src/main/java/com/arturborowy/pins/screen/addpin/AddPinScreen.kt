@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
@@ -73,6 +75,14 @@ fun AddPinScreen(viewModel: AddPinViewModel = hiltViewModel()) {
                 }
             }
         }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.onSaveAddress() }
+        ) {
+            Text(text = stringResource(R.string.add_pin_btn_confirm))
+        }
+
         val placeDetails = state.value.placeDetails
 
         if (placeDetails != null) {
