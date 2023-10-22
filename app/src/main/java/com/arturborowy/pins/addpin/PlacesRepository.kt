@@ -53,13 +53,13 @@ class PlacesRepository @Inject constructor(
                 .addOnCompleteListener { completedTask ->
                     if (completedTask.exception == null) {
                         val fetchedPlace = completedTask.result.place
-                        val placeAddress = PlaceAddress(
+                        val placeDetails = PlaceDetails(
                             id,
                             fetchedPlace.latLng!!.latitude,
                             fetchedPlace.latLng!!.longitude,
                             fetchedPlace.name!!
                         )
-                        it.resume(placeAddress)
+                        it.resume(placeDetails)
                     } else {
                         ALog.e(completedTask.exception?.stackTraceToString().orEmpty())
                         it.resume(TODO())

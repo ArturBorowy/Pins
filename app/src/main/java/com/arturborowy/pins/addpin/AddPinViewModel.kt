@@ -32,6 +32,6 @@ class AddPinViewModel @Inject constructor(
 
     data class State(
         val predictions : List<AddressPrediction> = listOf(),
-        val placeDetails: PlaceAddress? = null
+        val placeDetails: PlaceDetails? = null
     )
 }
