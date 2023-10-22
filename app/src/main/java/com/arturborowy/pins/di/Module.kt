@@ -1,7 +1,7 @@
 package com.arturborowy.pins.di
 
 import android.content.Context
-import com.arturborowy.pins.addpin.PlacesRepository
+import com.arturborowy.pins.model.places.PlacesRepository
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.Module

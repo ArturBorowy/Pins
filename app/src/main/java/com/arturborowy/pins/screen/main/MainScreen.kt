@@ -1,4 +1,4 @@
-package com.arturborowy.pins.main
+package com.arturborowy.pins.screen.main
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

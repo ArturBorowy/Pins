@@ -1,4 +1,4 @@
-package com.arturborowy.pins.main
+package com.arturborowy.pins.screen.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -1,7 +1,10 @@
-package com.arturborowy.pins.addpin
+package com.arturborowy.pins.screen.addpin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arturborowy.pins.model.places.AddressPrediction
+import com.arturborowy.pins.model.places.PlaceDetails
+import com.arturborowy.pins.model.places.PlacesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

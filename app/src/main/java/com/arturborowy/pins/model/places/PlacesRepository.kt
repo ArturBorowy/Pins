@@ -1,4 +1,4 @@
-package com.arturborowy.pins.addpin
+package com.arturborowy.pins.model.places
 
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken

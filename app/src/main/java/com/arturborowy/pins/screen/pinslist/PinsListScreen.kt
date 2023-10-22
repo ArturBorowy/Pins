@@ -1,4 +1,4 @@
-package com.arturborowy.pins.pinslist
+package com.arturborowy.pins.screen.pinslist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

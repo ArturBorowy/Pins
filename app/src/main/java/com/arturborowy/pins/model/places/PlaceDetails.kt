@@ -1,4 +1,4 @@
-package com.arturborowy.pins.addpin
+package com.arturborowy.pins.model.places
 
 data class PlaceDetails(
     val placeId: String,

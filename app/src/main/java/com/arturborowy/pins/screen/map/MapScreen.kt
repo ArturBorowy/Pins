@@ -1,4 +1,4 @@
-package com.arturborowy.pins.map
+package com.arturborowy.pins.screen.map
 
 import androidx.compose.runtime.Composable
 import com.google.android.gms.maps.model.CameraPosition

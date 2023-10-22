@@ -1,4 +1,4 @@
-package com.arturborowy.pins.main
+package com.arturborowy.pins.screen.main
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -8,9 +8,9 @@ import androidx.compose.material.icons.rounded.List
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.arturborowy.pins.R
-import com.arturborowy.pins.addpin.AddPinScreen
-import com.arturborowy.pins.map.MapScreen
-import com.arturborowy.pins.pinslist.PinsListScreen
+import com.arturborowy.pins.screen.addpin.AddPinScreen
+import com.arturborowy.pins.screen.map.MapScreen
+import com.arturborowy.pins.screen.pinslist.PinsListScreen
 
 enum class BottomNavItem(
     @StringRes val textResId: Int,

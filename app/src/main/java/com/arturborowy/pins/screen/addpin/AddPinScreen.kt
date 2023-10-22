@@ -1,4 +1,4 @@
-package com.arturborowy.pins.addpin
+package com.arturborowy.pins.screen.addpin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
