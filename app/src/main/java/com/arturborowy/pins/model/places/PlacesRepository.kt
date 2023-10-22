@@ -72,4 +72,6 @@ class PlacesRepository @Inject constructor(
     suspend fun savePlace(placeDetails: PlaceDetails) {
         placeDetailsDao.insert(placeDetails)
     }
+
+    suspend fun getPlaces() = placeDetailsDao.select()
 }

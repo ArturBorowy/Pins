@@ -11,6 +11,10 @@ interface PlaceDetailsDao {
     @Query("SELECT * FROM placedetails WHERE id=:id ")
     suspend fun select(id: String): PlaceDetails
 
+
+    @Query("SELECT * FROM placedetails")
+    suspend fun select(): List<PlaceDetails>
+
     @Insert
     suspend fun insert(placeDetails: PlaceDetails)
 }
