@@ -58,12 +58,10 @@ fun AddPinScreen(viewModel: AddPinViewModel = hiltViewModel()) {
                 ),
                 onDismissRequest = {}
             ) {
-                state.value.forEach { text ->
+                state.value.forEach { addressPrediction ->
                     DropdownMenuItem(
-                        onClick = {
-
-                        },
-                        text = { Text(text) }
+                        onClick = { viewModel.onAddressSelect(addressPrediction.id) },
+                        text = { Text(addressPrediction.label) }
                     )
                 }
             }
