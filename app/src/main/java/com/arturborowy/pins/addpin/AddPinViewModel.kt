@@ -13,19 +13,25 @@ class AddPinViewModel @Inject constructor(
     private val placesRepository: PlacesRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(listOf<AddressPrediction>())
-    val state: StateFlow<List<AddressPrediction>> = _state
+    private val _state = MutableStateFlow(State())
+    val state: StateFlow<State> = _state
 
     fun onAddressTextChange(text: String) {
         viewModelScope.launch {
             val addressTexts = placesRepository.getAddressPredictions(text)
-            _state.emit(addressTexts)
+            _state.emit(State(predictions = addressTexts))
         }
     }
 
     fun onAddressSelect(id: String) {
         viewModelScope.launch {
             val placeAddress = placesRepository.getPlaceDetails(id)
+            _state.emit(State(placeDetails = placeAddress))
         }
     }
+
+    data class State(
+        val predictions : List<AddressPrediction> = listOf(),
+        val placeDetails: PlaceAddress? = null
+    )
 }

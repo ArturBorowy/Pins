@@ -23,6 +23,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,12 +64,27 @@ fun AddPinScreen(viewModel: AddPinViewModel = hiltViewModel()) {
                 ),
                 onDismissRequest = {}
             ) {
-                state.value.forEach { addressPrediction ->
+                val state = state.value
+                state.predictions.forEach { addressPrediction ->
                     DropdownMenuItem(
                         onClick = { viewModel.onAddressSelect(addressPrediction.id) },
                         text = { Text(addressPrediction.label) }
                     )
                 }
+            }
+        }
+        val placeDetails = state.value.placeDetails
+
+        if (placeDetails != null) {
+            val location = LatLng(placeDetails.latitude, placeDetails.longitude)
+            val cameraPositionState = rememberCameraPositionState {
+                position = CameraPosition.fromLatLngZoom(location, 10f)
+            }
+            GoogleMap(cameraPositionState = cameraPositionState) {
+                Marker(
+                    state = MarkerState(location),
+                    title = placeDetails.label
+                )
             }
         }
     }
