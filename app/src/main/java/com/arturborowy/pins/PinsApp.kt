@@ -4,7 +4,9 @@ import android.app.Application
 import com.google.android.libraries.places.api.Places
 import com.ultimatelogger.android.output.ALogInitializer
 import com.ultimatelogger.multiplatform.tag.TagSettings
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class PinsApp : Application() {
 
     override fun onCreate() {
