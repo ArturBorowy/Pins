@@ -3,6 +3,7 @@ package com.arturborowy.pins.di
 import android.content.Context
 import com.arturborowy.pins.model.db.AppDatabase
 import com.arturborowy.pins.model.db.PlaceDetailsDao
+import com.arturborowy.pins.model.places.GooglePlacesRepository
 import com.arturborowy.pins.model.places.PlacesRepository
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -21,11 +22,14 @@ object Module {
         Places.createClient(context)
 
     @Provides
-    fun placesRepository(placeDetailsDao: PlaceDetailsDao, placesClient: PlacesClient) =
-        PlacesRepository(placeDetailsDao, placesClient)
+    fun placesRepository(
+        placeDetailsDao: PlaceDetailsDao,
+        placesClient: PlacesClient
+    ): PlacesRepository =
+        GooglePlacesRepository(placeDetailsDao, placesClient)
 
     @Provides
-    fun placesDetailsDa(appDatabase: AppDatabase) = appDatabase.placeDetailsDao()
+    fun placesDetailsDao(appDatabase: AppDatabase) = appDatabase.placeDetailsDao()
 
     @Provides
     fun appDatabase(@ApplicationContext context: Context) = AppDatabase.build(context)
