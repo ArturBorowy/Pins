@@ -1,6 +1,5 @@
 package com.arturborowy.pins.model.places
 
-import com.arturborowy.pins.model.db.PlaceDetailsDao
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -13,10 +12,10 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class GooglePlacesRepository @Inject constructor(
-    private val placeDetailsDao: PlaceDetailsDao,
+class GooglePlacesClientRepository @Inject constructor(
     private val placesClient: PlacesClient
-) : PlacesRepository {
+) : PlacesPredictionRepository {
+
     override suspend fun getAddressPredictions(inputString: String) =
         _getAddressPredictions(inputString)
             .map {
@@ -68,10 +67,4 @@ class GooglePlacesRepository @Inject constructor(
                     }
                 }
         }
-
-    override suspend fun savePlace(placeDetails: PlaceDetails) {
-        placeDetailsDao.insert(placeDetails)
-    }
-
-    override suspend fun getPlaces() = placeDetailsDao.select()
 }

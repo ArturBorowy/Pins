@@ -3,7 +3,7 @@ package com.arturborowy.pins.screen.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.model.places.PlaceDetails
-import com.arturborowy.pins.model.places.PlacesRepository
+import com.arturborowy.pins.model.places.PlacesInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val placesRepository: PlacesRepository
+    private val placesInteractor: PlacesInteractor
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(State())
@@ -21,7 +21,7 @@ class MapViewModel @Inject constructor(
 
     fun onViewResume() {
         viewModelScope.launch {
-            val places = placesRepository.getPlaces()
+            val places = placesInteractor.getPlaces()
             _state.emit(State(places))
         }
     }
