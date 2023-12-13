@@ -1,6 +1,7 @@
 package com.arturborowy.pins.screen.main
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -51,5 +52,12 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("Save").performClick()
 
         coVerify { MockModule.placeDetailsDao.insert(MockModule.PLACE_DETAILS) }
+    }
+
+    @Test
+    fun checkIfPinListIsShown() {
+        composeTestRule.onNodeWithText("Pins").performClick()
+
+        composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).assertIsDisplayed()
     }
 }

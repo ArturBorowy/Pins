@@ -25,7 +25,7 @@ object MockModule {
             "id",
             1.0,
             2.0,
-            "LABEL"
+            ADDRESS_PREDICION_LABEL
         )
 
     val PLACE_QUERY_TO_PREDICT = "Komuny Paryskiej St."
