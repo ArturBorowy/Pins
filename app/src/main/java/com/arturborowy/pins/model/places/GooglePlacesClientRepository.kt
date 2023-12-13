@@ -1,5 +1,6 @@
 package com.arturborowy.pins.model.places
 
+import android.location.Geocoder
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -13,6 +14,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class GooglePlacesClientRepository @Inject constructor(
+    private val geocoder: Geocoder,
     private val placesClient: PlacesClient
 ) : PlacesPredictionRepository {
 
@@ -54,11 +56,18 @@ class GooglePlacesClientRepository @Inject constructor(
                 .addOnCompleteListener { completedTask ->
                     if (completedTask.exception == null) {
                         val fetchedPlace = completedTask.result.place
+
+                        val address = getPlaceAddress(fetchedPlace.name!!)
+
                         val placeDetails = PlaceDetails(
                             id,
                             fetchedPlace.latLng!!.latitude,
                             fetchedPlace.latLng!!.longitude,
-                            fetchedPlace.name!!
+                            fetchedPlace.name!!,
+                            CountryEntity(
+                                address!!.countryCode,
+                                address.countryName
+                            )
                         )
                         it.resume(placeDetails)
                     } else {
@@ -67,4 +76,8 @@ class GooglePlacesClientRepository @Inject constructor(
                     }
                 }
         }
+
+    private fun getPlaceAddress(locationName: String) =
+        geocoder.getFromLocationName(locationName, 1)
+            ?.firstOrNull()
 }

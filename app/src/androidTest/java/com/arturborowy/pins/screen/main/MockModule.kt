@@ -3,6 +3,7 @@ package com.arturborowy.pins.screen.main
 import com.arturborowy.pins.di.RepositoryModule
 import com.arturborowy.pins.model.db.PlaceDetailsDao
 import com.arturborowy.pins.model.places.AddressPrediction
+import com.arturborowy.pins.model.places.CountryEntity
 import com.arturborowy.pins.model.places.PlaceDetails
 import com.arturborowy.pins.model.places.PlacesPredictionRepository
 import dagger.Provides
@@ -20,12 +21,15 @@ object MockModule {
 
     val ADDRESS_PREDICION_LABEL = "LABEL KOMUNY PARYSKIEJ"
 
+    val country = CountryEntity("COUNTRYID", "COUNTRYNAME")
+
     val PLACE_DETAILS =
         PlaceDetails(
             "id",
             1.0,
             2.0,
-            ADDRESS_PREDICION_LABEL
+            ADDRESS_PREDICION_LABEL,
+            country
         )
 
     val PLACE_QUERY_TO_PREDICT = "Komuny Paryskiej St."
