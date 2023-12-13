@@ -19,7 +19,7 @@ class GooglePlacesClientRepository @Inject constructor(
 ) : PlacesPredictionRepository {
 
     override suspend fun getAddressPredictions(inputString: String) =
-        _getAddressPredictions(inputString)
+        getAutocompletePredictions(inputString)
             .map {
                 AddressPrediction(
                     it.placeId,
@@ -27,7 +27,7 @@ class GooglePlacesClientRepository @Inject constructor(
                 )
             }
 
-    private suspend fun _getAddressPredictions(inputString: String) =
+    private suspend fun getAutocompletePredictions(inputString: String) =
         suspendCoroutine<List<AutocompletePrediction>> {
             placesClient.findAutocompletePredictions(
                 FindAutocompletePredictionsRequest.builder()

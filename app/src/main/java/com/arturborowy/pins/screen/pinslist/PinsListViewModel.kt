@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.model.places.PlaceDetails
 import com.arturborowy.pins.model.places.PlacesInteractor
+import com.arturborowy.pins.ui.NavigationTarget
+import com.arturborowy.pins.ui.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PinsListViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val placesInteractor: PlacesInteractor
 ) : ViewModel() {
 
@@ -27,7 +30,7 @@ class PinsListViewModel @Inject constructor(
     }
 
     fun onAddressClick(placeDetails: PlaceDetails) {
-
+        navigator.navigateTo(NavigationTarget.EDIT_PIN)
     }
 
     data class State(

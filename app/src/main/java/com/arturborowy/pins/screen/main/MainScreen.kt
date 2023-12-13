@@ -1,7 +1,6 @@
 package com.arturborowy.pins.screen.main
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -17,15 +16,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.arturborowy.pins.ui.NavigationComposable
+import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.ui.theme.PinsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(navigator: Navigator) {
     val navController = rememberNavController()
     PinsTheme {
         Surface(
@@ -33,15 +32,11 @@ fun MainScreen() {
         ) {
             Scaffold(bottomBar = { BottomAppBar(navController) },
                 content = { innerPadding ->
-                    NavHost(
+                    NavigationComposable(
                         navController = navController,
-                        startDestination = BottomNavItem.MAP.name,
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        BottomNavItem.values().forEach { screen ->
-                            composable(screen.name) { screen.screenComposable() }
-                        }
-                    }
+                        navigator = navigator,
+                        innerPadding = innerPadding
+                    )
                 })
         }
     }
@@ -75,11 +70,4 @@ fun BottomAppBar(navController: NavController) {
                 })
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
 }
