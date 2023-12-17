@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.espresso.Espresso
 import com.arturborowy.pins.di.ExternalModule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -18,7 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-@UninstallModules(ExternalModule::class)
 class MainActivityTest {
 
     @get:Rule(order = 0)
@@ -51,13 +51,9 @@ class MainActivityTest {
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).performClick()
         composeTestRule.onNodeWithText("Save").performClick()
 
-        coVerify { MockModule.placeDetailsDao.insert(MockModule.PLACE_DETAILS) }
-    }
+        Espresso.pressBack()
 
-    @Test
-    fun checkIfPinListIsShown() {
         composeTestRule.onNodeWithText("Pins").performClick()
-
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).assertIsDisplayed()
     }
 }

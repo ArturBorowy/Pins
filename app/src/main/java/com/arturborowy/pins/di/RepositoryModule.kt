@@ -27,11 +27,4 @@ object RepositoryModule {
 
     @Provides
     fun geocoder(@ApplicationContext context: Context) = Geocoder(context)
-
-    @Provides
-    fun placesDetailsDao(appDatabase: AppDatabase) = appDatabase.placeDetailsDao()
-
-    @Singleton
-    @Provides
-    fun navigator() = Navigator()
 }

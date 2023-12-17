@@ -16,9 +16,16 @@ class Navigator {
 
 interface NavigationTarget {
 
-    abstract val label: String
+    val label: String
 
     object EDIT_PIN : NavigationTarget {
-        override val label = "EDIT_PIN"
+
+        val PLACE_ID_KEY = "PLACE_ID_KEY"
+
+        override val label = create("{$PLACE_ID_KEY}").label
+
+        fun create(placeId: String) = object : NavigationTarget {
+            override val label = "EDIT_PIN/$placeId"
+        }
     }
 }

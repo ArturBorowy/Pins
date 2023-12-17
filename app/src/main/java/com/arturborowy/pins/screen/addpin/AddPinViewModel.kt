@@ -21,6 +21,15 @@ class AddPinViewModel @Inject constructor(
 
     private var selectedPlace: PlaceDetails? = null
 
+    fun onViewResume(placeId: String?) {
+        viewModelScope.launch {
+            if (placeId != null) {
+                val details = placesInteractor.getPlaceDetails(placeId)
+                _state.emit(State(placeDetails = details))
+            }
+        }
+    }
+
     fun onAddressTextChange(text: String) {
         viewModelScope.launch {
             val addressTexts = placesInteractor.getAddressPredictions(text)

@@ -20,4 +20,7 @@ object ExternalModule {
 
     @Provides
     fun appDatabase(@ApplicationContext context: Context) = AppDatabase.build(context)
+
+    @Provides
+    fun placesDetailsDao(appDatabase: AppDatabase) = appDatabase.placeDetailsDao()
 }

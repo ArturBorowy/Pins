@@ -31,7 +31,7 @@ class GooglePlacesClientRepository @Inject constructor(
         suspendCoroutine<List<AutocompletePrediction>> {
             placesClient.findAutocompletePredictions(
                 FindAutocompletePredictionsRequest.builder()
-                    .setTypesFilter(listOf(PlaceTypes.ADDRESS))
+                    .setTypesFilter(listOf(PlaceTypes.CITIES))
                     .setSessionToken(AutocompleteSessionToken.newInstance())
                     .setQuery(inputString)
                     .build()

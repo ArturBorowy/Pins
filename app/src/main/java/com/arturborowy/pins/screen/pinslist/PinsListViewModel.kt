@@ -30,7 +30,7 @@ class PinsListViewModel @Inject constructor(
     }
 
     fun onAddressClick(placeDetails: PlaceDetails) {
-        navigator.navigateTo(NavigationTarget.EDIT_PIN)
+        navigator.navigateTo(NavigationTarget.EDIT_PIN.create(placeDetails.id))
     }
 
     data class State(

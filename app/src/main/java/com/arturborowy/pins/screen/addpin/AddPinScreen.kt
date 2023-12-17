@@ -34,7 +34,12 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPinScreen(viewModel: AddPinViewModel = hiltViewModel()) {
+fun AddPinScreen(
+    viewModel: AddPinViewModel = hiltViewModel(),
+    placeId: String? = null
+) {
+    viewModel.onViewResume(placeId)
+
     var text by remember { mutableStateOf("") }
 
     val state = viewModel.state.collectAsState()

@@ -38,18 +38,8 @@ object MockModule {
     val ADDRESS_PREDICTION = AddressPrediction("ID", ADDRESS_PREDICION_LABEL)
 
     @Provides
-    fun placesPredictionRepository() = placesPredictionRepository
-
-    val placesPredictionRepository = mockk<PlacesPredictionRepository>().apply {
+    fun placesPredictionRepository() = mockk<PlacesPredictionRepository>().apply {
         coEvery { getPlaceDetails(PLACE_ID) } returns PLACE_DETAILS
         coEvery { getAddressPredictions(PLACE_QUERY_TO_PREDICT) } returns listOf(ADDRESS_PREDICTION)
-    }
-
-    @Provides
-    fun placesDetailsDao() = placeDetailsDao
-
-    val placeDetailsDao = mockk<PlaceDetailsDao>().apply {
-        coEvery { insert(PLACE_DETAILS) } returns Unit
-        coEvery { select() } returns listOf(PLACE_DETAILS)
     }
 }
