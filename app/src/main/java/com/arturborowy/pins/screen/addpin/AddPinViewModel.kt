@@ -16,16 +16,16 @@ class AddPinViewModel @Inject constructor(
     private val placesInteractor: PlacesInteractor
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(State())
+    private val _state = MutableStateFlow(
+        State(listOf(), null, false, false)
+    )
     val state: StateFlow<State> = _state
-
-    private var selectedPlace: PlaceDetails? = null
 
     fun onViewResume(placeId: String?) {
         viewModelScope.launch {
             if (placeId != null) {
                 val details = placesInteractor.getPlaceDetails(placeId)
-                _state.emit(State(placeDetails = details))
+                _state.emit(_state.value.copy(placeDetails = details, showRemoveBtn = true))
             }
         }
     }
@@ -33,26 +33,57 @@ class AddPinViewModel @Inject constructor(
     fun onAddressTextChange(text: String) {
         viewModelScope.launch {
             val addressTexts = placesInteractor.getAddressPredictions(text)
-            _state.emit(State(predictions = addressTexts))
+            _state.emit(_state.value.copy(predictions = addressTexts))
+
+            if (addressTexts.isNotEmpty()) {
+                _state.emit(_state.value.copy(expandAddressPredictions = true))
+            }
         }
     }
 
     fun onAddressSelect(id: String) {
         viewModelScope.launch {
             val placeAddress = placesInteractor.getPlaceDetails(id)
-            selectedPlace = placeAddress
-            _state.emit(State(placeDetails = placeAddress))
+            _state.emit(
+                _state.value.copy(
+                    placeDetails = placeAddress,
+                    expandAddressPredictions = false
+                )
+            )
         }
     }
 
     fun onSaveAddress() {
         viewModelScope.launch {
-            selectedPlace?.let { placesInteractor.savePlace(it) }
+            _state.value.placeDetails?.let {
+                placesInteractor.savePlace(it)
+            }
+        }
+    }
+
+    fun onDescriptionTextChange(description: String) {
+        viewModelScope.launch {
+            _state.emit(
+                _state.value.copy(
+                    placeDetails = _state.value.placeDetails?.copy(description = description)
+                )
+            )
+        }
+    }
+
+    fun onRemovePinClick() {
+        viewModelScope.launch {
+            _state.value.placeDetails?.let {
+                placesInteractor.removePlaceDetails(it.id)
+                _state.emit(_state.value.copy(placeDetails = null, showRemoveBtn = false))
+            }
         }
     }
 
     data class State(
-        val predictions: List<AddressPrediction> = listOf(),
-        val placeDetails: PlaceDetails? = null
+        val predictions: List<AddressPrediction>,
+        val placeDetails: PlaceDetails?,
+        val showRemoveBtn: Boolean,
+        val expandAddressPredictions: Boolean
     )
 }

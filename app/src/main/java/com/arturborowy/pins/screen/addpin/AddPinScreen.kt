@@ -27,10 +27,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +41,7 @@ fun AddPinScreen(
     viewModel.onViewResume(placeId)
 
     var text by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
 
     val state = viewModel.state.collectAsState()
 
@@ -58,11 +59,11 @@ fun AddPinScreen(
                     viewModel.onAddressTextChange(it)
                     text = it
                 },
-                label = { Text("label") },
+                label = { Text(stringResource(R.string.add_pin_hint_name)) },
             )
             DropdownMenu(
                 modifier = Modifier.fillMaxWidth(),
-                expanded = true,
+                expanded = state.value.expandAddressPredictions,
                 properties = PopupProperties(
                     clippingEnabled = false,
                     focusable = false,
@@ -71,8 +72,7 @@ fun AddPinScreen(
                 ),
                 onDismissRequest = {}
             ) {
-                val state = state.value
-                state.predictions.forEach { addressPrediction ->
+                state.value.predictions.forEach { addressPrediction ->
                     DropdownMenuItem(
                         onClick = { viewModel.onAddressSelect(addressPrediction.id) },
                         text = { Text(addressPrediction.label) }
@@ -80,6 +80,15 @@ fun AddPinScreen(
                 }
             }
         }
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = description,
+            onValueChange = {
+                viewModel.onDescriptionTextChange(it)
+                description = it
+            },
+            label = { Text(stringResource(R.string.add_pin_hint_description)) },
+        )
 
         Button(
             modifier = Modifier.fillMaxWidth(),
@@ -88,13 +97,21 @@ fun AddPinScreen(
             Text(text = stringResource(R.string.add_pin_btn_confirm))
         }
 
+        if (state.value.showRemoveBtn) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { viewModel.onRemovePinClick() }
+            ) {
+                Text(text = stringResource(R.string.add_pin_btn_remove))
+            }
+        }
+
         val placeDetails = state.value.placeDetails
 
         if (placeDetails != null) {
             val location = LatLng(placeDetails.latitude, placeDetails.longitude)
-            val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(location, 10f)
-            }
+            val cameraPositionState =
+                CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
             GoogleMap(cameraPositionState = cameraPositionState) {
                 Marker(
                     state = MarkerState(location),

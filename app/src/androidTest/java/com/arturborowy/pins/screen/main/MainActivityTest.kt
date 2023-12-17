@@ -1,19 +1,21 @@
 package com.arturborowy.pins.screen.main
 
-import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.activity.ComponentActivity
+import androidx.annotation.StringRes
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.isRoot
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
-import com.arturborowy.pins.di.ExternalModule
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.arturborowy.pins.R
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.coVerify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,27 +35,38 @@ class MainActivityTest {
     }
 
     @Test
-    @OptIn(ExperimentalTestApi::class)
     fun checkIfMapIsShown() {
-        composeTestRule.onRoot().assertExists()
-
-        composeTestRule.onNodeWithText("Add new").performClick()
-        composeTestRule.onNodeWithText("label").performTextInput(MockModule.PLACE_QUERY_TO_PREDICT)
+        composeTestRule.onNodeWithText(R.string.main_bottom_nav_label_add).performClick()
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockModule.PLACE_QUERY_TO_PREDICT)
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).performClick()
 
-        composeTestRule.waitUntilNodeCount(isRoot(), 2, 2000)
+        Espresso.onView(withContentDescription("Google Map")).check(matches(isDisplayed()))
     }
 
     @Test
     fun checkIfPinIsAddedToDatabase() {
-        composeTestRule.onNodeWithText("Add new").performClick()
-        composeTestRule.onNodeWithText("label").performTextInput(MockModule.PLACE_QUERY_TO_PREDICT)
+        composeTestRule.onNodeWithText(R.string.main_bottom_nav_label_add).performClick()
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockModule.PLACE_QUERY_TO_PREDICT)
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).performClick()
-        composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.onNodeWithText(R.string.add_pin_btn_confirm).performClick()
 
         Espresso.pressBack()
 
-        composeTestRule.onNodeWithText("Pins").performClick()
+        composeTestRule.onNodeWithText(R.string.main_bottom_nav_label_list).performClick()
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).assertIsDisplayed()
     }
+
+    private fun getString(@StringRes stringResId: Int) =
+        composeTestRule.activity.getString(stringResId)
+
+    private fun <
+            ActivityT : ComponentActivity,
+            ActivityScenarioRuleT : ActivityScenarioRule<ActivityT>
+            >
+            AndroidComposeTestRule<ActivityScenarioRuleT, ActivityT>.onNodeWithText(
+        @StringRes textResId: Int
+    ) =
+        onNodeWithText(getString(textResId))
 }

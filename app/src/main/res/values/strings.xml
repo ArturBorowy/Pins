@@ -4,5 +4,9 @@
     <string name="main_bottom_nav_label_home">Home</string>
     <string name="main_bottom_nav_label_add">Add new</string>
     <string name="main_bottom_nav_label_list">Pins</string>
+
     <string name="add_pin_btn_confirm">Save</string>
+    <string name="add_pin_btn_remove">Remove pin</string>
+    <string name="add_pin_hint_name">Name of city</string>
+    <string name="add_pin_hint_description">Your note</string>
 </resources>

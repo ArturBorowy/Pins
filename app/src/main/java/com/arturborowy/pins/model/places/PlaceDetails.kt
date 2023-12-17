@@ -10,5 +10,6 @@ data class PlaceDetails(
     val latitude: Double,
     val longitude: Double,
     val label: String,
-    @Embedded val country: CountryEntity
+    @Embedded val country: CountryEntity,
+    val description: String? = null,
 )

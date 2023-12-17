@@ -19,4 +19,8 @@ class PlacesInteractor @Inject constructor(
     }
 
     suspend fun getPlaces() = placeDetailsDao.select()
+
+    suspend fun removePlaceDetails(id: String) {
+        placeDetailsDao.removePlaceDetails(id)
+    }
 }

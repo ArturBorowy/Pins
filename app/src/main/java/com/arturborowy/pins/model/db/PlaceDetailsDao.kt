@@ -17,4 +17,7 @@ interface PlaceDetailsDao {
 
     @Insert
     suspend fun insert(placeDetails: PlaceDetails)
+
+    @Query("DELETE FROM placedetails WHERE id=:id")
+    suspend fun removePlaceDetails(id: String)
 }
