@@ -1,5 +1,8 @@
 package com.arturborowy.pins.screen.addpin
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,20 +22,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.PopupProperties
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,16 +122,40 @@ fun AddPinScreen(
             }
         }
 
-        if (state.placeLongitude != null && state.placeLatitude != null) {
+        if (state.placeLongitude != null
+            && state.placeLatitude != null
+            && state.placeCountryIcon != null
+        ) {
             val location = LatLng(state.placeLatitude, state.placeLongitude)
             val cameraPositionState =
                 CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
             GoogleMap(cameraPositionState = cameraPositionState) {
                 Marker(
+                    icon = bitmapDescriptor(LocalContext.current, state.placeCountryIcon),
                     state = MarkerState(location),
                     title = state.placeText
                 )
             }
         }
     }
+}
+
+fun bitmapDescriptor(
+    context: Context,
+    vectorResId: Int
+): BitmapDescriptor {
+    val bitmap = getBitmapFromVectorDrawable(context, vectorResId)!!
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
+fun getBitmapFromVectorDrawable(context: Context?, drawableId: Int): Bitmap? {
+    val drawable = ContextCompat.getDrawable(context!!, drawableId)
+    val bitmap = Bitmap.createBitmap(
+        drawable!!.intrinsicWidth / 10,
+        drawable.intrinsicHeight / 10, Bitmap.Config.ARGB_8888
+    )
+    val canvas = Canvas(bitmap)
+    drawable.setBounds(0, 0, canvas.width, canvas.height)
+    drawable.draw(canvas)
+    return bitmap
 }

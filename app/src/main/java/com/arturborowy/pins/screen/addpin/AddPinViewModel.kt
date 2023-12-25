@@ -1,5 +1,6 @@
 package com.arturborowy.pins.screen.addpin
 
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -82,7 +83,8 @@ class AddPinViewModel @Inject constructor(
                     placeText = placeAddress.label,
                     placeTextChangedByUser = false,
                     placeLatitude = placeAddress.latitude,
-                    placeLongitude = placeAddress.longitude
+                    placeLongitude = placeAddress.longitude,
+                    placeCountryIcon = placeAddress.country.countryIcon
                 )
             )
             selectedPlace = placeAddress
@@ -120,5 +122,6 @@ class AddPinViewModel @Inject constructor(
         val placeDescription: String,
         val placeLatitude: Double? = null,
         val placeLongitude: Double? = null,
+        @DrawableRes val placeCountryIcon: Int? = null
     )
 }

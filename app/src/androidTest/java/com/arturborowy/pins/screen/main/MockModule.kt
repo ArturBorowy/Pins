@@ -1,5 +1,6 @@
 package com.arturborowy.pins.screen.main
 
+import com.arturborowy.pins.R
 import com.arturborowy.pins.di.RepositoryModule
 import com.arturborowy.pins.model.places.AddressPrediction
 import com.arturborowy.pins.model.places.CountryEntity
@@ -20,7 +21,7 @@ object MockModule {
 
     val ADDRESS_PREDICION_LABEL = "LABEL KOMUNY PARYSKIEJ"
 
-    val country = CountryEntity("COUNTRYID", "COUNTRYNAME")
+    val country = CountryEntity("COUNTRYID", "COUNTRYNAME", R.drawable.pl)
     val PLACE_ID = "ID"
 
     val PLACE_DETAILS =

@@ -11,11 +11,13 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.ultimatelogger.android.output.ALog
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class GooglePlacesClientRepository @Inject constructor(
     private val geocoder: Geocoder,
-    private val placesClient: PlacesClient
+    private val placesClient: PlacesClient,
+    private val countryIconsRepository: CountryIconsRepository
 ) : PlacesPredictionRepository {
 
     override suspend fun getAddressPredictions(inputString: String) =
@@ -47,6 +49,8 @@ class GooglePlacesClientRepository @Inject constructor(
 
     override suspend fun getPlaceDetails(id: String) =
         suspendCoroutine {
+            ALog.d("getPlaceDetails placeId: $id")
+
             val placeFields = mutableListOf(
                 Place.Field.NAME,
                 Place.Field.LAT_LNG
@@ -54,25 +58,32 @@ class GooglePlacesClientRepository @Inject constructor(
 
             placesClient.fetchPlace(FetchPlaceRequest.newInstance(id, placeFields))
                 .addOnCompleteListener { completedTask ->
-                    if (completedTask.exception == null) {
-                        val fetchedPlace = completedTask.result.place
+                    try {
+                        if (completedTask.exception == null) {
+                            val fetchedPlace = completedTask.result.place
+                            ALog.d("Fetched place: $fetchedPlace")
 
-                        val address = getPlaceAddress(fetchedPlace.name!!)
+                            val address = getPlaceAddress(fetchedPlace.name!!)
+                            ALog.d("Fetched address: $address")
 
-                        val placeDetails = PlaceDetails(
-                            id,
-                            fetchedPlace.latLng!!.latitude,
-                            fetchedPlace.latLng!!.longitude,
-                            fetchedPlace.name!!,
-                            CountryEntity(
-                                address!!.countryCode,
-                                address.countryName
+                            val placeDetails = PlaceDetails(
+                                id,
+                                fetchedPlace.latLng!!.latitude,
+                                fetchedPlace.latLng!!.longitude,
+                                fetchedPlace.name!!,
+                                CountryEntity(
+                                    address!!.countryCode,
+                                    address.countryName,
+                                    countryIconsRepository.getIcon(address.countryCode)!!
+                                )
                             )
-                        )
-                        it.resume(placeDetails)
-                    } else {
-                        ALog.e(completedTask.exception?.stackTraceToString().orEmpty())
-                        it.resume(TODO())
+                            it.resume(placeDetails)
+                        } else {
+                            ALog.e(completedTask.exception?.stackTraceToString().orEmpty())
+                            it.resumeWithException(completedTask.exception!!)
+                        }
+                    } catch (e: Exception) {
+                        it.resumeWithException(e)
                     }
                 }
         }
