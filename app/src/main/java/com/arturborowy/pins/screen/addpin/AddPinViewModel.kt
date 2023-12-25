@@ -1,5 +1,7 @@
 package com.arturborowy.pins.screen.addpin
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.model.places.AddressPrediction
@@ -7,36 +9,64 @@ import com.arturborowy.pins.model.places.PlaceDetails
 import com.arturborowy.pins.model.places.PlacesInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddPinViewModel @Inject constructor(
     private val placesInteractor: PlacesInteractor
-) : ViewModel() {
+) : ViewModel(), DefaultLifecycleObserver {
 
-    private val _state = MutableStateFlow(
-        State(listOf(), null, false, false)
+    var initPlaceId: String? = null
+
+    val state = MutableStateFlow(
+        State(
+            listOf(),
+            false,
+            false,
+            false,
+            null,
+            "",
+            false,
+            ""
+        )
     )
-    val state: StateFlow<State> = _state
 
-    fun onViewResume(placeId: String?) {
+    private var selectedPlace: PlaceDetails? = null
+
+    override fun onResume(owner: LifecycleOwner) {
         viewModelScope.launch {
-            if (placeId != null) {
-                val details = placesInteractor.getPlaceDetails(placeId)
-                _state.emit(_state.value.copy(placeDetails = details, showRemoveBtn = true))
+            if (initPlaceId != null) {
+                val details = placesInteractor.getPlaceDetails(initPlaceId!!)
+                this@AddPinViewModel.state.emit(
+                    this@AddPinViewModel.state.value.copy(
+                        showRemoveBtn = true,
+                        areExtraFieldsVisible = true,
+                        placeId = details.id,
+                        placeText = details.label,
+                        placeLatitude = details.latitude,
+                        placeLongitude = details.longitude
+                    )
+                )
             }
         }
-    }
-
-    fun onAddressTextChange(text: String) {
         viewModelScope.launch {
-            val addressTexts = placesInteractor.getAddressPredictions(text)
-            _state.emit(_state.value.copy(predictions = addressTexts))
+            state.collect {
+                if (it.placeText.isNotEmpty() && it.placeTextChangedByUser) {
+                    val addressTexts = placesInteractor.getAddressPredictions(it.placeText)
+                    this@AddPinViewModel.state.emit(
+                        this@AddPinViewModel.state.value.copy(predictions = addressTexts)
+                    )
 
-            if (addressTexts.isNotEmpty()) {
-                _state.emit(_state.value.copy(expandAddressPredictions = true))
+                    if (addressTexts.isNotEmpty()) {
+                        this@AddPinViewModel.state.emit(
+                            this@AddPinViewModel.state.value.copy(
+                                expandAddressPredictions = true,
+                                placeTextChangedByUser = true,
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -44,46 +74,51 @@ class AddPinViewModel @Inject constructor(
     fun onAddressSelect(id: String) {
         viewModelScope.launch {
             val placeAddress = placesInteractor.getPlaceDetails(id)
-            _state.emit(
-                _state.value.copy(
-                    placeDetails = placeAddress,
-                    expandAddressPredictions = false
+            this@AddPinViewModel.state.emit(
+                this@AddPinViewModel.state.value.copy(
+                    expandAddressPredictions = false,
+                    areExtraFieldsVisible = true,
+                    placeId = placeAddress.id,
+                    placeText = placeAddress.label,
+                    placeTextChangedByUser = false,
+                    placeLatitude = placeAddress.latitude,
+                    placeLongitude = placeAddress.longitude
                 )
             )
+            selectedPlace = placeAddress
         }
     }
 
     fun onSaveAddress() {
         viewModelScope.launch {
-            _state.value.placeDetails?.let {
-                placesInteractor.savePlace(it)
-            }
+            placesInteractor.savePlace(selectedPlace!!)
+            this@AddPinViewModel.state.emit(this@AddPinViewModel.state.value.copy(showRemoveBtn = true))
         }
     }
 
     fun onDescriptionTextChange(description: String) {
         viewModelScope.launch {
-            _state.emit(
-                _state.value.copy(
-                    placeDetails = _state.value.placeDetails?.copy(description = description)
-                )
-            )
+            this@AddPinViewModel.state.emit(this@AddPinViewModel.state.value.copy(placeDescription = description))
         }
     }
 
     fun onRemovePinClick() {
         viewModelScope.launch {
-            _state.value.placeDetails?.let {
-                placesInteractor.removePlaceDetails(it.id)
-                _state.emit(_state.value.copy(placeDetails = null, showRemoveBtn = false))
-            }
+            placesInteractor.removePlaceDetails(this@AddPinViewModel.state.value.placeId!!)
+            this@AddPinViewModel.state.emit(this@AddPinViewModel.state.value.copy(showRemoveBtn = false))
         }
     }
 
     data class State(
         val predictions: List<AddressPrediction>,
-        val placeDetails: PlaceDetails?,
         val showRemoveBtn: Boolean,
-        val expandAddressPredictions: Boolean
+        val expandAddressPredictions: Boolean,
+        val areExtraFieldsVisible: Boolean,
+        val placeId: String?,
+        val placeText: String,
+        val placeTextChangedByUser: Boolean,
+        val placeDescription: String,
+        val placeLatitude: Double? = null,
+        val placeLongitude: Double? = null,
     )
 }

@@ -11,8 +11,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun placeDetailsDao(): PlaceDetailsDao
 
     companion object {
+        const val NAME = "db"
+
         fun build(context: Context) =
-            Room.databaseBuilder(context, AppDatabase::class.java, "db")
+            Room.databaseBuilder(context, AppDatabase::class.java, NAME)
                 .build()
     }
 }
