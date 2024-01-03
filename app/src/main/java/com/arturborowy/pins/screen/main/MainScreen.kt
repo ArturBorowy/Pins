@@ -1,23 +1,26 @@
 package com.arturborowy.pins.screen.main
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.NavigationComposable
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.ui.theme.PinsTheme
@@ -30,7 +33,8 @@ fun MainScreen(navigator: Navigator) {
         Surface(
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
-            Scaffold(bottomBar = { BottomAppBar(navController) },
+            Scaffold(
+                bottomBar = { BottomAppBar(navController) },
                 content = { innerPadding ->
                     NavigationComposable(
                         navController = navController,
@@ -47,25 +51,25 @@ fun BottomAppBar(navController: NavController) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.height(70.dp),
+        containerColor = colorResource(R.color.white),
     ) {
         BottomNavItem.values().forEach { item ->
             val selected = item.name == backStackEntry.value?.destination?.route
 
-            NavigationBarItem(selected = selected,
+            NavigationBarItem(
+                selected = selected,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(R.color.primary),
+                    unselectedIconColor = colorResource(R.color.primary_light),
+                    indicatorColor = Color.White
+                ),
                 onClick = { navController.navigate(item.name) },
-                label = {
-                    Text(
-                        text = stringResource(item.textResId),
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
                 icon = {
                     Icon(
-                        imageVector = item.icon,
-                        tint = Color.White,
-                        contentDescription = "${item.name} Icon",
+                        modifier = Modifier.padding(0.dp, 8.dp),
+                        painter = painterResource(item.iconResId),
+                        contentDescription = item.name,
                     )
                 })
         }

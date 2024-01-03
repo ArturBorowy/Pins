@@ -3,6 +3,7 @@ package com.arturborowy.pins
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -33,4 +34,13 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         @StringRes textResId: Int
     ) =
         onNodeWithText(getString(textResId))
+
+    protected fun <
+            ActivityT : ComponentActivity,
+            ActivityScenarioRuleT : ActivityScenarioRule<ActivityT>
+            >
+            AndroidComposeTestRule<ActivityScenarioRuleT, ActivityT>.onNodeWithContentDescription(
+        @StringRes textResId: Int
+    ) =
+        onNodeWithContentDescription(getString(textResId))
 }

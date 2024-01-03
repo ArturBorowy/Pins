@@ -18,14 +18,20 @@ interface NavigationTarget {
 
     val label: String
 
-    object EDIT_PIN : NavigationTarget {
+    object EDIT_PIN {
 
         val PLACE_ID_KEY = "PLACE_ID_KEY"
 
-        override val label = create("{$PLACE_ID_KEY}").label
+        val label = create("{$PLACE_ID_KEY}").label
 
         fun create(placeId: String) = object : NavigationTarget {
             override val label = "EDIT_PIN/$placeId"
         }
+    }
+
+    object ADD_PIN : NavigationTarget {
+
+        override val label = "ADD_PIN"
+
     }
 }

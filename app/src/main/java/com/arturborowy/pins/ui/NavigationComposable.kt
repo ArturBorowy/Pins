@@ -43,5 +43,9 @@ fun NavigationComposable(
         composable(NavigationTarget.EDIT_PIN.label, arguments = args) {
             AddPinScreen(placeId = it.arguments?.getString(NavigationTarget.EDIT_PIN.PLACE_ID_KEY))
         }
+
+        composable(NavigationTarget.ADD_PIN.label) {
+            AddPinScreen()
+        }
     }
 }

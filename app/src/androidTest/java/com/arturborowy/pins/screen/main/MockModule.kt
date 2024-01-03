@@ -1,6 +1,6 @@
 package com.arturborowy.pins.screen.main
 
-import com.arturborowy.pins.R
+import com.arturborowy.flags.R
 import com.arturborowy.pins.di.RepositoryModule
 import com.arturborowy.pins.model.places.AddressPrediction
 import com.arturborowy.pins.model.places.CountryEntity
