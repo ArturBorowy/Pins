@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Pins"
 include(":app")
- 
+include(":flags")

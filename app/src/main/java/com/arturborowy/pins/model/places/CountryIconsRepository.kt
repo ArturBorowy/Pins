@@ -1,6 +1,6 @@
 package com.arturborowy.pins.model.places
 
-import com.arturborowy.pins.R
+import com.arturborowy.flags.R
 
 class CountryIconsRepository {
 
@@ -112,8 +112,6 @@ class CountryIconsRepository {
             "ht" -> R.drawable.ht
             "hu" -> R.drawable.hu
             "ic" -> R.drawable.ic
-            "ic_launcher_background" -> R.drawable.ic_launcher_background
-            "ic_launcher_foreground" -> R.drawable.ic_launcher_foreground
             "id" -> R.drawable.id
             "ie" -> R.drawable.ie
             "il" -> R.drawable.il
@@ -203,7 +201,6 @@ class CountryIconsRepository {
             "py" -> R.drawable.py
             "qa" -> R.drawable.qa
             "re" -> R.drawable.re
-            "resource_do" -> R.drawable.resource_do
             "ro" -> R.drawable.ro
             "rs" -> R.drawable.rs
             "ru" -> R.drawable.ru

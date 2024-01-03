@@ -29,8 +29,6 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
             .filter(isNotFocused())[0].performClick()
         composeTestRule.onNodeWithText(R.string.add_pin_btn_confirm).performClick()
 
-        composeTestRule.onRoot().printToLog("DUPA1")
-
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).assertExists()
     }
