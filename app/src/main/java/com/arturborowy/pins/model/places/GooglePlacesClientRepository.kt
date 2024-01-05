@@ -25,7 +25,7 @@ class GooglePlacesClientRepository @Inject constructor(
             .map {
                 AddressPrediction(
                     it.placeId,
-                    it.getPrimaryText(null).toString(),
+                    it.getFullText(null).toString(),
                 )
             }
 

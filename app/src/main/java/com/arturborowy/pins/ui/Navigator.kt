@@ -28,10 +28,4 @@ interface NavigationTarget {
             override val label = "EDIT_PIN/$placeId"
         }
     }
-
-    object ADD_PIN : NavigationTarget {
-
-        override val label = "ADD_PIN"
-
-    }
 }

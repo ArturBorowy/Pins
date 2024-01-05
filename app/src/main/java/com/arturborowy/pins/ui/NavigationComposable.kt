@@ -10,7 +10,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.arturborowy.pins.screen.addpin.AddPinScreen
 import com.arturborowy.pins.screen.main.BottomNavItem
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -39,13 +38,5 @@ fun NavigationComposable(
         val args = listOf(navArgument(NavigationTarget.EDIT_PIN.PLACE_ID_KEY) {
             type = NavType.StringType
         })
-
-        composable(NavigationTarget.EDIT_PIN.label, arguments = args) {
-            AddPinScreen(placeId = it.arguments?.getString(NavigationTarget.EDIT_PIN.PLACE_ID_KEY))
-        }
-
-        composable(NavigationTarget.ADD_PIN.label) {
-            AddPinScreen()
-        }
     }
 }

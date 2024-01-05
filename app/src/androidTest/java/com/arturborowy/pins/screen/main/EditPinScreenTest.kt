@@ -22,12 +22,13 @@ class EditPinScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun pinDoesNotAppearOnList_whenIsRemovedOnEditPin() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add).performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
         composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
             .performTextInput(MockModule.ADDRESS_PREDICION_LABEL)
         composeTestRule.onAllNodesWithText(MockModule.ADDRESS_PREDICION_LABEL)
             .filter(isNotFocused())[0].performClick()
-        composeTestRule.onNodeWithText(R.string.add_pin_btn_confirm).performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm).performClick()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
         composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).performClick()

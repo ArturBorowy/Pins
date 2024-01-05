@@ -6,7 +6,8 @@
     <string name="main_bottom_nav_label_list">Pins</string>
 
     <string name="add_pin_btn_confirm">Save</string>
+    <string name="add_pin_cd_address_editing_back">Back editing</string>
     <string name="add_pin_btn_remove">Remove pin</string>
-    <string name="add_pin_hint_name">Name of city</string>
+    <string name="add_pin_hint_name">Type address</string>
     <string name="add_pin_hint_description">Your note</string>
 </resources>
