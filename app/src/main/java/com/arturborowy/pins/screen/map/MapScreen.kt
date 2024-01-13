@@ -1,11 +1,16 @@
 package com.arturborowy.pins.screen.map
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +20,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
+import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.utils.bitmapDescriptor
 import com.arturborowy.pins.utils.collectAsMutableState
@@ -37,8 +47,8 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
@@ -46,10 +56,7 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
     val (state, setState) = viewModel.state.collectAsMutableState()
 
     Box {
-        if (state.placeLongitude != null
-            && state.placeLatitude != null
-            && state.placeCountryIcon != null
-        ) {
+        if (state.placeLongitude != null && state.placeLatitude != null && state.placeCountryIcon != null) {
             val location = LatLng(state.placeLatitude, state.placeLongitude)
 
             val cameraPositionState =
@@ -63,10 +70,12 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
                 )
             }
         } else {
+
+            //todo maybe on start just show some random pin on camera, but less zoom when setting?
             GoogleMap {
-                state.placeDetails.forEach {
+                state.tripMarkers.forEach {
                     Marker(
-                        icon = bitmapDescriptor(LocalContext.current, it.country.countryIcon),
+                        icon = bitmapDescriptor(LocalContext.current, it.countryIconResId),
                         state = MarkerState(LatLng(it.latitude, it.longitude)),
                         title = it.label,
                     )
@@ -75,77 +84,33 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
         }
 
         if (state.showAddressTextField) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                TextField(
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White,
-                        textColor = Color.Black,
-                        placeholderColor = colorResource(R.color.primary),
-                        cursorColor = Color.Black,
-                        selectionColors = TextSelectionColors(
-                            colorResource(R.color.primary),
-                            colorResource(R.color.primary)
-                        ),
-                        focusedIndicatorColor = colorResource(R.color.primary),
-                        unfocusedIndicatorColor = colorResource(R.color.primary),
-                        focusedLabelColor = colorResource(R.color.primary),
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    value = state.placeText,
-                    singleLine = true,
-                    onValueChange = {
-                        setState(
-                            state.copy(
-                                placeText = it,
-                                placeTextChangedByUser = true
-                            )
+            SearchBar(placeText = state.placeText,
+                onSearchTextChange = {
+                    setState(
+                        state.copy(
+                            placeText = it, placeTextChangedByUser = true
                         )
-                    },
-                    label = { Text(stringResource(R.string.add_pin_hint_name)) },
-                    leadingIcon = {
-                        TextButton(onClick = { viewModel.onBackEditingAddress() }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_back_editing),
-                                tint = colorResource(R.color.primary),
-                                contentDescription = stringResource(R.string.add_pin_cd_address_editing_back)
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        if (state.areExtraFieldsVisible) {
-                            TextButton(onClick = { viewModel.onSaveAddress() }) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_done),
-                                    tint = colorResource(R.color.primary),
-                                    contentDescription = stringResource(R.string.add_pin_btn_confirm)
-                                )
-                            }
-                        }
-                    })
-                DropdownMenu(
-                    modifier = Modifier.background(Color.White),
-                    expanded = state.expandAddressPredictions && state.placeTextChangedByUser,
-                    properties = PopupProperties(
-                        clippingEnabled = false,
-                        focusable = false,
-                        dismissOnBackPress = true,
-                        dismissOnClickOutside = true
-                    ),
-                    onDismissRequest = {}
-                ) {
-                    state.predictions.forEach { addressPrediction ->
-                        DropdownMenuItem(
-                            onClick = { viewModel.onAddressSelect(addressPrediction.id) },
-                            text = {
-                                Text(
-                                    addressPrediction.label,
-                                    color = Color.Black,
-                                )
-                            }
-                        )
-                    }
-                }
-            }
+                    )
+                },
+                onBackClick = { viewModel.onBackEditingAddress() },
+                onConfirmClick = { viewModel.onConfirmAddress() },
+                showConfirm = state.showConfirmAddressButton,
+                expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
+                showExtraEditionFields = state.areExtraFieldsVisible,
+                predictions = state.predictions,
+                onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
+                nameText = state.nameText,
+                onNameTextChange = { viewModel.onTripNameChange(it) },
+                arrivalDate = state.arrivalDate,
+                onArrivalDateChange = { year: Int, month: Int, dayOfMonth: Int ->
+                    viewModel.onArrivalDateChange(year, month, dayOfMonth)
+                },
+                departureDate = state.departureDate,
+                onDepartureDateChange = { year: Int, month: Int, dayOfMonth: Int ->
+                    viewModel.onDepartureDateChange(year, month, dayOfMonth)
+                },
+                onTripConfirmClick = { viewModel.onTripConfirmClick() }
+            )
         } else {
             Fab(
                 R.drawable.ic_add_pin,
@@ -154,6 +119,207 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
                     .align(Alignment.BottomCenter)
                     .padding(16.dp),
             ) { viewModel.onAddPinClick() }
+        }
+    }
+}
+
+@Composable
+fun SearchBar(
+    placeText: String,
+    onSearchTextChange: (String) -> Unit,
+    nameText: String,
+    onNameTextChange: (String) -> Unit,
+    onBackClick: () -> Unit,
+    onConfirmClick: () -> Unit,
+    showConfirm: Boolean,
+    expandDropdown: Boolean,
+    showExtraEditionFields: Boolean,
+    predictions: List<AddressPredictionDto>,
+    onAddressPredictionClick: (AddressPredictionDto) -> Unit,
+    arrivalDate: String?,
+    onArrivalDateChange: (Int, Int, Int) -> Unit,
+    departureDate: String?,
+    onDepartureDateChange: (Int, Int, Int) -> Unit,
+    onTripConfirmClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        shape = RoundedCornerShape(8.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
+        ) {
+            SearchField(
+                placeText = placeText,
+                onTextChange = onSearchTextChange,
+                onBackClick = onBackClick,
+                onConfirmClick = onConfirmClick,
+                showConfirm = showConfirm,
+            )
+            SearchResults(
+                expandDropdown = expandDropdown,
+                predictions = predictions,
+                onAddressPredictionClick = onAddressPredictionClick
+            )
+
+            if (showExtraEditionFields) {
+                ExtraFields(
+                    nameText = nameText,
+                    onNameTextChange = onNameTextChange,
+                    arrivalDate = arrivalDate,
+                    onArrivalDateChange = onArrivalDateChange,
+                    departureDate = departureDate,
+                    onDepartureDateChange = onDepartureDateChange,
+                    onTripConfirmClick = onTripConfirmClick
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExtraFields(
+    nameText: String,
+    onNameTextChange: (String) -> Unit,
+    arrivalDate: String?,
+    onArrivalDateChange: (Int, Int, Int) -> Unit,
+    departureDate: String?,
+    onDepartureDateChange: (Int, Int, Int) -> Unit,
+    onTripConfirmClick: () -> Unit
+) {
+    TextField(
+        colors = textFieldColors(),
+        modifier = Modifier.fillMaxWidth(),
+        value = nameText,
+        singleLine = true,
+        onValueChange = { onNameTextChange(it) },
+        label = { Text(stringResource(R.string.add_pin_hint_trip_name)) },
+    )
+    DatePickingButton(
+        label = arrivalDate ?: stringResource(R.string.add_pin_hint_arrival_date),
+        onDateSelected = onArrivalDateChange
+    )
+    DatePickingButton(
+        label = departureDate ?: stringResource(R.string.add_pin_hint_departure_date),
+        onDateSelected = onDepartureDateChange
+    )
+
+    Button(onClick = { onTripConfirmClick() }) {
+        Text(text = stringResource(R.string.create_trip_btn_confirm))
+    }
+}
+
+@Composable
+fun DatePickingButton(
+    label: String,
+    onDateSelected: (Int, Int, Int) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    var selectedDateText by remember { mutableStateOf("") }
+
+
+    val year = calendar[Calendar.YEAR]
+    val month = calendar[Calendar.MONTH]
+    val dayOfMonth = calendar[Calendar.DAY_OF_MONTH]
+
+    TextButton(onClick = {
+        val datePicker = DatePickerDialog(
+            context,
+            { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int ->
+                onDateSelected(selectedYear, selectedMonth, selectedDayOfMonth)
+            },
+            year,
+            month,
+            dayOfMonth
+        )
+
+        datePicker.show()
+    }) {
+        Text(label)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun textFieldColors() = TextFieldDefaults.textFieldColors(
+    containerColor = Color.White,
+    textColor = Color.Black,
+    placeholderColor = colorResource(R.color.primary),
+    cursorColor = Color.Black,
+    selectionColors = TextSelectionColors(
+        colorResource(R.color.primary), colorResource(R.color.primary)
+    ),
+    focusedIndicatorColor = colorResource(R.color.primary),
+    unfocusedIndicatorColor = colorResource(R.color.primary),
+    focusedLabelColor = colorResource(R.color.primary),
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchField(
+    placeText: String,
+    onTextChange: (String) -> Unit,
+    onBackClick: () -> Unit,
+    onConfirmClick: () -> Unit,
+    showConfirm: Boolean,
+) {
+    TextField(colors = textFieldColors(),
+        modifier = Modifier.fillMaxWidth(),
+        value = placeText,
+        singleLine = true,
+        onValueChange = { onTextChange(it) },
+        label = { Text(stringResource(R.string.add_pin_hint_name)) },
+        leadingIcon = {
+            TextButton(onClick = { onBackClick() }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_back_editing),
+                    tint = colorResource(R.color.primary),
+                    contentDescription = stringResource(R.string.add_pin_cd_address_editing_back)
+                )
+            }
+        },
+        trailingIcon = {
+            if (showConfirm) {
+                TextButton(onClick = { onConfirmClick() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_done),
+                        tint = colorResource(R.color.primary),
+                        contentDescription = stringResource(R.string.add_pin_btn_confirm)
+                    )
+                }
+            }
+        })
+}
+
+@Composable
+fun SearchResults(
+    expandDropdown: Boolean,
+    predictions: List<AddressPredictionDto>,
+    onAddressPredictionClick: (AddressPredictionDto) -> Unit
+) {
+    DropdownMenu(modifier = Modifier.background(Color.White),
+        expanded = expandDropdown,
+        properties = PopupProperties(
+            clippingEnabled = false,
+            focusable = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        ),
+        onDismissRequest = {}) {
+        predictions.forEach { addressPrediction ->
+            DropdownMenuItem(onClick = { onAddressPredictionClick(addressPrediction) }, text = {
+                Text(
+                    addressPrediction.label,
+                    color = Color.Black,
+                )
+            })
         }
     }
 }

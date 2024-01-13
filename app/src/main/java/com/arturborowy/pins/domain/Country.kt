@@ -1,8 +1,8 @@
-package com.arturborowy.pins.model.places
+package com.arturborowy.pins.domain
 
 import androidx.annotation.DrawableRes
 
-data class CountryEntity(
+data class Country(
     val countryId: String,
     val countryLabel: String,
     @DrawableRes val countryIcon: Int

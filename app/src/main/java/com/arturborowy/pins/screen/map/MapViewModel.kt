@@ -1,22 +1,26 @@
 package com.arturborowy.pins.screen.map
 
 import androidx.annotation.DrawableRes
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arturborowy.pins.model.places.AddressPrediction
-import com.arturborowy.pins.model.places.PlaceDetails
-import com.arturborowy.pins.model.places.PlacesInteractor
+import com.arturborowy.pins.domain.PlaceDetails
+import com.arturborowy.pins.domain.PlacesInteractor
+import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.model.system.LocaleRepository
+import com.arturborowy.pins.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val placesInteractor: PlacesInteractor,
-) : ViewModel(), DefaultLifecycleObserver {
+    private val localeRepository: LocaleRepository
+) : BaseViewModel() {
 
     val state = MutableStateFlow(
         State(
@@ -26,17 +30,29 @@ class MapViewModel @Inject constructor(
             false,
             null,
             "",
+            "",
             false,
-            ""
+            "",
         )
     )
+
+    private var arrivalDate: Date? = null
+    private var departureDate: Date? = null
 
     private var selectedPlace: PlaceDetails? = null
 
     override fun onResume(owner: LifecycleOwner) {
         viewModelScope.launch {
             val places = placesInteractor.getPlaces()
-            state.emit(state.value.copy(placeDetails = places))
+                .map {
+                    TripMarker(
+                        it.name,
+                        it.country.countryIcon,
+                        it.latitude,
+                        it.longitude
+                    )
+                }
+            state.emit(state.value.copy(tripMarkers = places))
         }
         viewModelScope.launch {
             state.collect {
@@ -65,9 +81,9 @@ class MapViewModel @Inject constructor(
             this@MapViewModel.state.emit(
                 this@MapViewModel.state.value.copy(
                     expandAddressPredictions = false,
-                    areExtraFieldsVisible = true,
-                    placeId = placeAddress.id,
-                    placeText = placeAddress.label,
+                    placeId = "esadaea",
+                    showConfirmAddressButton = true,
+                    placeText = placeAddress.locationName,
                     placeTextChangedByUser = false,
                     placeLatitude = placeAddress.latitude,
                     placeLongitude = placeAddress.longitude,
@@ -78,12 +94,12 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun onSaveAddress() {
-        viewModelScope.launch {
-            placesInteractor.savePlace(selectedPlace!!)
-            this@MapViewModel.state.emit(this@MapViewModel.state.value.copy(showRemoveBtn = true))
-        }
-    }
+//    fun onSaveAddress() {
+//        viewModelScope.launch {
+//            placesInteractor.saveSingleStopTrip(selectedPlace!!)
+//            this@MapViewModel.state.emit(this@MapViewModel.state.value.copy(showRemoveBtn = true))
+//        }
+//    }
 
     fun onDescriptionTextChange(description: String) {
         viewModelScope.launch {
@@ -103,7 +119,7 @@ class MapViewModel @Inject constructor(
             state.emit(
                 state.value.copy(
                     showAddressTextField = true,
-                    placeDetails = listOf()
+                    tripMarkers = listOf()
                 )
             )
         }
@@ -111,31 +127,111 @@ class MapViewModel @Inject constructor(
 
     fun onBackEditingAddress() {
         viewModelScope.launch {
-            val places = placesInteractor.getPlaces()
-            state.emit(
-                state.value.copy(
-                    showAddressTextField = false,
-                    placeDetails = places,
-                    placeLongitude = null,
-                    placeLatitude = null
+            moveToPinListState()
+        }
+    }
+
+    private suspend fun moveToPinListState() {
+        val places = placesInteractor.getPlaces()
+            .map {
+                TripMarker(
+                    it.name,
+                    it.country.countryIcon,
+                    it.latitude,
+                    it.longitude
                 )
+            }
+        state.emit(
+            state.value.copy(
+                showAddressTextField = false,
+                tripMarkers = places,
+                placeLongitude = null,
+                placeLatitude = null,
+                showConfirmAddressButton = false,
+                areExtraFieldsVisible = false
             )
+        )
+    }
+
+    fun onConfirmAddress() {
+        viewModelScope.launch {
+            state.emit(state.value.copy(areExtraFieldsVisible = true))
+        }
+    }
+
+    fun onArrivalDateChange(selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int) {
+        viewModelScope.launch {
+            val date = dateValuesToDate(selectedYear, selectedMonth, selectedDayOfMonth)
+            arrivalDate = date
+            state.emit(state.value.copy(arrivalDate = dateToString(date)))
+        }
+    }
+
+
+    private fun dateValuesToDate(
+        selectedYear: Int,
+        selectedMonth: Int,
+        selectedDayOfMonth: Int
+    ): Date {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, selectedYear)
+        calendar.set(Calendar.MONTH, selectedMonth)
+        calendar.set(Calendar.DAY_OF_MONTH, selectedDayOfMonth)
+
+        return Date(calendar.timeInMillis)
+    }
+
+    private fun dateToString(date: Date): String {
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", localeRepository.locale)
+        return dateFormat.format(date)
+    }
+
+    fun onDepartureDateChange(selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int) {
+        viewModelScope.launch {
+            val date = dateValuesToDate(selectedYear, selectedMonth, selectedDayOfMonth)
+            departureDate = date
+            state.emit(state.value.copy(departureDate = dateToString(date)))
+        }
+    }
+
+    fun onTripConfirmClick() {
+        viewModelScope.launch {
+            placesInteractor.saveSingleStopTrip(
+                state.value.nameText,
+                arrivalDate!!,
+                departureDate!!,
+                selectedPlace!!
+            )
+
+            moveToPinListState()
+
+            // todo here move camera to last added pin
+        }
+    }
+
+    fun onTripNameChange(tripName: String) {
+        viewModelScope.launch {
+            state.emit(state.value.copy(nameText = tripName))
         }
     }
 
     data class State(
-        val predictions: List<AddressPrediction>,
+        val predictions: List<AddressPredictionDto>,
         val showRemoveBtn: Boolean,
         val expandAddressPredictions: Boolean,
         val areExtraFieldsVisible: Boolean,
         val placeId: String?,
         val placeText: String,
+        val nameText: String,
         val placeTextChangedByUser: Boolean,
         val placeDescription: String,
         val placeLatitude: Double? = null,
         val placeLongitude: Double? = null,
         @DrawableRes val placeCountryIcon: Int? = null,
-        val placeDetails: List<PlaceDetails> = listOf(),
-        val showAddressTextField: Boolean = false
+        val tripMarkers: List<TripMarker> = listOf(),
+        val showAddressTextField: Boolean = false,
+        val showConfirmAddressButton: Boolean = false,
+        val arrivalDate: String? = null,
+        val departureDate: String? = null,
     )
 }

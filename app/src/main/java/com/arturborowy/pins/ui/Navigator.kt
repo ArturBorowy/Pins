@@ -24,7 +24,9 @@ interface NavigationTarget {
 
         val label = create("{$PLACE_ID_KEY}").label
 
-        fun create(placeId: String) = object : NavigationTarget {
+        fun create(placeId: Long) = create(placeId.toString())
+
+        private fun create(placeId: String) = object : NavigationTarget {
             override val label = "EDIT_PIN/$placeId"
         }
     }

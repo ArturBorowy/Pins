@@ -63,8 +63,9 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockModule.ADDRESS_PREDICION_LABEL)
-        composeTestRule.onAllNodesWithText(MockModule.ADDRESS_PREDICION_LABEL).assertExist()
+            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+            .assertExist()
     }
 
     private fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {
@@ -80,10 +81,25 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockModule.ADDRESS_PREDICION_LABEL)
-        composeTestRule.onAllNodesWithText(MockModule.ADDRESS_PREDICION_LABEL)
+            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
             .filter(isNotFocused())[0].performClick()
 
-        composeTestRule.onNodeWithText(MockModule.ADDRESS_PREDICION_LABEL).assertExists()
+        composeTestRule.onNodeWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+            .assertExists()
+    }
+
+    @Test
+    fun isConfirmBtnShown_whenPredictionIsChosen() {
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+            .filter(isNotFocused())[0].performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm)
+            .assertIsDisplayed()
     }
 }

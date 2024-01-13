@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.places
+package com.arturborowy.pins.model.countryicons
 
 import com.arturborowy.flags.R
 

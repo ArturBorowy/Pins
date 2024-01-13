@@ -3,21 +3,22 @@ package com.arturborowy.pins.model.db
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.arturborowy.pins.model.places.PlaceDetails
+import com.arturborowy.pins.model.trip.TripSingleStopEntity
+import com.arturborowy.pins.screen.pinslist.TripSingleStop
 
 @Dao
 interface PlaceDetailsDao {
 
-    @Query("SELECT * FROM placedetails WHERE id=:id ")
-    suspend fun select(id: String): PlaceDetails
+    @Query("SELECT * FROM tripSingleStopEntity WHERE id=:id ")
+    suspend fun select(id: String): TripSingleStopEntity
 
 
-    @Query("SELECT * FROM placedetails")
-    suspend fun select(): List<PlaceDetails>
+    @Query("SELECT * FROM tripSingleStopEntity")
+    suspend fun select(): List<TripSingleStopEntity>
 
     @Insert
-    suspend fun insert(placeDetails: PlaceDetails)
+    suspend fun insert(tripSingleStop: TripSingleStopEntity)
 
-    @Query("DELETE FROM placedetails WHERE id=:id")
+    @Query("DELETE FROM tripSingleStopEntity WHERE id=:id")
     suspend fun removePlaceDetails(id: String)
 }
