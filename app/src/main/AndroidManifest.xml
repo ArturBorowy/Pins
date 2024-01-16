@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Pins"
+        android:theme="@style/Theme.Pins.SplashScreen"
         tools:targetApi="31">
 
         <meta-data
@@ -21,8 +21,7 @@
         <activity
             android:name=".screen.main.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Pins">
+            android:theme="@style/Theme.Pins.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
