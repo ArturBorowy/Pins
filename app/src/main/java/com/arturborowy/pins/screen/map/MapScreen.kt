@@ -1,7 +1,9 @@
 package com.arturborowy.pins.screen.map
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.widget.DatePicker
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,9 +40,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.Fab
-import com.arturborowy.pins.utils.bitmapDescriptor
+import com.arturborowy.pins.utils.addBorderToCircle
 import com.arturborowy.pins.utils.collectAsMutableState
+import com.arturborowy.pins.utils.cropBitmapToCircle
+import com.arturborowy.pins.utils.getBitmapFromVectorDrawable
 import com.arturborowy.pins.utils.observeLifecycleEvents
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -64,7 +70,7 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
 
             GoogleMap(cameraPositionState = cameraPositionState) {
                 Marker(
-                    icon = bitmapDescriptor(LocalContext.current, state.placeCountryIcon),
+                    icon = mapIconBitmapDescriptor(LocalContext.current, state.placeCountryIcon),
                     state = MarkerState(location),
                     title = state.placeText
                 )
@@ -75,7 +81,7 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
             GoogleMap {
                 state.tripMarkers.forEach {
                     Marker(
-                        icon = bitmapDescriptor(LocalContext.current, it.countryIconResId),
+                        icon = mapIconBitmapDescriptor(LocalContext.current, it.countryIconResId),
                         state = MarkerState(LatLng(it.latitude, it.longitude)),
                         title = it.label,
                     )
@@ -121,6 +127,17 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
             ) { viewModel.onAddPinClick() }
         }
     }
+}
+
+@Composable
+fun mapIconBitmapDescriptor(
+    context: Context,
+    @DrawableRes vectorResId: Int
+): BitmapDescriptor {
+    val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f)
+        .cropBitmapToCircle()
+        .addBorderToCircle(5.dp.value, context.getColor(R.color.primary))
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
 
 @Composable
