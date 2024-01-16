@@ -19,7 +19,7 @@ import io.mockk.mockk
 )
 object MockExternalRepositoryModule {
 
-    val ADDRESS_PREDICION_LABEL = "LABEL KOMUNY PARYSKIEJ"
+    val ADDRESS_PREDICION_LABEL = "address"
     val TRIP_NAME = "BEST TRIP EVER"
 
     val country = CountryDto("cy", "CYPRUS")

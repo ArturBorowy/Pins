@@ -90,6 +90,25 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
     }
 
     @Test
+    fun isSearchTextCleared_whenAddressEditBackIsClicked() {
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+            .filter(isNotFocused())[0].performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
+            .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
+            .assertDoesNotExist()
+    }
+
+    @Test
     fun isConfirmBtnShown_whenPredictionIsChosen() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .performClick()

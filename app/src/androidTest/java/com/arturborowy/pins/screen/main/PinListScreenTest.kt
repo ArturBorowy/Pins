@@ -1,9 +1,11 @@
 package com.arturborowy.pins.screen.main
 
 import android.widget.DatePicker
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.filter
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isNotFocused
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -22,6 +24,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
 import org.junit.Test
 
+@OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
 class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
@@ -34,6 +37,8 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
+        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
+
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_NAME)
             .assertTextContains(MockExternalRepositoryModule.TRIP_NAME)
     }
@@ -44,6 +49,8 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
         addTrip()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+
+        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_DATES)
             .assertTextContains("10 Jun 2017 - 30 Nov 2020")
@@ -56,6 +63,8 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
+        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
+
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_PLACE)
             .assertTextContains(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
     }
@@ -66,6 +75,8 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
         addTrip()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+
+        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithContentDescription(MockExternalRepositoryModule.country.label)
             .assertIsDisplayed()

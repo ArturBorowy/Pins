@@ -148,7 +148,8 @@ class MapViewModel @Inject constructor(
                 placeLongitude = null,
                 placeLatitude = null,
                 showConfirmAddressButton = false,
-                areExtraFieldsVisible = false
+                areExtraFieldsVisible = false,
+                placeText = ""
             )
         )
     }
