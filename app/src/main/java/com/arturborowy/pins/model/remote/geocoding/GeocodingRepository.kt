@@ -2,5 +2,5 @@ package com.arturborowy.pins.model.remote.geocoding
 
 interface GeocodingRepository {
 
-    suspend fun getCountryOfGivenLocationName(locationName: String): CountryDto
+    suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double): CountryDto
 }

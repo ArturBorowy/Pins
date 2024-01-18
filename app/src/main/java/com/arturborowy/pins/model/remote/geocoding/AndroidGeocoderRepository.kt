@@ -10,10 +10,10 @@ class AndroidGeocoderRepository @Inject constructor(
     private val geocoder: Geocoder,
 ) : GeocodingRepository {
 
-    override suspend fun getCountryOfGivenLocationName(locationName: String) =
+    override suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double) =
         suspendCoroutine {
-            ALog.d("locationName: $locationName")
-            val address = geocoder.getFromLocationName(locationName, 1)
+            ALog.d("latitude: $latitude, longitude: $longitude")
+            val address = geocoder.getFromLocation(latitude, longitude, 1)
                 ?.firstOrNull()
             ALog.d("fetched address: $address")
 

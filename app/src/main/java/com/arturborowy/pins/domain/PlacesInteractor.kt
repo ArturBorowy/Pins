@@ -20,7 +20,8 @@ class PlacesInteractor @Inject constructor(
 
     suspend fun getPlaceDetails(id: String): PlaceDetails {
         val placeDetailsDto = placesPredictionRepository.getPlaceDetails(id)
-        val country = getCountryOfGivenLocationName(placeDetailsDto.locationName)
+        val country =
+            getCountryOfGivenLatLong(placeDetailsDto.latitude, placeDetailsDto.longitude)
 
         return PlaceDetails(
             placeDetailsDto.locationName,
@@ -50,8 +51,8 @@ class PlacesInteractor @Inject constructor(
         )
     }
 
-    suspend fun getCountryOfGivenLocationName(locationName: String): Country {
-        val countryDto = geocodingRepository.getCountryOfGivenLocationName(locationName)
+    suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double): Country {
+        val countryDto = geocodingRepository.getCountryOfGivenLatLong(latitude, longitude)
         val countryIcon = countryIconsRepository.getIcon(countryDto.id)
 
         return Country(countryDto.id, countryDto.label, countryIcon!!)
