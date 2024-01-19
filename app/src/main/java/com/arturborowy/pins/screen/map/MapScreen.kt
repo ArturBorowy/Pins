@@ -7,6 +7,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,7 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.utils.addBorderToCircle
 import com.arturborowy.pins.utils.collectAsMutableState
@@ -63,7 +65,13 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
         setState(state.copy(errorText = null))
     }
 
-    Box {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(R.color.primary))
+    ) {
+        CircularProgressBar(modifier = Modifier.align(Alignment.Center))
+
         if (state.placeLongitude != null && state.placeLatitude != null && state.placeCountryIcon != null) {
             val location = LatLng(state.placeLatitude, state.placeLongitude)
 

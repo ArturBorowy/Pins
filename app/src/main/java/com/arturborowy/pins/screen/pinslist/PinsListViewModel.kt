@@ -47,7 +47,7 @@ class PinsListViewModel @Inject constructor(
                         it.country
                     )
                 }
-            state.emit(state.value.copy(tripDetails = places))
+            state.emit(state.value.copy(tripDetails = places, isLoading = false))
         }
     }
 
@@ -56,6 +56,7 @@ class PinsListViewModel @Inject constructor(
     }
 
     data class State(
+        val isLoading: Boolean = true,
         val tripDetails: List<TripSingleStop> = listOf(),
     )
 }
