@@ -109,6 +109,8 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
 
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:3.0-alpha-1")
+
     testImplementation("junit:junit:4.13.2")
 
     val mockk_version = "1.12.3"
