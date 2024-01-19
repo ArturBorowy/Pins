@@ -41,6 +41,7 @@ import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.cropBitmapToCircle
 import com.arturborowy.pins.utils.getBitmapFromVectorDrawable
 import com.arturborowy.pins.utils.observeLifecycleEvents
+import com.arturborowy.pins.utils.showShortToast
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -56,6 +57,11 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
     val (state, setState) = viewModel.state.collectAsMutableState()
+
+    if (state.errorText != null) {
+        showShortToast(LocalContext.current, state.errorText)
+        setState(state.copy(errorText = null))
+    }
 
     Box {
         if (state.placeLongitude != null && state.placeLatitude != null && state.placeCountryIcon != null) {

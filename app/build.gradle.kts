@@ -31,6 +31,19 @@ android {
             )
         }
     }
+
+    flavorDimensions += "remote"
+    productFlavors {
+        create("localMock") {
+            dimension = "remote"
+            versionNameSuffix = "-mock"
+        }
+        create("remoteReal") {
+            dimension = "remote"
+            versionNameSuffix = "-real"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

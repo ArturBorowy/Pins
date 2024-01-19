@@ -2,15 +2,13 @@ package com.arturborowy.pins.screen.main
 
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.filter
-import androidx.compose.ui.test.isNotFocused
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 
@@ -63,9 +61,12 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-            .assertExist()
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
+            composeTestRule.onNodeWithText(it.label)
+                .assertExists()
+        }
     }
 
     private fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {
@@ -81,31 +82,16 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-            .filter(isNotFocused())[0].performClick()
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
 
-        composeTestRule.onNodeWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-            .assertExists()
-    }
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
 
-    @Test
-    fun isSearchTextCleared_whenAddressEditBackIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-            .filter(isNotFocused())[0].performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-            .assertDoesNotExist()
+        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
+            composeTestRule.onNodeWithText(it.label)
+                .assertDoesNotExist()
+        }
     }
 
     @Test
@@ -114,11 +100,34 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-        composeTestRule.onAllNodesWithText(MockExternalRepositoryModule.ADDRESS_PREDICION_LABEL)
-            .filter(isNotFocused())[0].performClick()
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
 
         composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm)
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun isSearchTextCleared_whenAddressEditBackIsClicked() {
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
+            .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            .assertDoesNotExist()
     }
 }

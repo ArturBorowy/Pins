@@ -2,6 +2,7 @@ package com.arturborowy.pins.screen.main
 
 import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.model.system.LocaleRepository
+import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
@@ -9,7 +10,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import java.util.Locale
 
-@dagger.Module
+@Module
 @TestInstallIn(
     components = [SingletonComponent::class],
     replaces = [SystemAbstractionModule::class]

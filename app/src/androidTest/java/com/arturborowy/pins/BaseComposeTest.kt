@@ -7,6 +7,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.arturborowy.pins.model.db.AppDatabase
+import com.ultimatelogger.android.output.ALogInitializer
+import com.ultimatelogger.multiplatform.tag.TagSettings
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.After
 import org.junit.Before
@@ -26,7 +28,19 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
 
     @Before
     open fun init() {
+        initLogger()
         hiltRule.inject()
+    }
+
+    private fun initLogger() {
+        val shouldLog = BuildConfig.DEBUG
+        val defaultTagSettings = TagSettings(
+            shouldLogFileNameAndLineNum = true,
+            shouldLogClassName = true,
+            shouldLogMethodName = true
+        )
+
+        ALogInitializer.init(shouldLog, defaultTagSettings)
     }
 
     @After

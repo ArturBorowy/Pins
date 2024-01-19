@@ -8,6 +8,7 @@ import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
 import com.arturborowy.pins.utils.BaseViewModel
+import com.ultimatelogger.android.output.ALog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -57,54 +58,59 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             state.collect {
                 if (it.placeText.isNotEmpty() && it.placeTextChangedByUser) {
-                    val addressTexts = placesInteractor.getAddressPredictions(it.placeText)
-                    this@MapViewModel.state.emit(
-                        this@MapViewModel.state.value.copy(predictions = addressTexts)
-                    )
-
-                    if (addressTexts.isNotEmpty()) {
-                        this@MapViewModel.state.emit(
-                            this@MapViewModel.state.value.copy(
-                                expandAddressPredictions = true,
-                                placeTextChangedByUser = true,
-                            )
-                        )
+                    try {
+                        showAddressPredictions(it.placeText)
+                    } catch (e: Exception) {
+                        ALog.e(e)
+                        state.emit(state.value.copy(errorText = e.message))
                     }
                 }
             }
         }
     }
 
-    fun onAddressSelect(id: String) {
-        viewModelScope.launch {
-            val placeAddress = placesInteractor.getPlaceDetails(id)
+    private suspend fun showAddressPredictions(placeText: String) {
+        val addressTexts = placesInteractor.getAddressPredictions(placeText)
+        this@MapViewModel.state.emit(
+            this@MapViewModel.state.value.copy(predictions = addressTexts)
+        )
+
+        if (addressTexts.isNotEmpty()) {
             this@MapViewModel.state.emit(
                 this@MapViewModel.state.value.copy(
-                    expandAddressPredictions = false,
-                    placeId = "esadaea",
-                    showConfirmAddressButton = true,
-                    placeText = placeAddress.locationName,
-                    placeTextChangedByUser = false,
-                    placeLatitude = placeAddress.latitude,
-                    placeLongitude = placeAddress.longitude,
-                    placeCountryIcon = placeAddress.country.countryIcon
+                    expandAddressPredictions = true,
+                    placeTextChangedByUser = true,
                 )
             )
-            selectedPlace = placeAddress
         }
     }
 
-//    fun onSaveAddress() {
-//        viewModelScope.launch {
-//            placesInteractor.saveSingleStopTrip(selectedPlace!!)
-//            this@MapViewModel.state.emit(this@MapViewModel.state.value.copy(showRemoveBtn = true))
-//        }
-//    }
-
-    fun onDescriptionTextChange(description: String) {
+    fun onAddressSelect(placeId: String) {
         viewModelScope.launch {
-            this@MapViewModel.state.emit(this@MapViewModel.state.value.copy(placeDescription = description))
+            try {
+                loadPlacesDetails(placeId)
+            } catch (e: Exception) {
+                ALog.e(e)
+                state.emit(state.value.copy(errorText = e.message))
+            }
         }
+    }
+
+    private suspend fun loadPlacesDetails(placeId: String) {
+        val placeAddress = placesInteractor.getPlaceDetails(placeId)
+        this@MapViewModel.state.emit(
+            this@MapViewModel.state.value.copy(
+                expandAddressPredictions = false,
+                placeId = placeId,
+                showConfirmAddressButton = true,
+                placeText = placeAddress.locationName,
+                placeTextChangedByUser = false,
+                placeLatitude = placeAddress.latitude,
+                placeLongitude = placeAddress.longitude,
+                placeCountryIcon = placeAddress.country.countryIcon
+            )
+        )
+        selectedPlace = placeAddress
     }
 
     fun onRemovePinClick() {
@@ -234,5 +240,6 @@ class MapViewModel @Inject constructor(
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
+        val errorText: String? = null
     )
 }
