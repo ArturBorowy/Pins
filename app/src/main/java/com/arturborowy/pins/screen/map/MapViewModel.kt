@@ -3,10 +3,12 @@ package com.arturborowy.pins.screen.map
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
+import com.arturborowy.pins.screen.pinslist.ResourcesRepository
 import com.arturborowy.pins.utils.BaseViewModel
 import com.ultimatelogger.android.output.ALog
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val placesInteractor: PlacesInteractor,
-    private val localeRepository: LocaleRepository
+    private val localeRepository: LocaleRepository,
+    private val resourcesRepository: ResourcesRepository
 ) : BaseViewModel() {
 
     val state = MutableStateFlow(
@@ -155,7 +158,10 @@ class MapViewModel @Inject constructor(
                 placeLatitude = null,
                 showConfirmAddressButton = false,
                 areExtraFieldsVisible = false,
-                placeText = ""
+                placeText = "",
+                departureDate = resourcesRepository.getString(R.string.add_pin_hint_departure_date),
+                arrivalDate = resourcesRepository.getString(R.string.add_pin_hint_arrival_date),
+                nameText = ""
             )
         )
     }

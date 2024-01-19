@@ -130,4 +130,73 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithText(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
             .assertDoesNotExist()
     }
+
+    @Test
+    fun isTripNameCleared_whenAddressEditBackIsClicked() {
+        goToAddTrip()
+        addTrip(confirm = false)
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
+            .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm).performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_trip_name)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun isDepartureDateCleared_whenAddressEditBackIsClicked() {
+        goToAddTrip()
+        addTrip(confirm = false)
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
+            .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm).performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_departure_date)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun isArrivalDateCleared_whenAddressEditBackIsClicked() {
+        goToAddTrip()
+        addTrip(confirm = false)
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
+            .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm).performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_pin_hint_arrival_date)
+            .assertIsDisplayed()
+    }
 }
