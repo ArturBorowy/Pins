@@ -7,5 +7,7 @@
         <item name="postSplashScreenTheme">@style/Theme.Pins</item>
     </style>
 
-    <style name="Theme.Pins" parent="android:Theme.Material.Light.NoActionBar"></style>
+    <style name="Theme.Pins" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 </resources>

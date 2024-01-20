@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -26,6 +27,8 @@ import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.TripView
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
+import com.arturborowy.pins.utils.pxToDp
+import com.arturborowy.pins.utils.statusBarHeightPx
 
 @Composable
 fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
@@ -33,11 +36,14 @@ fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
 
     val (state, setState) = viewModel.state.collectAsMutableState()
 
+    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
+
     if (state.isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(R.color.primary))
+                .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
         ) {
             CircularProgressBar(modifier = Modifier.align(Alignment.Center))
         }
@@ -46,6 +52,7 @@ fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(R.color.primary))
+                .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
         ) {
             Text(
                 modifier = Modifier

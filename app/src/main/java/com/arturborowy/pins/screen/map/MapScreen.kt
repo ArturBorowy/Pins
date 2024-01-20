@@ -43,7 +43,9 @@ import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.cropBitmapToCircle
 import com.arturborowy.pins.utils.getBitmapFromVectorDrawable
 import com.arturborowy.pins.utils.observeLifecycleEvents
+import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.showShortToast
+import com.arturborowy.pins.utils.statusBarHeightPx
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -169,10 +171,12 @@ fun SearchBar(
     onDepartureDateChange: (Int, Int, Int) -> Unit,
     onTripConfirmClick: () -> Unit
 ) {
+    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(
