@@ -6,18 +6,16 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.statusBarHeightPx
 import java.util.Calendar
@@ -81,46 +80,38 @@ fun SingleTripAddCard(
 ) {
     val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
 
-    Card(
+    WideCard(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        padding = PaddingValues(0.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White),
-        ) {
-            SearchField(
-                placeText = placeText,
-                onTextChange = onSearchTextChange,
-                onBackClick = onBackClick,
-                onConfirmClick = onConfirmClick,
-                showConfirm = showConfirm,
-                keyboard = keyboard,
-                isAddressEditEnabled = isAddressEditEnabled
-            )
-            SearchResults(
-                expandDropdown = expandDropdown,
-                predictions = predictions,
-                onAddressPredictionClick = onAddressPredictionClick
-            )
+        SearchField(
+            placeText = placeText,
+            onTextChange = onSearchTextChange,
+            onBackClick = onBackClick,
+            onConfirmClick = onConfirmClick,
+            showConfirm = showConfirm,
+            keyboard = keyboard,
+            isAddressEditEnabled = isAddressEditEnabled
+        )
+        SearchResults(
+            expandDropdown = expandDropdown,
+            predictions = predictions,
+            onAddressPredictionClick = onAddressPredictionClick
+        )
 
-            if (showExtraEditionFields) {
-                ExtraFields(
-                    nameText = nameText,
-                    onNameTextChange = onNameTextChange,
-                    arrivalDate = arrivalDate,
-                    onArrivalDateChange = onArrivalDateChange,
-                    departureDate = departureDate,
-                    onDepartureDateChange = onDepartureDateChange,
-                    onTripConfirmClick = onTripConfirmClick,
-                    onTripCancelClick = onTripCancelClick,
-                    isSavingEnabled = isSavingEnabled,
-                )
-            }
+        if (showExtraEditionFields) {
+            ExtraFields(
+                nameText = nameText,
+                onNameTextChange = onNameTextChange,
+                arrivalDate = arrivalDate,
+                onArrivalDateChange = onArrivalDateChange,
+                departureDate = departureDate,
+                onDepartureDateChange = onDepartureDateChange,
+                onTripConfirmClick = onTripConfirmClick,
+                onTripCancelClick = onTripCancelClick,
+                isSavingEnabled = isSavingEnabled,
+            )
         }
     }
 }

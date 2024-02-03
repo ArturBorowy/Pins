@@ -4,5 +4,5 @@ import java.util.Locale
 
 class LocaleRepository {
 
-    val locale get() = Locale.getDefault()
+    val locale: Locale get() = Locale.getDefault()
 }

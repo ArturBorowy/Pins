@@ -18,4 +18,10 @@
     <string name="pin_list_header">Your trips</string>
     <string name="pin_list_cd_edit">Edit %s</string>
     <string name="pin_list_pattern_date_range">%s - %s</string>
+
+    <string name="settings_header">Settings</string>
+
+    <string name="settings_item_rate_on_store">Rate us on Play Store</string>
+    <string name="settings_item_licences">Licences</string>
+    <string name="settings_item_version">Version</string>
 </resources>
