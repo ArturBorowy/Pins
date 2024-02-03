@@ -2,9 +2,7 @@ package com.arturborowy.pins.screen.pinslist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,30 +46,24 @@ fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
             CircularProgressBar(modifier = Modifier.align(Alignment.Center))
         }
     } else {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(R.color.primary))
-                .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
+                .wrapContentSize(Alignment.Center)
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(16.dp, 16.dp, 16.dp, 0.dp),
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = Color.White,
-                text = stringResource(R.string.pin_list_header)
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .wrapContentSize(Alignment.Center)
-            ) {
-                items(state.tripDetails) {
-                    TripView(it)
-                }
+            item {
+                Text(
+                    modifier = Modifier
+                        .padding(16.dp, androidStatusBarHeight + 16.dp, 16.dp, 16.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    text = stringResource(R.string.pin_list_header)
+                )
+            }
+            items(state.tripDetails) {
+                TripView(it)
             }
         }
     }

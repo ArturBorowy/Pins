@@ -17,13 +17,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WideCard(
     modifier: Modifier = Modifier,
+    margin: PaddingValues = PaddingValues(0.dp, 0.dp, 0.dp, 16.dp),
     padding: PaddingValues = PaddingValues(16.dp),
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
-            .padding(0.dp, 0.dp, 0.dp, 16.dp)
+            .padding(margin)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {

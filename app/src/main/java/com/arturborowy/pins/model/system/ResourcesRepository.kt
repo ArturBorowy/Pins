@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model
+package com.arturborowy.pins.model.system
 
 import android.content.Context
 import androidx.annotation.StringRes

@@ -2,6 +2,7 @@ package com.arturborowy.pins.ui.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -32,7 +33,7 @@ object TripViewTag {
 
 @Composable
 fun TripView(tripSingleStop: TripSingleStop) {
-    WideCard {
+    WideCard(margin = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp)) {
         TripHeader(tripSingleStop)
         TripRow(tripSingleStop)
     }

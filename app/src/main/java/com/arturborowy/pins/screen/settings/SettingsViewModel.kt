@@ -1,6 +1,7 @@
 package com.arturborowy.pins.screen.settings
 
 import com.arturborowy.pins.model.system.BuildInfoRepository
+import com.arturborowy.pins.ui.NavigationTarget
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +15,10 @@ class SettingsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val state = MutableStateFlow(State(buildInfoRepository.buildVersion))
+
+    fun onLicencesClick() {
+        navigator.navigateTo(NavigationTarget.LICENCES)
+    }
 
     data class State(val versionNumber: String)
 }

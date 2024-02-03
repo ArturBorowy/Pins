@@ -5,6 +5,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -71,6 +73,9 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         @StringRes textResId: Int
     ) =
         onNodeWithText(getString(textResId))
+
+    protected fun SemanticsNodeInteraction.assertTextContains(@StringRes textResId: Int) =
+        assertTextContains(getString(textResId))
 
     protected fun <
             ActivityT : ComponentActivity,

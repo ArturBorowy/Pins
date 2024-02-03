@@ -1,9 +1,11 @@
 package com.arturborowy.pins.di
 
 import android.content.Context
-import com.arturborowy.pins.model.ResourcesRepository
 import com.arturborowy.pins.model.countryicons.CountryIconsRepository
+import com.arturborowy.pins.model.licences.LibrariesRepository
+import com.arturborowy.pins.model.licences.LicencesContentRepository
 import com.arturborowy.pins.model.system.BuildInfoRepository
+import com.arturborowy.pins.model.system.ResourcesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,4 +26,12 @@ object RepositoryModule {
     @Provides
     fun buildInfoRepository() =
         BuildInfoRepository()
+
+    @Provides
+    fun licencesRepository(resourcesRepository: ResourcesRepository) =
+        LicencesContentRepository(resourcesRepository)
+
+    @Provides
+    fun librariesRepository() =
+        LibrariesRepository
 }

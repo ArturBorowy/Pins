@@ -4,8 +4,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlacesInteractor
-import com.arturborowy.pins.model.ResourcesRepository
 import com.arturborowy.pins.model.system.LocaleRepository
+import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.ui.NavigationTarget
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.utils.BaseViewModel

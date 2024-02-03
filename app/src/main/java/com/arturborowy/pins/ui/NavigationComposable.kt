@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.arturborowy.pins.screen.main.BottomNavItem
+import com.arturborowy.pins.screen.settings.licences.LicencesScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -34,6 +35,8 @@ fun NavigationComposable(
         BottomNavItem.values().forEach { screen ->
             composable(screen.name) { screen.screenComposable() }
         }
+
+        composable(NavigationTarget.LICENCES.label) { LicencesScreen() }
 
         val args = listOf(navArgument(NavigationTarget.EDIT_PIN.PLACE_ID_KEY) {
             type = NavType.StringType
