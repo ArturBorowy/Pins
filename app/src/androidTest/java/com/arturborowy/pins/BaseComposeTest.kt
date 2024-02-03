@@ -1,5 +1,7 @@
 package com.arturborowy.pins
 
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
@@ -13,6 +15,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.platform.app.InstrumentationRegistry
 import com.arturborowy.pins.model.db.AppDatabase
 import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
 import com.ultimatelogger.android.output.ALogInitializer
@@ -109,6 +112,14 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
             .performClick()
 
         composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm).performClick()
+    }
+
+    protected fun isKeyboardShown(): Boolean {
+        val inputMethodManager = InstrumentationRegistry.getInstrumentation()
+            .targetContext
+            .getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+        return inputMethodManager.isAcceptingText
     }
 
     companion object {

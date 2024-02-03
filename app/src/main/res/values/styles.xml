@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="PinsDialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
+    </style>
+</resources>

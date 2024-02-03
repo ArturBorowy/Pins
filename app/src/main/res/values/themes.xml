@@ -5,6 +5,7 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_pins_logo</item>
         <item name="windowSplashScreenBackground">@color/primary</item>
         <item name="postSplashScreenTheme">@style/Theme.Pins</item>
+        <item name="colorAccent">@color/primary</item>
     </style>
 
     <style name="Theme.Pins" parent="android:Theme.Material.Light.NoActionBar">

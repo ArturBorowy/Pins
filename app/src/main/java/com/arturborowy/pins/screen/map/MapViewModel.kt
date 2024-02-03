@@ -3,12 +3,10 @@ package com.arturborowy.pins.screen.map
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
-import com.arturborowy.pins.screen.pinslist.ResourcesRepository
 import com.arturborowy.pins.utils.BaseViewModel
 import com.ultimatelogger.android.output.ALog
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,23 +20,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val placesInteractor: PlacesInteractor,
-    private val localeRepository: LocaleRepository,
-    private val resourcesRepository: ResourcesRepository
+    private val localeRepository: LocaleRepository
 ) : BaseViewModel() {
 
-    val state = MutableStateFlow(
-        State(
-            listOf(),
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            false,
-            "",
-        )
-    )
+    val state = MutableStateFlow(State())
 
     private var arrivalDate: Date? = null
     private var departureDate: Date? = null
@@ -68,7 +53,18 @@ class MapViewModel @Inject constructor(
                         state.emit(state.value.copy(errorText = e.message))
                     }
                 }
+                validateSingleTripInput()
             }
+        }
+    }
+
+    private fun validateSingleTripInput() {
+        viewModelScope.launch {
+            val allowSaving = state.value.placeText.isNotEmpty()
+                    && state.value.nameText.isNotEmpty()
+                    && state.value.arrivalDate?.isNotEmpty() == true
+                    && state.value.departureDate?.isNotEmpty() == true
+            state.emit(state.value.copy(isSavingTripEnabled = allowSaving))
         }
     }
 
@@ -128,6 +124,8 @@ class MapViewModel @Inject constructor(
             state.emit(
                 state.value.copy(
                     showAddressTextField = true,
+                    showKeyboard = true,
+                    isAddressEditEnabled = true,
                     tripMarkers = listOf()
                 )
             )
@@ -136,7 +134,20 @@ class MapViewModel @Inject constructor(
 
     fun onBackEditingAddress() {
         viewModelScope.launch {
-            moveToPinListState()
+            if (state.value.showExtraFields) {
+                state.emit(
+                    state.value.copy(
+                        isAddressEditEnabled = true,
+                        showConfirmAddressButton = false,
+                        showExtraFields = false,
+                        departureDate = null,
+                        arrivalDate = null,
+                        placeText = ""
+                    )
+                )
+            } else {
+                onTripCancelClick()
+            }
         }
     }
 
@@ -157,10 +168,10 @@ class MapViewModel @Inject constructor(
                 placeLongitude = null,
                 placeLatitude = null,
                 showConfirmAddressButton = false,
-                areExtraFieldsVisible = false,
+                showExtraFields = false,
                 placeText = "",
-                departureDate = resourcesRepository.getString(R.string.add_pin_hint_departure_date),
-                arrivalDate = resourcesRepository.getString(R.string.add_pin_hint_arrival_date),
+                departureDate = null,
+                arrivalDate = null,
                 nameText = ""
             )
         )
@@ -168,7 +179,13 @@ class MapViewModel @Inject constructor(
 
     fun onConfirmAddress() {
         viewModelScope.launch {
-            state.emit(state.value.copy(areExtraFieldsVisible = true))
+            state.emit(
+                state.value.copy(
+                    showExtraFields = true,
+                    isAddressEditEnabled = false,
+                    showConfirmAddressButton = false
+                )
+            )
         }
     }
 
@@ -176,7 +193,8 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             val date = dateValuesToDate(selectedYear, selectedMonth, selectedDayOfMonth)
             arrivalDate = date
-            state.emit(state.value.copy(arrivalDate = dateToString(date)))
+            state.emit(state.value.copy(arrivalDate = dateToString(date), showKeyboard = false))
+            validateSingleTripInput()
         }
     }
 
@@ -204,6 +222,7 @@ class MapViewModel @Inject constructor(
             val date = dateValuesToDate(selectedYear, selectedMonth, selectedDayOfMonth)
             departureDate = date
             state.emit(state.value.copy(departureDate = dateToString(date)))
+            validateSingleTripInput()
         }
     }
 
@@ -222,22 +241,29 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    fun onTripCancelClick() {
+        viewModelScope.launch {
+            moveToPinListState()
+        }
+    }
+
     fun onTripNameChange(tripName: String) {
         viewModelScope.launch {
             state.emit(state.value.copy(nameText = tripName))
+            validateSingleTripInput()
         }
     }
 
     data class State(
-        val predictions: List<AddressPredictionDto>,
-        val showRemoveBtn: Boolean,
-        val expandAddressPredictions: Boolean,
-        val areExtraFieldsVisible: Boolean,
-        val placeId: String?,
-        val placeText: String,
-        val nameText: String,
-        val placeTextChangedByUser: Boolean,
-        val placeDescription: String,
+        val predictions: List<AddressPredictionDto> = listOf(),
+        val showRemoveBtn: Boolean = false,
+        val expandAddressPredictions: Boolean = false,
+        val showExtraFields: Boolean = false,
+        val placeId: String? = "",
+        val placeText: String = "",
+        val nameText: String = "",
+        val placeTextChangedByUser: Boolean = false,
+        val placeDescription: String = "",
         val placeLatitude: Double? = null,
         val placeLongitude: Double? = null,
         @DrawableRes val placeCountryIcon: Int? = null,
@@ -246,6 +272,9 @@ class MapViewModel @Inject constructor(
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
-        val errorText: String? = null
+        val errorText: String? = null,
+        val showKeyboard: Boolean = false,
+        val isSavingTripEnabled: Boolean = false,
+        val isAddressEditEnabled: Boolean = false
     )
 }

@@ -7,13 +7,13 @@
 
     <string name="add_pin_btn_confirm">Save</string>
     <string name="add_pin_cd_address_editing_back">Back editing</string>
-    <string name="add_pin_btn_remove">Remove pin</string>
     <string name="add_pin_hint_name">Type address</string>
     <string name="add_pin_hint_trip_name">Trip name</string>
     <string name="add_pin_hint_description">Your note</string>
     <string name="add_pin_hint_arrival_date">Arrival date</string>
     <string name="add_pin_hint_departure_date">Departure date</string>
-    <string name="create_trip_btn_confirm">Confirm</string>
+    <string name="create_trip_btn_confirm">SAVE TRIP</string>
+    <string name="create_trip_btn_cancel">CANCEL TRIP</string>
 
     <string name="pin_list_header">Your trips</string>
     <string name="pin_list_cd_edit">Edit %s</string>
