@@ -171,8 +171,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameCleared_whenAddressEditBackIsClickedTwice() {
-        goToAddTrip()
-        addTrip(confirm = false)
+        goToTripDetailsInput()
+        inputTripDetails(confirm = false)
 
         composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
             .performClick()
@@ -195,8 +195,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isDepartureDateCleared_whenAddressEditBackIsClickedTwice() {
-        goToAddTrip()
-        addTrip(confirm = false)
+        goToTripDetailsInput()
+        inputTripDetails(confirm = false)
 
         composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
             .performClick()
@@ -219,8 +219,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isArrivalDateCleared_whenAddressEditBackIsClickedTwice() {
-        goToAddTrip()
-        addTrip(confirm = false)
+        goToTripDetailsInput()
+        inputTripDetails(confirm = false)
 
         composeTestRule.onNodeWithContentDescription(R.string.add_pin_cd_address_editing_back)
             .performClick()
@@ -243,8 +243,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameCleared_whenCancelTripIsClicked() {
-        goToAddTrip()
-        addTrip(confirm = false)
+        goToTripDetailsInput()
+        inputTripDetails(confirm = false)
 
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
             .performClick()
@@ -266,8 +266,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isDepartureDateCleared_whenCancelTripIsClicked() {
-        goToAddTrip()
-        addTrip(confirm = false)
+        goToTripDetailsInput()
+        inputTripDetails(confirm = false)
 
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
             .performClick()
@@ -289,8 +289,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isArrivalDateCleared_whenCancelTripIsClicked() {
-        goToAddTrip()
-        addTrip(confirm = false)
+        goToTripDetailsInput()
+        inputTripDetails(confirm = false)
 
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
             .performClick()
@@ -312,7 +312,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenTripNameIsNotProvided() {
-        goToAddTrip()
+        goToTripDetailsInput()
 
         composeTestRule.onNodeWithText(R.string.add_pin_hint_arrival_date).performClick()
 
@@ -331,7 +331,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenTripNameIsErased() {
-        goToAddTrip()
+        goToTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_pin_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -355,7 +355,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenArrivalDateNotProvided() {
-        goToAddTrip()
+        goToTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_pin_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -370,7 +370,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenDepartureDateIsNotProvided() {
-        goToAddTrip()
+        goToTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_pin_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -385,7 +385,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnEnabled_whenTripNameArrivalDepartureDateIsProvided() {
-        goToAddTrip()
+        goToTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_pin_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 

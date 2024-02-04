@@ -53,7 +53,11 @@ class PinsListViewModel @Inject constructor(
     }
 
     fun onAddressClick(tripSingleStop: TripSingleStop) {
-        navigator.navigateTo(NavigationTarget.EDIT_PIN.create(tripSingleStop.id))
+        navigator.navigateTo(NavigationTarget.EDIT_TRIP.create(tripSingleStop.id))
+    }
+
+    fun onAddTripClick() {
+        navigator.navigateTo(NavigationTarget.ADD_TRIP.create(true))
     }
 
     data class State(

@@ -16,6 +16,8 @@
     <string name="create_trip_btn_cancel">CANCEL TRIP</string>
 
     <string name="pin_list_header">Your trips</string>
+    <string name="pin_list_header_empty">Your trips…</string>
+    <string name="pin_list_footer_empty">…are empty :(</string>
     <string name="pin_list_cd_edit">Edit %s</string>
     <string name="pin_list_pattern_date_range">%s - %s</string>
 

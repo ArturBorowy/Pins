@@ -2,9 +2,9 @@ package com.arturborowy.pins.screen.pinslist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
+import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.TripView
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -36,35 +37,70 @@ fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
 
     val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
 
-    if (state.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(R.color.primary))
-                .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
-        ) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(R.color.primary))
+            .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
+    ) {
+        if (state.isLoading) {
             CircularProgressBar(modifier = Modifier.align(Alignment.Center))
+        } else if (state.tripDetails.isEmpty()) {
+            EmptyListView { viewModel.onAddTripClick() }
+        } else {
+            TripListView(state.tripDetails)
         }
-    } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(R.color.primary))
-                .wrapContentSize(Alignment.Center)
-        ) {
-            item {
-                Text(
-                    modifier = Modifier
-                        .padding(16.dp, androidStatusBarHeight + 16.dp, 16.dp, 16.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    text = stringResource(R.string.pin_list_header)
-                )
-            }
-            items(state.tripDetails) {
-                TripView(it)
-            }
+    }
+}
+
+@Composable
+fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
+    Text(
+        modifier = Modifier
+            .padding(16.dp, 16.dp, 16.dp, 16.dp)
+            .align(Alignment.TopStart),
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        color = Color.White,
+        text = stringResource(R.string.pin_list_header_empty)
+    )
+    Fab(
+        R.drawable.ic_add_pin,
+        R.string.main_bottom_nav_label_add,
+        Modifier
+            .padding(16.dp)
+            .align(Alignment.Center),
+    ) { onAddTrip() }
+    Text(
+        modifier = Modifier
+            .padding(16.dp, 16.dp, 16.dp, 16.dp)
+            .align(Alignment.BottomEnd),
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        color = Color.White,
+        text = stringResource(R.string.pin_list_footer_empty)
+    )
+}
+
+@Composable
+fun TripListView(trips: List<TripSingleStop>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(R.color.primary))
+    ) {
+        item {
+            Text(
+                modifier = Modifier
+                    .padding(16.dp, 16.dp, 16.dp, 16.dp),
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = Color.White,
+                text = stringResource(R.string.pin_list_header)
+            )
+        }
+        items(trips) {
+            TripView(it)
         }
     }
 }

@@ -1,29 +1,44 @@
 package com.arturborowy.pins.screen.map
 
+import android.app.Activity
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
+import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.utils.BaseViewModel
 import com.ultimatelogger.android.output.ALog
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import javax.inject.Inject
 
-@HiltViewModel
-class MapViewModel @Inject constructor(
+class MapViewModel @AssistedInject constructor(
     private val placesInteractor: PlacesInteractor,
-    private val localeRepository: LocaleRepository
+    private val localeRepository: LocaleRepository,
+    @Assisted private val showSearchBar: Boolean
 ) : BaseViewModel() {
 
-    val state = MutableStateFlow(State())
+    val state = MutableStateFlow(
+        State(
+            showAddressTextField = showSearchBar,
+            showKeyboard = showSearchBar,
+            isAddressEditEnabled = showSearchBar,
+        )
+    )
 
     private var arrivalDate: Date? = null
     private var departureDate: Date? = null
@@ -32,19 +47,16 @@ class MapViewModel @Inject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         viewModelScope.launch {
-            val places = placesInteractor.getPlaces()
-                .map {
-                    TripMarker(
-                        it.name,
-                        it.country.countryIcon,
-                        it.latitude,
-                        it.longitude
-                    )
-                }
+            val places = placesInteractor.getPlaces().map {
+                TripMarker(
+                    it.name, it.country.countryIcon, it.latitude, it.longitude
+                )
+            }
             state.emit(state.value.copy(tripMarkers = places))
         }
         viewModelScope.launch {
             state.collect {
+                ALog.e(it)
                 if (it.placeText.isNotEmpty() && it.placeTextChangedByUser) {
                     try {
                         showAddressPredictions(it.placeText)
@@ -60,10 +72,11 @@ class MapViewModel @Inject constructor(
 
     private fun validateSingleTripInput() {
         viewModelScope.launch {
-            val allowSaving = state.value.placeText.isNotEmpty()
-                    && state.value.nameText.isNotEmpty()
-                    && state.value.arrivalDate?.isNotEmpty() == true
-                    && state.value.departureDate?.isNotEmpty() == true
+            val allowSaving =
+                state.value.placeText.isNotEmpty()
+                        && state.value.nameText.isNotEmpty()
+                        && state.value.arrivalDate?.isNotEmpty() == true
+                        && state.value.departureDate?.isNotEmpty() == true
             state.emit(state.value.copy(isSavingTripEnabled = allowSaving))
         }
     }
@@ -152,15 +165,11 @@ class MapViewModel @Inject constructor(
     }
 
     private suspend fun moveToPinListState() {
-        val places = placesInteractor.getPlaces()
-            .map {
-                TripMarker(
-                    it.name,
-                    it.country.countryIcon,
-                    it.latitude,
-                    it.longitude
-                )
-            }
+        val places = placesInteractor.getPlaces().map {
+            TripMarker(
+                it.name, it.country.countryIcon, it.latitude, it.longitude
+            )
+        }
         state.emit(
             state.value.copy(
                 showAddressTextField = false,
@@ -200,9 +209,7 @@ class MapViewModel @Inject constructor(
 
 
     private fun dateValuesToDate(
-        selectedYear: Int,
-        selectedMonth: Int,
-        selectedDayOfMonth: Int
+        selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int
     ): Date {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, selectedYear)
@@ -229,10 +236,7 @@ class MapViewModel @Inject constructor(
     fun onTripConfirmClick() {
         viewModelScope.launch {
             placesInteractor.saveSingleStopTrip(
-                state.value.nameText,
-                arrivalDate!!,
-                departureDate!!,
-                selectedPlace!!
+                state.value.nameText, arrivalDate!!, departureDate!!, selectedPlace!!
             )
 
             moveToPinListState()
@@ -277,4 +281,29 @@ class MapViewModel @Inject constructor(
         val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false
     )
+
+    @dagger.assisted.AssistedFactory
+    interface AssistedFactory {
+        fun create(showSearchBar: Boolean = false): MapViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: AssistedFactory,
+            showSearchBar: Boolean
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(showSearchBar) as T
+            }
+        }
+    }
+}
+
+@Composable
+fun mapViewModel(showSearchBar: Boolean): MapViewModel {
+    val factory = EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity, MainActivity.ViewModelFactoryProvider::class.java
+    ).mapViewModelFactory()
+
+    return viewModel(factory = MapViewModel.provideFactory(factory, showSearchBar))
 }
