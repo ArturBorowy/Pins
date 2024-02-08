@@ -1,7 +1,5 @@
 package com.arturborowy.pins.ui.composable
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arturborowy.pins.R
-import com.arturborowy.pins.screen.pinslist.TripSingleStop
+import com.arturborowy.pins.screen.triplist.TripSingleStop
 
 object TripViewTag {
     const val TRIP_NAME = "TRIP_NAME"
@@ -32,15 +32,15 @@ object TripViewTag {
 }
 
 @Composable
-fun TripView(tripSingleStop: TripSingleStop) {
+fun TripView(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop) -> Unit) {
     WideCard(margin = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp)) {
-        TripHeader(tripSingleStop)
+        TripHeader(tripSingleStop, onEditTripClick)
         TripRow(tripSingleStop)
     }
 }
 
 @Composable
-fun TripHeader(tripSingleStop: TripSingleStop) {
+fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         RoundFlag(tripSingleStop.country)
 
@@ -56,17 +56,19 @@ fun TripHeader(tripSingleStop: TripSingleStop) {
 
         Spacer(Modifier.weight(1.0f))
 
-        Image(
+        IconButton(
             modifier = Modifier
                 .height(20.dp)
-                .width(20.dp)
-                .clickable { },
-            painter = painterResource(R.drawable.ic_edit),
-            contentDescription = stringResource(
-                R.string.pin_list_cd_edit,
-                tripSingleStop.name
+                .width(20.dp),
+            onClick = { onEditTripClick(tripSingleStop) }) {
+            Icon(
+                painter = painterResource(R.drawable.ic_edit),
+                contentDescription = stringResource(
+                    R.string.trip_list_cd_edit,
+                    tripSingleStop.name
+                )
             )
-        )
+        }
     }
 }
 

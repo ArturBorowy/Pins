@@ -28,6 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.arturborowy.pins.model.db.AppDatabase
 import com.arturborowy.pins.model.remote.geocoding.MockGeocodingRepository
 import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.ui.composable.TripViewTag
 import com.ultimatelogger.android.output.ALogInitializer
@@ -47,6 +48,8 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
 
     @get:Rule(order = 1)
     abstract val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<ActivityT>, ActivityT>
+
+    protected val resourcesRepository by lazy { ResourcesRepository(composeTestRule.activity) }
 
     @Inject
     lateinit var appDatabase: AppDatabase
@@ -98,24 +101,29 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         onNodeWithContentDescription(getString(textResId))
 
     protected fun inputTripDetails(confirm: Boolean = true) {
-        composeTestRule.onNodeWithText(R.string.add_pin_hint_trip_name)
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
-        composeTestRule.onNodeWithText(R.string.add_pin_hint_arrival_date).performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
 
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2017, 6, 10))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.add_pin_hint_departure_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2020, 11, 30))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
+        inputDate(R.string.add_trip_hint_arrival_date, 2017, 6, 10)
+        inputDate(R.string.add_trip_hint_departure_date, 2020, 11, 30)
 
         if (confirm) {
             composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).performClick()
         }
+    }
+
+    protected fun inputDate(dateBtnText: Int, year: Int, month: Int, day: Int) {
+        inputDate(getString(dateBtnText), year, month, day)
+    }
+
+    protected fun inputDate(dateBtnText: String, year: Int, month: Int, day: Int) {
+        composeTestRule.onNodeWithText(dateBtnText).performClick()
+
+        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
+            .perform(PickerActions.setDate(year, month, day))
+        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
     }
 
     protected fun goToTripDetailsInput() {
@@ -125,16 +133,18 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         inputTripPlace()
     }
 
-    protected fun inputTripPlace() {
-        composeTestRule.onNodeWithText(R.string.add_pin_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+    protected fun inputTripPlace(
+        tripPlaceName: String = MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING
+    ) {
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
+            .performTextInput(tripPlaceName)
         composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label)
             .performClick()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_pin_btn_confirm).performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
     }
 
-    protected fun goToTripAddingViaPinListScreen() {
+    protected fun goToTripAddingViaTripListScreen() {
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
         composeTestRule.waitUntilExactlyOneExists(
@@ -146,32 +156,42 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
             .performClick()
     }
 
-    protected fun assertAreDatesOnPinListCorrect() {
+    protected fun assertAreDatesOnTripListCorrect(dateRangeString: String = "10 Jun 2017 - 30 Nov 2020") {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_DATES)
-            .assertTextContains("10 Jun 2017 - 30 Nov 2020")
+            .assertTextContains(dateRangeString)
     }
 
-    protected fun assertIsTripNameOnPinListCorrect() {
+    protected fun assertIsTripNameOnTripListCorrect(
+        tripName: String = MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName
+    ) {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_NAME)
-            .assertTextContains(MOCK_TRIP_NAME)
+            .assertTextContains(tripName)
     }
 
-    protected fun assertIsPlaceNameOnPinListCorrect() {
+    protected fun assertIsPlaceNameOnTripListCorrect(
+        placeName: String = MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName
+    ) {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_PLACE)
-            .assertTextContains(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
+            .assertTextContains(placeName)
     }
 
-    protected fun assertIsFlagOnPinListCorrect() {
+    protected fun assertIsFlagOnTripListCorrect() {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithContentDescription(MockGeocodingRepository.GEOCODED_COUNTRY.label)
             .assertIsDisplayed()
+    }
+
+    protected fun addTripViaTripList() {
+        goToTripAddingViaTripListScreen()
+        inputTripPlace()
+        inputTripDetails()
     }
 
     protected fun isKeyboardShown(): Boolean {

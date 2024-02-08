@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.map
+package com.arturborowy.pins.ui.composable
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,19 +50,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
-import com.arturborowy.pins.ui.composable.WideCard
-import com.arturborowy.pins.utils.pxToDp
-import com.arturborowy.pins.utils.statusBarHeightPx
 import java.util.Calendar
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SingleTripAddCard(
+    modifier: Modifier = Modifier,
     placeText: String,
     onSearchTextChange: (String) -> Unit,
     nameText: String,
     onNameTextChange: (String) -> Unit,
     onBackClick: () -> Unit,
+    showBackArrow: Boolean,
     onConfirmClick: () -> Unit,
     showConfirm: Boolean,
     expandDropdown: Boolean,
@@ -72,23 +72,23 @@ fun SingleTripAddCard(
     onArrivalDateChange: (Int, Int, Int) -> Unit,
     departureDate: String?,
     onDepartureDateChange: (Int, Int, Int) -> Unit,
-    onTripConfirmClick: () -> Unit,
-    onTripCancelClick: () -> Unit,
+    onPositiveClick: () -> Unit,
+    positiveClickText: String,
+    onNegativeClick: () -> Unit,
+    negativeClickText: String,
     keyboard: SoftwareKeyboardController?,
     isSavingEnabled: Boolean,
     isAddressEditEnabled: Boolean
 ) {
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
     WideCard(
-        modifier = Modifier
-            .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
+        modifier = modifier,
         padding = PaddingValues(0.dp)
     ) {
         SearchField(
             placeText = placeText,
             onTextChange = onSearchTextChange,
             onBackClick = onBackClick,
+            showBackArrow = showBackArrow,
             onConfirmClick = onConfirmClick,
             showConfirm = showConfirm,
             keyboard = keyboard,
@@ -108,8 +108,10 @@ fun SingleTripAddCard(
                 onArrivalDateChange = onArrivalDateChange,
                 departureDate = departureDate,
                 onDepartureDateChange = onDepartureDateChange,
-                onTripConfirmClick = onTripConfirmClick,
-                onTripCancelClick = onTripCancelClick,
+                onPositiveClick = onPositiveClick,
+                positiveClickText = positiveClickText,
+                onNegativeClick = onNegativeClick,
+                negativeClickText = negativeClickText,
                 isSavingEnabled = isSavingEnabled,
             )
         }
@@ -125,8 +127,10 @@ fun ExtraFields(
     onArrivalDateChange: (Int, Int, Int) -> Unit,
     departureDate: String?,
     onDepartureDateChange: (Int, Int, Int) -> Unit,
-    onTripConfirmClick: () -> Unit,
-    onTripCancelClick: () -> Unit,
+    onPositiveClick: () -> Unit,
+    positiveClickText: String,
+    onNegativeClick: () -> Unit,
+    negativeClickText: String,
     isSavingEnabled: Boolean,
 ) {
     Column(
@@ -143,19 +147,21 @@ fun ExtraFields(
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             onValueChange = { onNameTextChange(it) },
-            label = { Text(stringResource(R.string.add_pin_hint_trip_name)) },
+            label = { Text(stringResource(R.string.add_trip_hint_trip_name)) },
         )
         Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             DatePickingButton(
-                label = stringResource(R.string.add_pin_hint_arrival_date),
+                label = stringResource(R.string.add_trip_hint_arrival_date),
                 date = arrivalDate,
                 onDateSelected = onArrivalDateChange,
             )
             Spacer(modifier = Modifier.width(4.dp))
             DatePickingButton(
-                label = stringResource(R.string.add_pin_hint_departure_date),
+                label = stringResource(R.string.add_trip_hint_departure_date),
                 date = departureDate,
                 onDateSelected = onDepartureDateChange,
             )
@@ -175,16 +181,16 @@ fun ExtraFields(
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = colorResource(R.color.primary),
                 ),
-                onClick = { onTripCancelClick() }) {
-                Text(text = stringResource(R.string.create_trip_btn_cancel))
+                onClick = { onNegativeClick() }) {
+                Text(text = negativeClickText)
             }
             Button(modifier = Modifier
                 .weight(1f)
                 .padding(8.dp),
                 enabled = isSavingEnabled,
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary)),
-                onClick = { onTripConfirmClick() }) {
-                Text(text = stringResource(R.string.create_trip_btn_confirm))
+                onClick = { onPositiveClick() }) {
+                Text(text = positiveClickText)
             }
         }
     }
@@ -192,7 +198,7 @@ fun ExtraFields(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickingButton(
+fun RowScope.DatePickingButton(
     label: String,
     date: String?,
     onDateSelected: (Int, Int, Int) -> Unit,
@@ -206,6 +212,8 @@ fun DatePickingButton(
 
     OutlinedTextField(modifier = Modifier
         .widthIn(1.dp, 200.dp)
+        .weight(1f)
+        .padding(8.dp, 0.dp)
         .onFocusChanged {
             if (it.isFocused) {
                 val datePicker = DatePickerDialog(
@@ -260,6 +268,7 @@ fun SearchField(
     placeText: String,
     onTextChange: (String) -> Unit,
     onBackClick: () -> Unit,
+    showBackArrow: Boolean,
     onConfirmClick: () -> Unit,
     showConfirm: Boolean,
     keyboard: SoftwareKeyboardController?,
@@ -285,14 +294,16 @@ fun SearchField(
         readOnly = isAddressEditEnabled.not(),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         onValueChange = { onTextChange(it) },
-        label = { Text(stringResource(R.string.add_pin_hint_name)) },
+        label = { Text(stringResource(R.string.add_trip_hint_name)) },
         leadingIcon = {
-            TextButton(onClick = { onBackClick() }) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_back_editing),
-                    tint = colorResource(R.color.primary),
-                    contentDescription = stringResource(R.string.add_pin_cd_address_editing_back)
-                )
+            if (showBackArrow) {
+                TextButton(onClick = { onBackClick() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_back_editing),
+                        tint = colorResource(R.color.primary),
+                        contentDescription = stringResource(R.string.add_trip_cd_address_editing_back)
+                    )
+                }
             }
         },
         trailingIcon = {
@@ -301,7 +312,7 @@ fun SearchField(
                     Icon(
                         painter = painterResource(R.drawable.ic_done),
                         tint = colorResource(R.color.primary),
-                        contentDescription = stringResource(R.string.add_pin_btn_confirm)
+                        contentDescription = stringResource(R.string.add_trip_btn_confirm)
                     )
                 }
             }
@@ -353,18 +364,21 @@ fun Preview() {
         nameText = "Name text",
         onNameTextChange = {},
         onBackClick = { },
+        showBackArrow = true,
         onConfirmClick = { },
         showConfirm = true,
         expandDropdown = false,
         showExtraEditionFields = true,
         predictions = listOf(),
         onAddressPredictionClick = {},
-        arrivalDate = stringResource(R.string.add_pin_hint_arrival_date),
+        arrivalDate = stringResource(R.string.add_trip_hint_arrival_date),
         onArrivalDateChange = { i: Int, i1: Int, i2: Int -> },
-        departureDate = stringResource(R.string.add_pin_hint_departure_date),
+        departureDate = stringResource(R.string.add_trip_hint_departure_date),
         onDepartureDateChange = { i: Int, i1: Int, i2: Int -> },
-        onTripConfirmClick = {},
-        onTripCancelClick = {},
+        onPositiveClick = {},
+        positiveClickText = "CONFIRM",
+        onNegativeClick = {},
+        negativeClickText = "CLOSE",
         keyboard = null,
         isSavingEnabled = true,
         isAddressEditEnabled = true

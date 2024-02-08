@@ -23,11 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
+import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -48,13 +48,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             .background(colorResource(R.color.primary))
             .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
     ) {
-        Text(
-            modifier = Modifier
-                .padding(16.dp, 16.dp, 16.dp, 0.dp),
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            color = Color.White,
-            text = stringResource(R.string.settings_header)
+        PageTitle(
+            stringResource(R.string.settings_header),
+            modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 0.dp)
         )
 
         Column(

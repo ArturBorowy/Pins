@@ -5,6 +5,7 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.arturborowy.pins.screen.edittrip.EditTripViewModel
 import com.arturborowy.pins.screen.map.MapViewModel
 import com.arturborowy.pins.ui.Navigator
 import dagger.hilt.EntryPoint
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     @InstallIn(ActivityComponent::class)
     interface ViewModelFactoryProvider {
         fun mapViewModelFactory(): MapViewModel.AssistedFactory
+        fun editTripViewModelFactory(): EditTripViewModel.AssistedFactory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

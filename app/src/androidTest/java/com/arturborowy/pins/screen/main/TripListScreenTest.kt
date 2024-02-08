@@ -14,7 +14,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
-class PinListScreenTest : BaseComposeTest<MainActivity>() {
+class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
     override val composeTestRule = createAndroidComposeRule<MainActivity>()
 
@@ -23,11 +23,11 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
         composeTestRule.waitUntilExactlyOneExists(
-            hasText(R.string.pin_list_header_empty),
+            hasText(R.string.trip_list_header_empty),
             5000L
         )
 
-        composeTestRule.onNodeWithText(R.string.pin_list_header_empty)
+        composeTestRule.onNodeWithText(R.string.trip_list_header_empty)
             .assertIsDisplayed()
     }
 
@@ -36,11 +36,11 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
         composeTestRule.waitUntilExactlyOneExists(
-            hasText(R.string.pin_list_footer_empty),
+            hasText(R.string.trip_list_footer_empty),
             5000L
         )
 
-        composeTestRule.onNodeWithText(R.string.pin_list_footer_empty)
+        composeTestRule.onNodeWithText(R.string.trip_list_footer_empty)
             .assertIsDisplayed()
     }
 
@@ -66,52 +66,44 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
-        composeTestRule.onNodeWithText(R.string.pin_list_header)
+        composeTestRule.onNodeWithText(R.string.trip_list_header)
             .assertIsDisplayed()
     }
 
     @Test
-    fun tripOnListHasCorrectName_whenIsAddedViaPinListScreen() {
-        goToTripAddingViaPinListScreen()
-        inputTripPlace()
-        inputTripDetails()
+    fun tripOnListHasCorrectName_whenIsAddedViaTripListScreen() {
+        addTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertIsTripNameOnPinListCorrect()
+        assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
     }
 
     @Test
-    fun tripOnListHasCorrectDates_whenIsAddedViaPinListScreen() {
-        goToTripAddingViaPinListScreen()
-        inputTripPlace()
-        inputTripDetails()
+    fun tripOnListHasCorrectDates_whenIsAddedViaTripListScreen() {
+        addTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertAreDatesOnPinListCorrect()
+        assertAreDatesOnTripListCorrect()
     }
 
     @Test
-    fun tripOnListHasCorrectPlaceName_whenIsAddedViaPinListScreen() {
-        goToTripAddingViaPinListScreen()
-        inputTripPlace()
-        inputTripDetails()
+    fun tripOnListHasCorrectPlaceName_whenIsAddedViaTripListScreen() {
+        addTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertIsPlaceNameOnPinListCorrect()
+        assertIsPlaceNameOnTripListCorrect()
     }
 
     @Test
-    fun tripOnListHasCorrectFlag_whenIsAddedViaPinListScreen() {
-        goToTripAddingViaPinListScreen()
-        inputTripPlace()
-        inputTripDetails()
+    fun tripOnListHasCorrectFlag_whenIsAddedViaTripListScreen() {
+        addTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertIsFlagOnPinListCorrect()
+        assertIsFlagOnTripListCorrect()
     }
 
     @Test
@@ -121,7 +113,7 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertIsTripNameOnPinListCorrect()
+        assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
     }
 
     @Test
@@ -131,7 +123,7 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertAreDatesOnPinListCorrect()
+        assertAreDatesOnTripListCorrect()
     }
 
     @Test
@@ -141,7 +133,7 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertIsPlaceNameOnPinListCorrect()
+        assertIsPlaceNameOnTripListCorrect()
     }
 
     @Test
@@ -151,6 +143,6 @@ class PinListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
-        assertIsFlagOnPinListCorrect()
+        assertIsFlagOnTripListCorrect()
     }
 }

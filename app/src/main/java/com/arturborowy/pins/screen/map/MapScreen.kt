@@ -1,7 +1,5 @@
 package com.arturborowy.pins.screen.map
 
-import android.content.Context
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,18 +12,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
-import com.arturborowy.pins.utils.addBorderToCircle
+import com.arturborowy.pins.ui.composable.SingleTripAddCard
 import com.arturborowy.pins.utils.collectAsMutableState
-import com.arturborowy.pins.utils.cropBitmapToCircle
-import com.arturborowy.pins.utils.getBitmapFromVectorDrawable
+import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
+import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.showShortToast
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.arturborowy.pins.utils.statusBarHeightPx
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -82,7 +80,11 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         }
 
         if (state.showAddressTextField) {
+            val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
+
             SingleTripAddCard(
+                modifier = Modifier
+                    .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
                 placeText = state.placeText,
                 onSearchTextChange = {
                     setState(
@@ -92,6 +94,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                     )
                 },
                 onBackClick = { viewModel.onBackEditingAddress() },
+                showBackArrow = true,
                 onConfirmClick = { viewModel.onConfirmAddress() },
                 showConfirm = state.showConfirmAddressButton,
                 expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
@@ -108,32 +111,22 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                 onDepartureDateChange = { year: Int, month: Int, dayOfMonth: Int ->
                     viewModel.onDepartureDateChange(year, month, dayOfMonth)
                 },
-                onTripConfirmClick = { viewModel.onTripConfirmClick() },
-                onTripCancelClick = { viewModel.onTripCancelClick() },
+                onPositiveClick = { viewModel.onTripConfirmClick() },
+                positiveClickText = stringResource(R.string.create_trip_btn_confirm),
+                onNegativeClick = { viewModel.onTripCancelClick() },
+                negativeClickText = stringResource(R.string.create_trip_btn_cancel),
                 keyboard = keyboard,
                 isSavingEnabled = state.isSavingTripEnabled,
                 isAddressEditEnabled = state.isAddressEditEnabled
-
             )
         } else {
             Fab(
-                R.drawable.ic_add_pin,
+                R.drawable.ic_add_trip,
                 R.string.main_bottom_nav_label_add,
                 Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp),
-            ) { viewModel.onAddPinClick() }
+            ) { viewModel.onAddTripClick() }
         }
     }
-}
-
-@Composable
-fun mapIconBitmapDescriptor(
-    context: Context,
-    @DrawableRes vectorResId: Int
-): BitmapDescriptor {
-    val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f)
-        .cropBitmapToCircle()
-        .addBorderToCircle(5.dp.value, context.getColor(R.color.primary))
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

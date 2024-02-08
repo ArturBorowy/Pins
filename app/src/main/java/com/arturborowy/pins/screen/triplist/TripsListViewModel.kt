@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.pinslist
+package com.arturborowy.pins.screen.triplist
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class PinsListViewModel @Inject constructor(
+class TripsListViewModel @Inject constructor(
     private val navigator: Navigator,
     private val placesInteractor: PlacesInteractor,
     private val resourcesRepository: ResourcesRepository,
@@ -40,7 +40,7 @@ class PinsListViewModel @Inject constructor(
                             dateFormatter.format(Date(it.arrivalDate))
                         } else {
                             resourcesRepository.getString(
-                                R.string.pin_list_pattern_date_range,
+                                R.string.trip_list_pattern_date_range,
                                 dateFormatter.format(Date(it.arrivalDate)),
                                 dateFormatter.format(Date(it.departureDate)),
                             )
@@ -52,12 +52,16 @@ class PinsListViewModel @Inject constructor(
         }
     }
 
-    fun onAddressClick(tripSingleStop: TripSingleStop) {
-        navigator.navigateTo(NavigationTarget.EDIT_TRIP.create(tripSingleStop.id))
+    fun onEditTripClick(tripSingleStop: TripSingleStop) {
+        viewModelScope.launch {
+            navigator.navigateTo(NavigationTarget.EDIT_TRIP.create(tripSingleStop.id))
+        }
     }
 
     fun onAddTripClick() {
-        navigator.navigateTo(NavigationTarget.ADD_TRIP.create(true))
+        viewModelScope.launch {
+            navigator.navigateTo(NavigationTarget.ADD_TRIP.create(true))
+        }
     }
 
     data class State(

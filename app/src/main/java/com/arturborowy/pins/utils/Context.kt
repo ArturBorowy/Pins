@@ -3,6 +3,12 @@ package com.arturborowy.pins.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.DisplayMetrics
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+import com.arturborowy.pins.R
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 val Context.navigationBarHeightPx: Int?
     get() = if (hasSoftKeys)
@@ -36,3 +42,14 @@ val Context.hasSoftKeys: Boolean
         val displayWidth = displayMetrics.widthPixels
         return realWidth - displayWidth > 0 || realHeight - displayHeight > 0
     }
+
+@Composable
+fun mapIconBitmapDescriptor(
+    context: Context,
+    @DrawableRes vectorResId: Int
+): BitmapDescriptor {
+    val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f)
+        .cropBitmapToCircle()
+        .addBorderToCircle(5.dp.value, context.getColor(R.color.primary))
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}

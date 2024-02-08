@@ -8,7 +8,7 @@ import com.arturborowy.pins.model.trip.TripSingleStopEntity
 
 @Database(entities = [TripSingleStopEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun placeDetailsDao(): PlaceDetailsDao
+    abstract fun placeDetailsDao(): TripSingleStopDao
 
     companion object {
         const val NAME = "db"

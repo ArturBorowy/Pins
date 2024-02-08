@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.pinslist
+package com.arturborowy.pins.screen.triplist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
+import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.TripView
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -30,7 +31,7 @@ import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.statusBarHeightPx
 
 @Composable
-fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
+fun TripsListScreen(viewModel: TripsListViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
     val (state, setState) = viewModel.state.collectAsMutableState()
@@ -48,42 +49,36 @@ fun PinsListScreen(viewModel: PinsListViewModel = hiltViewModel()) {
         } else if (state.tripDetails.isEmpty()) {
             EmptyListView { viewModel.onAddTripClick() }
         } else {
-            TripListView(state.tripDetails)
+            TripListView(state.tripDetails) { viewModel.onEditTripClick(it) }
         }
     }
 }
 
 @Composable
 fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
-    Text(
+    PageTitle(
+        text = stringResource(R.string.trip_list_header_empty),
         modifier = Modifier
-            .padding(16.dp, 16.dp, 16.dp, 16.dp)
-            .align(Alignment.TopStart),
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        color = Color.White,
-        text = stringResource(R.string.pin_list_header_empty)
+            .align(Alignment.TopStart)
+            .padding(16.dp, 16.dp, 16.dp, 0.dp)
     )
     Fab(
-        R.drawable.ic_add_pin,
+        R.drawable.ic_add_trip,
         R.string.main_bottom_nav_label_add,
         Modifier
             .padding(16.dp)
             .align(Alignment.Center),
     ) { onAddTrip() }
-    Text(
+    PageTitle(
+        text = stringResource(R.string.trip_list_footer_empty),
         modifier = Modifier
+            .align(Alignment.BottomEnd)
             .padding(16.dp, 16.dp, 16.dp, 16.dp)
-            .align(Alignment.BottomEnd),
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        color = Color.White,
-        text = stringResource(R.string.pin_list_footer_empty)
     )
 }
 
 @Composable
-fun TripListView(trips: List<TripSingleStop>) {
+fun TripListView(trips: List<TripSingleStop>, onEditTripClick: (TripSingleStop) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -96,11 +91,11 @@ fun TripListView(trips: List<TripSingleStop>) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 color = Color.White,
-                text = stringResource(R.string.pin_list_header)
+                text = stringResource(R.string.trip_list_header)
             )
         }
         items(trips) {
-            TripView(it)
+            TripView(it, onEditTripClick)
         }
     }
 }

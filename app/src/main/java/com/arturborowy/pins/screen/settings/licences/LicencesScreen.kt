@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.licences.Product
+import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -43,15 +43,12 @@ fun LicencesScreen(viewModel: LicencesViewModel = hiltViewModel()) {
             .fillMaxSize()
             .background(colorResource(R.color.primary))
             .wrapContentSize(Alignment.Center)
+            .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
     ) {
         item {
-            Text(
-                modifier = Modifier
-                    .padding(16.dp, androidStatusBarHeight + 16.dp, 16.dp, 0.dp),
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = Color.White,
-                text = stringResource(R.string.licences_header)
+            PageTitle(
+                text = stringResource(R.string.licences_header),
+                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 0.dp)
             )
         }
         items(state.licences) {

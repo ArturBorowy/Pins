@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.map
+package com.arturborowy.pins.screen.edittrip
 
 import android.app.Activity
 import androidx.annotation.DrawableRes
@@ -14,10 +14,10 @@ import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
 import com.arturborowy.pins.screen.main.MainActivity
+import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.utils.BaseViewModel
 import com.ultimatelogger.android.output.ALog
 import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,34 +26,51 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-class MapViewModel @AssistedInject constructor(
+class EditTripViewModel @AssistedInject constructor(
     private val placesInteractor: PlacesInteractor,
     private val localeRepository: LocaleRepository,
-    @Assisted private val showSearchBar: Boolean
+    private val navigator: Navigator,
+    @Assisted private val placeId: String
 ) : BaseViewModel() {
 
-    val state = MutableStateFlow(
-        State(
-            showAddressTextField = showSearchBar,
-            showKeyboard = showSearchBar,
-            isAddressEditEnabled = showSearchBar,
-        )
-    )
+    val state = MutableStateFlow(State())
 
     private var arrivalDate: Date? = null
     private var departureDate: Date? = null
 
     private var selectedPlace: PlaceDetails? = null
 
-    override fun onResume(owner: LifecycleOwner) {
+    init {
         viewModelScope.launch {
-            val places = placesInteractor.getPlaces().map {
-                TripMarker(
-                    it.name, it.country.countryIcon, it.latitude, it.longitude
+            val tripSingleStop = placesInteractor.getSingleStopTrip(placeId)
+
+            arrivalDate = Date(tripSingleStop.arrivalDate)
+
+            tripSingleStop.departureDate?.let { departureDate = Date(it) }
+            selectedPlace = PlaceDetails(
+                tripSingleStop.locationName,
+                tripSingleStop.latitude,
+                tripSingleStop.longitude,
+                tripSingleStop.country
+            )
+
+            state.emit(
+                state.value.copy(
+                    isSavingTripEnabled = true,
+                    tripId = tripSingleStop.id,
+                    placeText = tripSingleStop.locationName,
+                    nameText = tripSingleStop.name,
+                    placeLatitude = tripSingleStop.latitude,
+                    placeLongitude = tripSingleStop.longitude,
+                    departureDate = departureDate?.let { dateToString(it) },
+                    arrivalDate = dateToString(arrivalDate!!),
+                    placeCountryIcon = tripSingleStop.country.countryIcon
                 )
-            }
-            state.emit(state.value.copy(tripMarkers = places))
+            )
         }
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
         viewModelScope.launch {
             state.collect {
                 if (it.placeText.isNotEmpty() && it.placeTextChangedByUser) {
@@ -112,7 +129,6 @@ class MapViewModel @AssistedInject constructor(
         state.emit(
             state.value.copy(
                 expandAddressPredictions = false,
-                placeId = placeId,
                 showConfirmAddressButton = true,
                 placeText = placeAddress.locationName,
                 placeTextChangedByUser = false,
@@ -124,56 +140,19 @@ class MapViewModel @AssistedInject constructor(
         selectedPlace = placeAddress
     }
 
-    fun onAddTripClick() {
+    fun onBackEditingAddress() {
         viewModelScope.launch {
             state.emit(
                 state.value.copy(
-                    showAddressTextField = true,
-                    showKeyboard = true,
                     isAddressEditEnabled = true,
-                    tripMarkers = listOf()
+                    showConfirmAddressButton = false,
+                    showExtraFields = false,
+                    showBackSearchBarArrow = false,
+                    placeText = "",
+                    showKeyboard = true
                 )
             )
         }
-    }
-
-    fun onBackEditingAddress() {
-        viewModelScope.launch {
-            if (state.value.showExtraFields) {
-                state.emit(
-                    state.value.copy(
-                        isAddressEditEnabled = true,
-                        showConfirmAddressButton = false,
-                        showExtraFields = false,
-                        placeText = ""
-                    )
-                )
-            } else {
-                onTripCancelClick()
-            }
-        }
-    }
-
-    private suspend fun moveToTripListState() {
-        val places = placesInteractor.getPlaces().map {
-            TripMarker(
-                it.name, it.country.countryIcon, it.latitude, it.longitude
-            )
-        }
-        state.emit(
-            state.value.copy(
-                showAddressTextField = false,
-                tripMarkers = places,
-                placeLongitude = null,
-                placeLatitude = null,
-                showConfirmAddressButton = false,
-                showExtraFields = false,
-                placeText = "",
-                departureDate = null,
-                arrivalDate = null,
-                nameText = ""
-            )
-        )
     }
 
     fun onConfirmAddress() {
@@ -182,7 +161,8 @@ class MapViewModel @AssistedInject constructor(
                 state.value.copy(
                     showExtraFields = true,
                     isAddressEditEnabled = false,
-                    showConfirmAddressButton = false
+                    showConfirmAddressButton = false,
+                    showBackSearchBarArrow = true
                 )
             )
         }
@@ -223,21 +203,23 @@ class MapViewModel @AssistedInject constructor(
         }
     }
 
-    fun onTripConfirmClick() {
+    fun onSaveChangesClick() {
         viewModelScope.launch {
-            placesInteractor.saveSingleStopTrip(
-                state.value.nameText, arrivalDate!!, departureDate!!, selectedPlace!!
+            placesInteractor.updateSingleStopTrip(
+                state.value.tripId!!,
+                state.value.nameText,
+                arrivalDate!!,
+                departureDate!!,
+                selectedPlace!!
             )
-
-            moveToTripListState()
-
-            // todo here move camera to last added pin
+            navigator.goBack()
         }
     }
 
     fun onTripCancelClick() {
         viewModelScope.launch {
-            moveToTripListState()
+            placesInteractor.removePlaceDetails(state.value.tripId!!)
+            navigator.goBack()
         }
     }
 
@@ -249,51 +231,49 @@ class MapViewModel @AssistedInject constructor(
     }
 
     data class State(
+        val tripId: Long? = null,
         val predictions: List<AddressPredictionDto> = listOf(),
-        val showRemoveBtn: Boolean = false,
         val expandAddressPredictions: Boolean = false,
-        val showExtraFields: Boolean = false,
+        val showExtraFields: Boolean = true,
         val placeId: String? = "",
         val placeText: String = "",
         val nameText: String = "",
         val placeTextChangedByUser: Boolean = false,
-        val placeDescription: String = "",
         val placeLatitude: Double? = null,
         val placeLongitude: Double? = null,
         @DrawableRes val placeCountryIcon: Int? = null,
-        val tripMarkers: List<TripMarker> = listOf(),
-        val showAddressTextField: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
         val errorText: String? = null,
         val showKeyboard: Boolean = false,
         val isSavingTripEnabled: Boolean = false,
-        val isAddressEditEnabled: Boolean = false
+        val isAddressEditEnabled: Boolean = false,
+        val showBackSearchBarArrow: Boolean = true
     )
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
-        fun create(showSearchBar: Boolean): MapViewModel
+        fun create(placeId: String): EditTripViewModel
     }
 
     companion object {
         fun provideFactory(
             assistedFactory: AssistedFactory,
-            showSearchBar: Boolean
+            placeId: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(showSearchBar) as T
+                return assistedFactory.create(placeId) as T
             }
         }
     }
 }
 
 @Composable
-fun mapViewModel(showSearchBar: Boolean): MapViewModel {
+fun editTripViewModel(placeId: String): EditTripViewModel {
     val factory = EntryPointAccessors.fromActivity(
         LocalContext.current as Activity, MainActivity.ViewModelFactoryProvider::class.java
-    ).mapViewModelFactory()
+    ).editTripViewModelFactory()
 
-    return viewModel(factory = MapViewModel.provideFactory(factory, showSearchBar))
+    return viewModel(factory = EditTripViewModel.provideFactory(factory, placeId))
 }

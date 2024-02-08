@@ -5,12 +5,19 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 class Navigator {
 
+    private val _back = MutableSharedFlow<Boolean>()
+    val back = _back.asSharedFlow()
+
     private val _sharedFlow =
         MutableSharedFlow<NavigationTarget>(extraBufferCapacity = 1)
     val sharedFlow = _sharedFlow.asSharedFlow()
 
-    fun navigateTo(navTarget: NavigationTarget) {
-        _sharedFlow.tryEmit(navTarget)
+    suspend fun navigateTo(navTarget: NavigationTarget) {
+        _sharedFlow.emit(navTarget)
+    }
+
+    suspend fun goBack() {
+        _back.emit(true)
     }
 }
 

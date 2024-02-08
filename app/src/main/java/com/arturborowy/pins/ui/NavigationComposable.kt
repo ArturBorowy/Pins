@@ -10,6 +10,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.arturborowy.pins.screen.edittrip.EditTripScreen
+import com.arturborowy.pins.screen.edittrip.editTripViewModel
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.screen.map.MapScreen
 import com.arturborowy.pins.screen.map.mapViewModel
@@ -27,6 +29,12 @@ fun NavigationComposable(
         navigator.sharedFlow.onEach {
             navController.navigate(it.label)
         }.launchIn(this)
+
+        navigator.back.onEach {
+            if (it) {
+                navController.popBackStack()
+            }
+        }.launchIn(this)
     }
 
     NavHost(
@@ -40,11 +48,18 @@ fun NavigationComposable(
 
         composable(NavigationTarget.LICENCES.label) { LicencesScreen() }
 
-        val args = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY) {
+        val mapArgs = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY) {
             type = NavType.BoolType
         })
-        composable(NavigationTarget.ADD_TRIP.label, args) {
+        composable(NavigationTarget.ADD_TRIP.label, mapArgs) {
             MapScreen(mapViewModel(it.arguments?.getBoolean(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY)!!))
+        }
+
+        val editTripArgs = listOf(navArgument(NavigationTarget.EDIT_TRIP.PLACE_ID_KEY) {
+            type = NavType.StringType
+        })
+        composable(NavigationTarget.EDIT_TRIP.label, editTripArgs) {
+            EditTripScreen(editTripViewModel(it.arguments?.getString(NavigationTarget.EDIT_TRIP.PLACE_ID_KEY)!!))
         }
     }
 }

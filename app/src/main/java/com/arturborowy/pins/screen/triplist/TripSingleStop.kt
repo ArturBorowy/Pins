@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.pinslist
+package com.arturborowy.pins.screen.triplist
 
 import com.arturborowy.pins.domain.Country
 
