@@ -16,38 +16,43 @@ import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.model.system.NetworkStateRepository
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.Matchers
 import org.junit.Test
 
+@UninstallModules(SystemAbstractionModule::class)
 @HiltAndroidTest
 class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     override val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Test
-    fun isSearchBarShown_whenAddTripFabIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
+    @BindValue
+    @JvmField
+    val networkStateRepository: NetworkStateRepository =
+        MockSystemAbstractionModule.networkStateRepository
 
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertIsDisplayed()
-    }
+    @BindValue
+    @JvmField
+    val localeRepository = MockSystemAbstractionModule.localeRepository
 
     @Test
     fun isAddTripFabHidden_whenAddTripFabIsClicked() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .performClick()
 
+        //isAddTripFabHidden_whenAddTripFabIsClicked
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .assertDoesNotExist()
-    }
 
-    @Test
-    fun isKeyboardShown_whenAddTripFabIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
+        //isSearchBarShown_whenAddTripFabIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertIsDisplayed()
 
+        //isKeyboardShown_whenAddTripFabIsClicked
         composeTestRule.waitUntil(5000L) {
             isKeyboardShown()
         }
@@ -60,16 +65,10 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
 
+        //isSearchBarHidden_whenAddressEditBackIsClicked
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertDoesNotExist()
-    }
 
-    @Test
-    fun isAddTripFabShown_whenAddressEditBackIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-
+        //isAddTripFabShown_whenAddressEditBackIsClicked
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .assertIsDisplayed()
     }
@@ -107,66 +106,15 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
             MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
         ).performClick()
 
+        //arePredictionsHidden_whenPredictionIsChosen
         MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
             composeTestRule.onNodeWithText(it.label)
                 .assertDoesNotExist()
         }
-    }
 
-    @Test
-    fun isConfirmBtnShown_whenPredictionIsChosen() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
+        //isConfirmBtnShown_whenPredictionIsChosen
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
             .assertIsDisplayed()
-    }
-
-    @Test
-    fun isConfirmBtnHidden_whenConfirmBtnIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
-            .performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
-            .assertDoesNotExist()
-    }
-
-    @Test
-    fun isSearchTextCleared_whenAddressEditBackIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-            .assertDoesNotExist()
     }
 
     @Test
@@ -189,54 +137,15 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
 
+        //isTripNameCleared_whenAddressEditBackIsClickedTwice
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .assertIsDisplayed()
-    }
 
-    @Test
-    fun isDepartureDateCleared_whenAddressEditBackIsClickedTwice() {
-        goToTripDetailsInput()
-        inputTripDetails(confirm = false)
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
-
+        //isDepartureDateCleared_whenAddressEditBackIsClickedTwice
         composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date)
             .assertIsDisplayed()
-    }
 
-    @Test
-    fun isArrivalDateCleared_whenAddressEditBackIsClickedTwice() {
-        goToTripDetailsInput()
-        inputTripDetails(confirm = false)
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
-
+        //isArrivalDateCleared_whenAddressEditBackIsClickedTwice
         composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date)
             .assertIsDisplayed()
     }
@@ -260,52 +169,15 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
 
+        //isTripNameCleared_whenCancelTripIsClicked
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .assertIsDisplayed()
-    }
 
-    @Test
-    fun isDepartureDateCleared_whenCancelTripIsClicked() {
-        goToTripDetailsInput()
-        inputTripDetails(confirm = false)
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
-
+        //isDepartureDateCleared_whenCancelTripIsClicked
         composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date)
             .assertIsDisplayed()
-    }
 
-    @Test
-    fun isArrivalDateCleared_whenCancelTripIsClicked() {
-        goToTripDetailsInput()
-        inputTripDetails(confirm = false)
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
-
+        //isArrivalDateCleared_whenCancelTripIsClicked
         composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date)
             .assertIsDisplayed()
     }
@@ -408,13 +280,10 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
     fun isCancelTripBtnShown_whenPlaceConfirmIsClicked() {
         goToTripDetailsInput()
 
+        //isCancelTripBtnShown_whenPlaceConfirmIsClicked
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel).assertIsDisplayed()
-    }
 
-    @Test
-    fun isSaveTripBtnShown_whenPlaceConfirmIsClicked() {
-        goToTripDetailsInput()
-
+        //isSaveTripBtnShown_whenPlaceConfirmIsClicked
         composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsDisplayed()
     }
 
@@ -425,16 +294,19 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
 
+        //isCancelTripBtnHidden_whenBackIsClicked
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel).assertDoesNotExist()
+
+        //isSaveTripBtnHidden_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertDoesNotExist()
     }
 
     @Test
-    fun isSaveTripBtnHidden_whenBackIsClicked() {
-        goToTripDetailsInput()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+    fun isNetworkUnavailableErrorNotShown_whenAddTripFabIsClicked_whileInternetAvailable() {
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .performClick()
 
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertDoesNotExist()
+        composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)
+            .assertDoesNotExist()
     }
 }

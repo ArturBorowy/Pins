@@ -9,10 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
+import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.utils.BaseViewModel
 import com.ultimatelogger.android.output.ALog
@@ -29,6 +32,8 @@ import java.util.Date
 class MapViewModel @AssistedInject constructor(
     private val placesInteractor: PlacesInteractor,
     private val localeRepository: LocaleRepository,
+    private val networkStateRepository: NetworkStateRepository,
+    private val resourcesRepository: ResourcesRepository,
     @Assisted private val showSearchBar: Boolean
 ) : BaseViewModel() {
 
@@ -65,6 +70,20 @@ class MapViewModel @AssistedInject constructor(
                     }
                 }
                 validateSingleTripInput()
+            }
+        }
+
+        viewModelScope.launch {
+            networkStateRepository.hasInternet.collect {
+                state.emit(
+                    state.value.copy(
+                        placeErrorText = if (it) {
+                            null
+                        } else {
+                            resourcesRepository.getString(R.string.add_trip_error_internet_unavailable)
+                        }
+                    )
+                )
             }
         }
     }
@@ -255,6 +274,7 @@ class MapViewModel @AssistedInject constructor(
         val showExtraFields: Boolean = false,
         val placeId: String? = "",
         val placeText: String = "",
+        val placeErrorText: String? = null,
         val nameText: String = "",
         val placeTextChangedByUser: Boolean = false,
         val placeDescription: String = "",

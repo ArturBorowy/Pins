@@ -8,14 +8,28 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.BuildConfig
+import com.arturborowy.pins.di.SystemAbstractionModule
+import com.arturborowy.pins.model.system.NetworkStateRepository
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Test
 
+@UninstallModules(SystemAbstractionModule::class)
 @OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
 class SettingsScreenTest : BaseComposeTest<MainActivity>() {
 
     override val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @BindValue
+    @JvmField
+    val networkStateRepository: NetworkStateRepository =
+        MockSystemAbstractionModule.networkStateRepository
+
+    @BindValue
+    @JvmField
+    val localeRepository = MockSystemAbstractionModule.localeRepository
 
     @Test
     fun isVersionNumberCorrect_whenUserIsOnSettingsScreen() {

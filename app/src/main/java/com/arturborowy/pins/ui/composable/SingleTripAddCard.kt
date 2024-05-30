@@ -21,6 +21,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -42,8 +43,10 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,6 +60,7 @@ import java.util.Calendar
 fun SingleTripAddCard(
     modifier: Modifier = Modifier,
     placeText: String,
+    placeErrorText: String? = null,
     onSearchTextChange: (String) -> Unit,
     nameText: String,
     onNameTextChange: (String) -> Unit,
@@ -86,13 +90,15 @@ fun SingleTripAddCard(
     ) {
         SearchField(
             placeText = placeText,
+            errorText = placeErrorText,
             onTextChange = onSearchTextChange,
             onBackClick = onBackClick,
             showBackArrow = showBackArrow,
             onConfirmClick = onConfirmClick,
             showConfirm = showConfirm,
             keyboard = keyboard,
-            isAddressEditEnabled = isAddressEditEnabled
+            isAddressEditEnabled = isAddressEditEnabled,
+            showExtraEditionFields = showExtraEditionFields
         )
         SearchResults(
             expandDropdown = expandDropdown,
@@ -266,13 +272,15 @@ fun outlinedTextFieldColors() = TextFieldDefaults.outlinedTextFieldColors(
 @Composable
 fun SearchField(
     placeText: String,
+    errorText: String? = null,
     onTextChange: (String) -> Unit,
     onBackClick: () -> Unit,
     showBackArrow: Boolean,
     onConfirmClick: () -> Unit,
     showConfirm: Boolean,
     keyboard: SoftwareKeyboardController?,
-    isAddressEditEnabled: Boolean
+    isAddressEditEnabled: Boolean,
+    showExtraEditionFields: Boolean,
 ) {
     val windowInfo = LocalWindowInfo.current
 
@@ -280,8 +288,20 @@ fun SearchField(
 
     var isFocused = remember { false }
 
+    var textFieldValueState = TextFieldValue(placeText, TextRange(placeText.length))
+
     OutlinedTextField(
         colors = outlinedTextFieldColors(),
+        isError = errorText != null && showExtraEditionFields.not(),
+        supportingText = {
+            if (errorText != null && showExtraEditionFields.not()) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = errorText,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp, 0.dp, 8.dp, 8.dp)
@@ -289,11 +309,14 @@ fun SearchField(
             .onFocusChanged {
                 isFocused = it.isFocused
             },
-        value = placeText,
+        value = textFieldValueState,
         singleLine = true,
         readOnly = isAddressEditEnabled.not(),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        onValueChange = { onTextChange(it) },
+        onValueChange = {
+            textFieldValueState = it
+            onTextChange(it.text)
+        },
         label = { Text(stringResource(R.string.add_trip_hint_name)) },
         leadingIcon = {
             if (showBackArrow) {
@@ -360,6 +383,7 @@ fun SearchResults(
 fun Preview() {
     SingleTripAddCard(
         placeText = "Place text",
+        placeErrorText = "No internet connection",
         onSearchTextChange = {},
         nameText = "Name text",
         onNameTextChange = {},

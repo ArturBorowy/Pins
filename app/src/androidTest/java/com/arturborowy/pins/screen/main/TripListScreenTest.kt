@@ -8,15 +8,29 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.di.SystemAbstractionModule
+import com.arturborowy.pins.model.system.NetworkStateRepository
 import com.arturborowy.pins.ui.composable.TripViewTag
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Test
 
+@UninstallModules(SystemAbstractionModule::class)
 @OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
 class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
     override val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @BindValue
+    @JvmField
+    val networkStateRepository: NetworkStateRepository =
+        MockSystemAbstractionModule.networkStateRepository
+
+    @BindValue
+    @JvmField
+    val localeRepository = MockSystemAbstractionModule.localeRepository
 
     @Test
     fun headerHasEllipsize_whenTripListIsEmpty() {
@@ -27,32 +41,15 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
             5000L
         )
 
+        //headerHasEllipsize_whenTripListIsEmpty
         composeTestRule.onNodeWithText(R.string.trip_list_header_empty)
             .assertIsDisplayed()
-    }
 
-    @Test
-    fun footerIsDisplayed_whenTripListIsEmpty() {
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
-        composeTestRule.waitUntilExactlyOneExists(
-            hasText(R.string.trip_list_footer_empty),
-            5000L
-        )
-
+        //footerIsDisplayed_whenTripListIsEmpty
         composeTestRule.onNodeWithText(R.string.trip_list_footer_empty)
             .assertIsDisplayed()
-    }
 
-    @Test
-    fun addTripBtnIsDisplayed_whenTripListIsEmpty() {
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
-        composeTestRule.waitUntilExactlyOneExists(
-            hasContentDescription(R.string.main_bottom_nav_label_add),
-            5000L
-        )
-
+        //addTripBtnIsDisplayed_whenTripListIsEmpty
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .assertIsDisplayed()
     }
@@ -76,33 +73,16 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
+        //tripOnListHasCorrectName_whenIsAddedViaTripListScreen
         assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
-    }
 
-    @Test
-    fun tripOnListHasCorrectDates_whenIsAddedViaTripListScreen() {
-        addTripViaTripList()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
+        //tripOnListHasCorrectDates_whenIsAddedViaTripListScreen
         assertAreDatesOnTripListCorrect()
-    }
 
-    @Test
-    fun tripOnListHasCorrectPlaceName_whenIsAddedViaTripListScreen() {
-        addTripViaTripList()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
+        //tripOnListHasCorrectPlaceName_whenIsAddedViaTripListScreen
         assertIsPlaceNameOnTripListCorrect()
-    }
 
-    @Test
-    fun tripOnListHasCorrectFlag_whenIsAddedViaTripListScreen() {
-        addTripViaTripList()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
+        //tripOnListHasCorrectFlag_whenIsAddedViaTripListScreen
         assertIsFlagOnTripListCorrect()
     }
 
@@ -113,36 +93,16 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
+        //tripOnListHasCorrectName_whenIsAddedViaMapScreen
         assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
-    }
 
-    @Test
-    fun tripOnListHasCorrectDates_whenIsAddedViaMapScreen() {
-        goToTripDetailsInput()
-        inputTripDetails()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
+        //tripOnListHasCorrectDates_whenIsAddedViaMapScreen
         assertAreDatesOnTripListCorrect()
-    }
 
-    @Test
-    fun tripOnListHasCorrectPlaceName_whenIsAddedViaMapScreen() {
-        goToTripDetailsInput()
-        inputTripDetails()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
+        //tripOnListHasCorrectPlaceName_whenIsAddedViaMapScreen
         assertIsPlaceNameOnTripListCorrect()
-    }
 
-    @Test
-    fun tripOnListHasCorrectFlag_whenIsAddedViaMapScreen() {
-        goToTripDetailsInput()
-        inputTripDetails()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
+        //tripOnListHasCorrectPlaceName_whenIsAddedViaMapScreen
         assertIsFlagOnTripListCorrect()
     }
 }

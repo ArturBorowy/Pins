@@ -61,6 +61,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
 
         SingleTripAddCard(
             placeText = state.placeText,
+            placeErrorText = state.placeErrorText,
             onSearchTextChange = {
                 setState(
                     state.copy(
@@ -69,7 +70,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 )
             },
             onBackClick = { viewModel.onBackEditingAddress() },
-            showBackArrow = state.showBackSearchBarArrow,
+            showBackArrow = true,
             onConfirmClick = { viewModel.onConfirmAddress() },
             showConfirm = state.showConfirmAddressButton,
             expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,

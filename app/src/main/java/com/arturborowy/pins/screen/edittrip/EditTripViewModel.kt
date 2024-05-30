@@ -9,10 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
+import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.utils.BaseViewModel
@@ -29,6 +32,8 @@ import java.util.Date
 class EditTripViewModel @AssistedInject constructor(
     private val placesInteractor: PlacesInteractor,
     private val localeRepository: LocaleRepository,
+    private val networkStateRepository: NetworkStateRepository,
+    private val resourcesRepository: ResourcesRepository,
     private val navigator: Navigator,
     @Assisted private val placeId: String
 ) : BaseViewModel() {
@@ -67,6 +72,20 @@ class EditTripViewModel @AssistedInject constructor(
                     placeCountryIcon = tripSingleStop.country.countryIcon
                 )
             )
+        }
+
+        viewModelScope.launch {
+            networkStateRepository.hasInternet.collect {
+                state.emit(
+                    state.value.copy(
+                        placeErrorText = if (it) {
+                            null
+                        } else {
+                            resourcesRepository.getString(R.string.add_trip_error_internet_unavailable)
+                        }
+                    )
+                )
+            }
         }
     }
 
@@ -142,16 +161,18 @@ class EditTripViewModel @AssistedInject constructor(
 
     fun onBackEditingAddress() {
         viewModelScope.launch {
-            state.emit(
-                state.value.copy(
-                    isAddressEditEnabled = true,
-                    showConfirmAddressButton = false,
-                    showExtraFields = false,
-                    showBackSearchBarArrow = false,
-                    placeText = "",
-                    showKeyboard = true
+            if (state.value.isAddressEditEnabled) {
+                onConfirmAddress()
+            } else {
+                state.emit(
+                    state.value.copy(
+                        isAddressEditEnabled = true,
+                        showConfirmAddressButton = false,
+                        showExtraFields = false,
+                        showKeyboard = true
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -162,7 +183,6 @@ class EditTripViewModel @AssistedInject constructor(
                     showExtraFields = true,
                     isAddressEditEnabled = false,
                     showConfirmAddressButton = false,
-                    showBackSearchBarArrow = true
                 )
             )
         }
@@ -237,6 +257,7 @@ class EditTripViewModel @AssistedInject constructor(
         val showExtraFields: Boolean = true,
         val placeId: String? = "",
         val placeText: String = "",
+        val placeErrorText: String? = null,
         val nameText: String = "",
         val placeTextChangedByUser: Boolean = false,
         val placeLatitude: Double? = null,
@@ -249,7 +270,6 @@ class EditTripViewModel @AssistedInject constructor(
         val showKeyboard: Boolean = false,
         val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false,
-        val showBackSearchBarArrow: Boolean = true
     )
 
     @dagger.assisted.AssistedFactory

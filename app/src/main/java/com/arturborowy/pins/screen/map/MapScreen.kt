@@ -86,6 +86,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                 modifier = Modifier
                     .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
                 placeText = state.placeText,
+                placeErrorText = state.placeErrorText,
                 onSearchTextChange = {
                     setState(
                         state.copy(

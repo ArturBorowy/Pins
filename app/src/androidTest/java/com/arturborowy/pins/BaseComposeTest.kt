@@ -76,6 +76,14 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         appDatabase.clearAllTables()
     }
 
+    protected fun test(message: String, action: () -> Unit) {
+        try {
+            action()
+        } catch (e: AssertionError) {
+            throw AssertionError(message)
+        }
+    }
+
     protected fun getString(@StringRes stringResId: Int) =
         composeTestRule.activity.getString(stringResId)
 

@@ -1,24 +1,19 @@
 package com.arturborowy.pins.screen.main
 
-import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.model.system.LocaleRepository
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
-import io.mockk.coEvery
+import com.arturborowy.pins.model.system.NetworkStateRepository
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
-@Module
-@TestInstallIn(
-    components = [SingletonComponent::class],
-    replaces = [SystemAbstractionModule::class]
-)
 object MockSystemAbstractionModule {
 
-    @Provides
-    fun localeRepository() = mockk<LocaleRepository>().apply {
-        coEvery { locale } returns Locale.US
+    val localeRepository = mockk<LocaleRepository>().apply {
+        every { locale } returns Locale.US
+    }
+
+    val networkStateRepository = mockk<NetworkStateRepository>().apply {
+        every { hasInternet } returns MutableStateFlow(true)
     }
 }
