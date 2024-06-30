@@ -29,7 +29,7 @@ class InternetUnavailableTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isNetworkUnavailableErrorShown_whenAddTripFabIsClicked_onTripList() {
-        goToTripAddingViaTripListScreen()
+        goToSingleStopTripAddingViaTripListScreen()
 
         composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)
             .assertIsDisplayed()
@@ -38,6 +38,8 @@ class InternetUnavailableTest : BaseComposeTest<MainActivity>() {
     @Test
     fun isNetworkUnavailableErrorShown_whenAddTripFabIsClicked_onMap() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)

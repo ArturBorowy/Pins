@@ -1,9 +1,10 @@
-package com.arturborowy.pins.screen.main
+package com.arturborowy.pins.screen.main.edittrip
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -15,6 +16,9 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
 import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.screen.main.BottomNavItem
+import com.arturborowy.pins.screen.main.MainActivity
+import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
 import com.arturborowy.pins.ui.composable.TripViewTag
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -24,7 +28,7 @@ import org.junit.Test
 @UninstallModules(SystemAbstractionModule::class)
 @OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
-class EditTripScreenTest : BaseComposeTest<MainActivity>() {
+class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
     override val composeTestRule = createAndroidComposeRule<MainActivity>()
 
@@ -39,7 +43,7 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameCorrect_onEditingScreen() {
-        addTripViaTripListAndGoToEdit()
+        addSingleStopTripViaTripListAndGoToEdit()
 
         //isTripNameCorrect_onEditingScreen
         composeTestRule.onNodeWithText(MOCK_TRIP_NAME)
@@ -59,8 +63,8 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
     }
 
     @Test
-    fun isTripNameChangedOnList_whenEdited() {
-        addTripViaTripList()
+    fun isTripChangedOnList_whenEdited() {
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -71,32 +75,19 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextReplacement(newTripName)
 
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
-            .performClick()
-
-        assertIsTripNameOnTripListCorrect(newTripName)
-    }
-
-    @Test
-    fun areDatesChangedOnList_whenEdited() {
-        addTripViaTripList()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
-        chooseTripToEdit()
-
         inputDate("10 Jun 2017", 2000, 1, 1)
         inputDate("30 Nov 2020", 2000, 4, 10)
 
         composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
             .performClick()
 
+        assertIsTripNameOnTripListCorrect(newTripName)
         assertAreDatesOnTripListCorrect("01 Jan 2000 - 10 Apr 2000")
     }
 
     @Test
     fun isAddressCleared_whenBackIsClicked() {
-        addTripViaTripList()
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -136,7 +127,7 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun arePredictionsShown_whenPlaceNameIsProvided() {
-        addTripViaTripList()
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -156,7 +147,7 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isPlaceConfirmShown_whenPredictionIsChosen() {
-        addTripViaTripList()
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -184,8 +175,8 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
     }
 
     @Test
-    fun tripDiesNotAppearOnList_whenDeleted() {
-        addTripViaTripList()
+    fun tripDoesNotAppearOnList_whenDeleted() {
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -203,7 +194,7 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameShown_whenPlaceConfirmIsClicked() {
-        addTripViaTripList()
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -233,7 +224,7 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameShown_whenBackIsClicked() {
-        addTripViaTripList()
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -260,7 +251,7 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveChangesBtnShown_whenBackIsClickedTwice() {
-        addTripViaTripList()
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -271,8 +262,16 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
             .performClick()
     }
 
-    private fun addTripViaTripListAndGoToEdit() {
-        addTripViaTripList()
+    private fun addMultiStopTripViaTripListAndGoToEdit() {
+        addMultiStopTripViaTripList()
+
+        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+
+        chooseTripToEdit()
+    }
+
+    private fun addSingleStopTripViaTripListAndGoToEdit() {
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -292,6 +291,12 @@ class EditTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(expectedContentDescription)
             .performClick()
+
+
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(MOCK_TRIP_NAME),
+            5000L
+        )
     }
 
     private fun editPlace() {

@@ -3,7 +3,8 @@ package com.arturborowy.pins.di
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.licences.LicencesInteractor
 import com.arturborowy.pins.model.countryicons.CountryIconsRepository
-import com.arturborowy.pins.model.db.TripSingleStopDao
+import com.arturborowy.pins.model.db.StopEntityDao
+import com.arturborowy.pins.model.db.TripDao
 import com.arturborowy.pins.model.licences.LibrariesRepository
 import com.arturborowy.pins.model.licences.LicencesContentRepository
 import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
@@ -22,13 +23,15 @@ object MainModule {
 
     @Provides
     fun placesInteractor(
-        tripSingleStopDao: TripSingleStopDao,
+        tripDao: TripDao,
+        stopEntityDao: StopEntityDao,
         placesPredictionRepository: PlacesPredictionRepository,
         geocodingRepository: GeocodingRepository,
         countryIconsRepository: CountryIconsRepository
     ) =
         PlacesInteractor(
-            tripSingleStopDao,
+            tripDao,
+            stopEntityDao,
             placesPredictionRepository,
             geocodingRepository,
             countryIconsRepository

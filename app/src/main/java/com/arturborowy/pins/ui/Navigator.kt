@@ -27,14 +27,14 @@ interface NavigationTarget {
 
     object EDIT_TRIP {
 
-        val PLACE_ID_KEY = "PLACE_ID_KEY"
+        val TRIP_ID_KEY = "TRIP_ID_KEY"
 
-        val label = create("{$PLACE_ID_KEY}").label
+        val label = create("{$TRIP_ID_KEY}").label
 
-        fun create(placeId: Long) = create(placeId.toString())
+        fun create(tripId: Long) = create(tripId.toString())
 
-        private fun create(placeId: String) = object : NavigationTarget {
-            override val label = "EDIT_PIN/$placeId"
+        private fun create(tripId: String) = object : NavigationTarget {
+            override val label = "EDIT_PIN/$tripId"
         }
     }
 
@@ -43,11 +43,11 @@ interface NavigationTarget {
     }
 
     object ADD_TRIP {
-        val SHOW_SEARCH_BAR_KEY = "SHOW_SEARCH_BAR_KEY"
+        val SHOW_TRIP_TYPE_BAR_KEY = "SHOW_TRIP_TYPE_BAR_KEY"
 
-        val label = create("{$SHOW_SEARCH_BAR_KEY}").label
+        val label = create("{$SHOW_TRIP_TYPE_BAR_KEY}").label
 
-        fun create(showSearchBar: Boolean) = create(showSearchBar.toString())
+        fun create(showTripTypeBar: Boolean) = create(showTripTypeBar.toString())
 
         private fun create(showSearchBar: String) = object : NavigationTarget {
             override val label = "ADD_TRIP/$showSearchBar"

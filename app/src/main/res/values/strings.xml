@@ -14,8 +14,12 @@
     <string name="add_trip_hint_departure_date">Departure date</string>
     <string name="add_trip_error_internet_unavailable">You don\'t have internet connection</string>
 
-    <string name="create_trip_btn_confirm">SAVE TRIP</string>
-    <string name="create_trip_btn_cancel">CANCEL TRIP</string>
+    <string name="add_trip_btn_single_stop">Single stop</string>
+    <string name="add_trip_btn_multi_stop">Multi stop</string>
+
+    <string name="create_trip_btn_confirm">Confirm</string>
+    <string name="create_trip_btn_next_stop">Next stop</string>
+    <string name="create_trip_btn_cancel">Cancel</string>
 
     <string name="trip_list_header">Your trips</string>
     <string name="trip_list_header_empty">Your trips…</string>
@@ -26,6 +30,8 @@
     <string name="edit_trip_header">Edit trip</string>
     <string name="edit_trip_btn_delete">DELETE TRIP</string>
     <string name="edit_trip_btn_save_changes">SAVE CHANGES</string>
+    <string name="edit_trip_cd_previous_stop">Previous stop</string>
+    <string name="edit_trip_cd_next_stop">Next stop</string>
 
     <string name="settings_header">Settings</string>
 

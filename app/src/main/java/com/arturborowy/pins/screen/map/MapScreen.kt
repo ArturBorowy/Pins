@@ -1,35 +1,68 @@
 package com.arturborowy.pins.screen.map
 
+import android.app.DatePickerDialog
+import android.content.Context
+import android.widget.DatePicker
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.pins.R
+import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
-import com.arturborowy.pins.ui.composable.SingleTripAddCard
+import com.arturborowy.pins.ui.composable.TripAddCard
+import com.arturborowy.pins.utils.addBorderToCircle
 import com.arturborowy.pins.utils.collectAsMutableState
-import com.arturborowy.pins.utils.mapIconBitmapDescriptor
+import com.arturborowy.pins.utils.cropBitmapToCircle
+import com.arturborowy.pins.utils.getBitmapFromVectorDrawable
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.showShortToast
 import com.arturborowy.pins.utils.statusBarHeightPx
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import java.util.Calendar
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -82,7 +115,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         if (state.showAddressTextField) {
             val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
 
-            SingleTripAddCard(
+            TripAddCard(
                 modifier = Modifier
                     .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
                 placeText = state.placeText,
@@ -116,11 +149,14 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                 positiveClickText = stringResource(R.string.create_trip_btn_confirm),
                 onNegativeClick = { viewModel.onTripCancelClick() },
                 negativeClickText = stringResource(R.string.create_trip_btn_cancel),
+                onMiddleClick = { viewModel.onAddNextStopClick() },
+                middleClickText = stringResource(R.string.create_trip_btn_next_stop),
                 keyboard = keyboard,
                 isSavingEnabled = state.isSavingTripEnabled,
-                isAddressEditEnabled = state.isAddressEditEnabled
+                isAddressEditEnabled = state.isAddressEditEnabled,
+                multiStop = state.multiStop
             )
-        } else {
+        } else if (state.showAddPinButton) {
             Fab(
                 R.drawable.ic_add_trip,
                 R.string.main_bottom_nav_label_add,
@@ -128,6 +164,275 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                     .align(Alignment.BottomCenter)
                     .padding(16.dp),
             ) { viewModel.onAddTripClick() }
+        } else if (state.showTripTypeBar) {
+            AddTripTypesBar(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+                { viewModel.onAddSingleStopTripClick() },
+                { viewModel.onAddMultiStopTripClick() })
+        }
+    }
+}
+
+@Composable
+fun AddTripTypesBar(
+    modifier: Modifier, onSingleStopTripClick: () -> Unit, onMultipleStopTripClick: () -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(999.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    ) {
+        Row {
+            TextButton(
+                onClick = { onSingleStopTripClick() },
+                shape = RoundedCornerShape(999.dp, 0.dp, 0.dp, 999.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.add_trip_btn_single_stop),
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .padding(4.dp, 4.dp, 0.dp, 4.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+
+            Divider(
+                modifier = Modifier
+                    .padding(0.dp, 6.dp)
+                    .width(2.dp)
+                    .height(30.dp)
+                    .align(Alignment.CenterVertically),
+                color = colorResource(R.color.primary)
+            )
+
+            TextButton(
+                onClick = { onMultipleStopTripClick() },
+                shape = RoundedCornerShape(0.dp, 999.dp, 999.dp, 0.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.add_trip_btn_multi_stop),
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .padding(0.dp, 4.dp, 4.dp, 4.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun mapIconBitmapDescriptor(
+    context: Context, @DrawableRes vectorResId: Int
+): BitmapDescriptor {
+    val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f).cropBitmapToCircle()
+        .addBorderToCircle(5.dp.value, context.getColor(R.color.primary))
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
+@Composable
+fun SearchBar(
+    placeText: String,
+    onSearchTextChange: (String) -> Unit,
+    nameText: String,
+    onNameTextChange: (String) -> Unit,
+    onBackClick: () -> Unit,
+    onConfirmClick: () -> Unit,
+    showConfirm: Boolean,
+    expandDropdown: Boolean,
+    showExtraEditionFields: Boolean,
+    predictions: List<AddressPredictionDto>,
+    onAddressPredictionClick: (AddressPredictionDto) -> Unit,
+    arrivalDate: String?,
+    onArrivalDateChange: (Int, Int, Int) -> Unit,
+    departureDate: String?,
+    onDepartureDateChange: (Int, Int, Int) -> Unit,
+    onTripConfirmClick: () -> Unit
+) {
+    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
+        shape = RoundedCornerShape(8.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
+        ) {
+            SearchField(
+                placeText = placeText,
+                onTextChange = onSearchTextChange,
+                onBackClick = onBackClick,
+                onConfirmClick = onConfirmClick,
+                showConfirm = showConfirm,
+            )
+            SearchResults(
+                expandDropdown = expandDropdown,
+                predictions = predictions,
+                onAddressPredictionClick = onAddressPredictionClick
+            )
+
+            if (showExtraEditionFields) {
+                ExtraFields(
+                    nameText = nameText,
+                    onNameTextChange = onNameTextChange,
+                    arrivalDate = arrivalDate,
+                    onArrivalDateChange = onArrivalDateChange,
+                    departureDate = departureDate,
+                    onDepartureDateChange = onDepartureDateChange,
+                    onTripConfirmClick = onTripConfirmClick
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExtraFields(
+    nameText: String,
+    onNameTextChange: (String) -> Unit,
+    arrivalDate: String?,
+    onArrivalDateChange: (Int, Int, Int) -> Unit,
+    departureDate: String?,
+    onDepartureDateChange: (Int, Int, Int) -> Unit,
+    onTripConfirmClick: () -> Unit
+) {
+    TextField(
+        colors = textFieldColors(),
+        modifier = Modifier.fillMaxWidth(),
+        value = nameText,
+        singleLine = true,
+        onValueChange = { onNameTextChange(it) },
+        label = { Text(stringResource(R.string.add_trip_hint_trip_name)) },
+    )
+    DatePickingButton(
+        label = arrivalDate ?: stringResource(R.string.add_trip_hint_arrival_date),
+        onDateSelected = onArrivalDateChange
+    )
+    DatePickingButton(
+        label = departureDate ?: stringResource(R.string.add_trip_hint_departure_date),
+        onDateSelected = onDepartureDateChange
+    )
+
+    Button(onClick = { onTripConfirmClick() }) {
+        Text(text = stringResource(R.string.create_trip_btn_confirm))
+    }
+}
+
+@Composable
+fun DatePickingButton(
+    label: String,
+    onDateSelected: (Int, Int, Int) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+
+    val year = calendar[Calendar.YEAR]
+    val month = calendar[Calendar.MONTH]
+    val dayOfMonth = calendar[Calendar.DAY_OF_MONTH]
+
+    TextButton(onClick = {
+        val datePicker = DatePickerDialog(
+            context,
+            { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int ->
+                onDateSelected(selectedYear, selectedMonth, selectedDayOfMonth)
+            },
+            year,
+            month,
+            dayOfMonth
+        )
+
+        datePicker.show()
+    }) {
+        Text(label)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun textFieldColors() = TextFieldDefaults.textFieldColors(
+    containerColor = Color.White,
+    textColor = Color.Black,
+    placeholderColor = colorResource(R.color.primary),
+    cursorColor = Color.Black,
+    selectionColors = TextSelectionColors(
+        colorResource(R.color.primary), colorResource(R.color.primary)
+    ),
+    focusedIndicatorColor = colorResource(R.color.primary),
+    unfocusedIndicatorColor = colorResource(R.color.primary),
+    focusedLabelColor = colorResource(R.color.primary),
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchField(
+    placeText: String,
+    onTextChange: (String) -> Unit,
+    onBackClick: () -> Unit,
+    onConfirmClick: () -> Unit,
+    showConfirm: Boolean,
+) {
+    TextField(
+        colors = textFieldColors(),
+        modifier = Modifier.fillMaxWidth(),
+        value = placeText,
+        singleLine = true,
+        onValueChange = { onTextChange(it) },
+        label = { Text(stringResource(R.string.add_trip_hint_name)) },
+        leadingIcon = {
+            TextButton(onClick = { onBackClick() }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_back_editing),
+                    tint = colorResource(R.color.primary),
+                    contentDescription = stringResource(R.string.add_trip_cd_address_editing_back)
+                )
+            }
+        },
+        trailingIcon = {
+            if (showConfirm) {
+                TextButton(onClick = { onConfirmClick() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_done),
+                        tint = colorResource(R.color.primary),
+                        contentDescription = stringResource(R.string.add_trip_btn_confirm)
+                    )
+                }
+            }
+        })
+}
+
+@Composable
+fun SearchResults(
+    expandDropdown: Boolean,
+    predictions: List<AddressPredictionDto>,
+    onAddressPredictionClick: (AddressPredictionDto) -> Unit
+) {
+    DropdownMenu(modifier = Modifier.background(Color.White),
+        expanded = expandDropdown,
+        properties = PopupProperties(
+            clippingEnabled = false,
+            focusable = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        ),
+        onDismissRequest = {}) {
+        predictions.forEach { addressPrediction ->
+            DropdownMenuItem(onClick = { onAddressPredictionClick(addressPrediction) }, text = {
+                Text(
+                    addressPrediction.label,
+                    color = Color.Black,
+                )
+            })
         }
     }
 }

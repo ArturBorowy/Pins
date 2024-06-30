@@ -13,8 +13,11 @@ class MockGeocodingRepository : GeocodingRepository {
         suspendCoroutine {
             ALog.d("latitude: $latitude, longitude: $longitude")
 
-            if (latitude == MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.latitude
-                && longitude == MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.longitude
+            if ((latitude == MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.latitude
+                        && longitude == MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.longitude)
+                ||
+                (latitude == MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_PLACE_DETAILS.latitude
+                        && longitude == MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_PLACE_DETAILS.longitude)
             ) {
                 val country = GEOCODED_COUNTRY
 

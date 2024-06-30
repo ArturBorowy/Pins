@@ -11,13 +11,22 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
         suspendCoroutine {
             ALog.d("inputString: $inputString")
 
-            if (inputString == EXPECTED_ADDRESS_PREDICTION_STRING) {
-                val predictions = FETCHED_ADDRESS_PREDICTIONS
+            when (inputString) {
+                EXPECTED_ADDRESS_PREDICTION_STRING -> {
+                    val predictions = FETCHED_ADDRESS_PREDICTIONS
 
-                ALog.d("result: $predictions")
-                it.resume(predictions)
-            } else {
-                it.resumeWithException(MockInputException())
+                    ALog.d("result: $predictions")
+                    it.resume(predictions)
+                }
+
+                ALTERNATIVE_EXPECTED_ADDRESS_PREDICTION_STRING -> {
+                    val predictions = ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS
+
+                    ALog.d("result: $predictions")
+                    it.resume(predictions)
+                }
+
+                else -> it.resumeWithException(MockInputException())
             }
         }
 
@@ -25,13 +34,22 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
         suspendCoroutine {
             ALog.d("placeId: $id")
 
-            if (id == EXPECTED_PLACE_ID_FOR_DETAILS) {
-                val placeDetails = FETCHED_PLACE_DETAILS
+            when (id) {
+                EXPECTED_PLACE_ID_FOR_DETAILS -> {
+                    val placeDetails = FETCHED_PLACE_DETAILS
 
-                ALog.d("result: $placeDetails")
-                it.resume(FETCHED_PLACE_DETAILS)
-            } else {
-                it.resumeWithException(MockInputException())
+                    ALog.d("result: $placeDetails")
+                    it.resume(placeDetails)
+                }
+
+                ALTERNATIVE_EXPECTED_PLACE_ID_FOR_DETAILS -> {
+                    val placeDetails = ALTERNATIVE_FETCHED_PLACE_DETAILS
+
+                    ALog.d("result: $placeDetails")
+                    it.resume(placeDetails)
+                }
+
+                else -> it.resumeWithException(MockInputException())
             }
         }
 
@@ -44,6 +62,14 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
             AddressPredictionDto("001", "Kraków, Małopolskie, Poland"),
             AddressPredictionDto("002", "Krakówek, Mazowieckie, Poland"),
             AddressPredictionDto("003", "Krakówec, Bavaria, Germany"),
+        )
+
+        const val ALTERNATIVE_EXPECTED_ADDRESS_PREDICTION_STRING = "war"
+        const val ALTERNATIVE_EXPECTED_PLACE_ID_FOR_DETAILS = "004"
+
+        val ALTERNATIVE_FETCHED_PLACE_DETAILS = PlaceDetailsDto("Warszawa", 52.2297, 21.0122)
+        val ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS = listOf(
+            AddressPredictionDto("004", "Warszawa, Mazowieckie, Poland"),
         )
     }
 }

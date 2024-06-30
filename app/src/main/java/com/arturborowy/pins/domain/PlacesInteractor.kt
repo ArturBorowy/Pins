@@ -1,15 +1,18 @@
 package com.arturborowy.pins.domain
 
 import com.arturborowy.pins.model.countryicons.CountryIconsRepository
-import com.arturborowy.pins.model.db.TripSingleStopDao
+import com.arturborowy.pins.model.db.StopEntityDao
+import com.arturborowy.pins.model.db.TripDao
 import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
 import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
-import com.arturborowy.pins.model.trip.TripSingleStopEntity
-import java.util.Date
+import com.arturborowy.pins.model.trip.StopEntity
+import com.arturborowy.pins.model.trip.TripEntity
+import java.util.Calendar
 import javax.inject.Inject
 
 class PlacesInteractor @Inject constructor(
-    private val tripSingleStopDao: TripSingleStopDao,
+    private val tripDao: TripDao,
+    private val stopEntityDao: StopEntityDao,
     private val placesPredictionRepository: PlacesPredictionRepository,
     private val geocodingRepository: GeocodingRepository,
     private val countryIconsRepository: CountryIconsRepository
@@ -31,49 +34,46 @@ class PlacesInteractor @Inject constructor(
         )
     }
 
-    suspend fun getSingleStopTrip(placeId: String) =
-        tripSingleStopDao.select(placeId)
+    suspend fun getSingleStopTrip(tripId: String): Trip {
+        val tripEntity = tripDao.select(tripId)
+        return getTripFromTripEntity(tripEntity)
+    }
 
     suspend fun saveSingleStopTrip(
         tripName: String,
-        arrivalDate: Date,
-        departureDate: Date,
-        placeDetails: PlaceDetails
+        stopDetails: StopDetails
     ) {
+        val tripId = tripDao.insert(TripEntity(tripName))
 
-        tripSingleStopDao.insert(
-            TripSingleStopEntity(
-                tripName,
-                placeDetails.locationName,
-                arrivalDate.time,
-                departureDate.time,
-                placeDetails.latitude,
-                placeDetails.longitude,
-                placeDetails.country
-            )
+        val stopEntity = StopEntity(
+            stopDetails.placeDetails.locationName,
+            stopDetails.arrivalDate.time,
+            stopDetails.departureDate?.time,
+            stopDetails.placeDetails.latitude,
+            stopDetails.placeDetails.longitude,
+            stopDetails.placeDetails.country,
+            tripId
         )
+
+        stopEntityDao.insert(stopEntity)
     }
 
-    suspend fun updateSingleStopTrip(
-        tripId: Long,
-        tripName: String,
-        arrivalDate: Date,
-        departureDate: Date,
-        placeDetails: PlaceDetails
-    ) {
+    suspend fun updateTrip(trip: Trip) {
+        tripDao.insert(TripEntity(trip.name, trip.id))
 
-        tripSingleStopDao.insert(
-            TripSingleStopEntity(
-                tripName,
-                placeDetails.locationName,
-                arrivalDate.time,
-                departureDate.time,
-                placeDetails.latitude,
-                placeDetails.longitude,
-                placeDetails.country,
-                tripId
+        trip.stops.forEach { stop ->
+            stopEntityDao.insert(
+                StopEntity(
+                    stop.placeDetails.locationName,
+                    stop.arrivalDate.time,
+                    stop.departureDate?.time,
+                    stop.placeDetails.latitude,
+                    stop.placeDetails.longitude,
+                    stop.placeDetails.country,
+                    trip.id
+                )
             )
-        )
+        }
     }
 
     suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double): Country {
@@ -83,9 +83,67 @@ class PlacesInteractor @Inject constructor(
         return Country(countryDto.id, countryDto.label, countryIcon!!)
     }
 
-    suspend fun getPlaces() = tripSingleStopDao.select()
+    suspend fun getPlaces() =
+        tripDao.select()
+            .map { getTripFromTripEntity(it) }
+
+    private suspend fun getTripFromTripEntity(tripEntity: TripEntity): Trip {
+        val stops = stopEntityDao.select(tripEntity.id)
+        return mapTripEntitiesToTrip(tripEntity, stops)
+    }
+
+    private fun mapTripEntitiesToTrip(
+        tripEntity: TripEntity,
+        stopEntities: List<StopEntity>
+    ): Trip {
+        val stops = stopEntities.map { stopEntity ->
+            StopDetails(
+                date(stopEntity.arrivalDate)!!,
+                date(stopEntity.departureDate),
+                PlaceDetails(
+                    stopEntity.locationName,
+                    stopEntity.latitude,
+                    stopEntity.longitude,
+                    stopEntity.country
+                )
+            )
+        }
+
+        return Trip(
+            tripEntity.id,
+            tripEntity.name,
+            stops
+        )
+    }
+
+    private fun date(timeInMillis: Long?) =
+        timeInMillis?.let {
+            Calendar.getInstance()
+                .apply { this.timeInMillis = timeInMillis }.time
+        }
 
     suspend fun removePlaceDetails(id: Long) {
-        tripSingleStopDao.removePlaceDetails(id)
+        tripDao.remove(id)
+    }
+
+    suspend fun saveMultiStopTrip(
+        nameText: String,
+        stops: List<StopDetails>
+    ) {
+        val tripId = tripDao.insert(TripEntity(nameText))
+
+        stops.forEach { stop ->
+            stopEntityDao.insert(
+                StopEntity(
+                    stop.placeDetails.locationName,
+                    stop.arrivalDate.time,
+                    stop.departureDate?.time,
+                    stop.placeDetails.latitude,
+                    stop.placeDetails.longitude,
+                    stop.placeDetails.country,
+                    tripId
+                )
+            )
+        }
     }
 }

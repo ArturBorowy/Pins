@@ -56,8 +56,8 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun headerHasNotEllipsize_whenTripListIsNotEmpty() {
-        goToTripDetailsInput()
-        inputTripDetails()
+        goToSingleStopTripDetailsInput()
+        inputSingleStopTripDetails()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -68,8 +68,8 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
     }
 
     @Test
-    fun tripOnListHasCorrectName_whenIsAddedViaTripListScreen() {
-        addTripViaTripList()
+    fun singleStopTripOnListHasCorrectName_whenIsAddedViaTripListScreen() {
+        addSingleStopTripViaTripList()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -87,9 +87,9 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
     }
 
     @Test
-    fun tripOnListHasCorrectName_whenIsAddedViaMapScreen() {
-        goToTripDetailsInput()
-        inputTripDetails()
+    fun singleStopTripOnListHasCorrectName_whenIsAddedViaMapScreen() {
+        goToSingleStopTripDetailsInput()
+        inputSingleStopTripDetails()
 
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
@@ -104,5 +104,40 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
         //tripOnListHasCorrectPlaceName_whenIsAddedViaMapScreen
         assertIsFlagOnTripListCorrect()
+    }
+
+    @Test
+    fun multiStopTripOnListHasCorrectName_whenIsAddedViaTripListScreen() {
+        addMultiStopTripViaTripList()
+
+        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+
+        //tripOnListHasCorrectName_whenIsAddedViaTripListScreen
+        assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
+
+        //tripOnListHasCorrectFlag_whenIsAddedViaTripListScreen
+        assertIsFlagOnTripListCorrect()
+
+        assertArePlaceNamesOnTripListCorrect()
+
+        assertAreDatesOnTripListCorrect2()
+    }
+
+    @Test
+    fun multiStopTripOnListHasCorrectName_whenIsAddedViaMapScreen() {
+        goToMultiStopTripDetailsInput()
+        inputMultiStopTripDetails()
+
+        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+
+        //tripOnListHasCorrectName_whenIsAddedViaMapScreen
+        assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
+
+        //tripOnListHasCorrectPlaceName_whenIsAddedViaMapScreen
+        assertIsFlagOnTripListCorrect()
+
+        assertArePlaceNamesOnTripListCorrect()
+
+        assertAreDatesOnTripListCorrect2()
     }
 }

@@ -2,27 +2,16 @@ package com.arturborowy.pins.ui.composable
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,7 +46,7 @@ import java.util.Calendar
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SingleTripAddCard(
+fun TripAddCard(
     modifier: Modifier = Modifier,
     placeText: String,
     placeErrorText: String? = null,
@@ -80,9 +69,12 @@ fun SingleTripAddCard(
     positiveClickText: String,
     onNegativeClick: () -> Unit,
     negativeClickText: String,
+    onMiddleClick: (() -> Unit)?,
+    middleClickText: String?,
     keyboard: SoftwareKeyboardController?,
     isSavingEnabled: Boolean,
-    isAddressEditEnabled: Boolean
+    isAddressEditEnabled: Boolean,
+    multiStop: Boolean
 ) {
     WideCard(
         modifier = modifier,
@@ -107,107 +99,65 @@ fun SingleTripAddCard(
         )
 
         if (showExtraEditionFields) {
-            ExtraFields(
-                nameText = nameText,
-                onNameTextChange = onNameTextChange,
-                arrivalDate = arrivalDate,
-                onArrivalDateChange = onArrivalDateChange,
-                departureDate = departureDate,
-                onDepartureDateChange = onDepartureDateChange,
-                onPositiveClick = onPositiveClick,
-                positiveClickText = positiveClickText,
-                onNegativeClick = onNegativeClick,
-                negativeClickText = negativeClickText,
-                isSavingEnabled = isSavingEnabled,
-            )
+            if (multiStop) {
+                TripMultiStopExtraFields(
+                    nameText = nameText,
+                    onNameTextChange = onNameTextChange,
+                    arrivalDate = arrivalDate,
+                    onArrivalDateChange = onArrivalDateChange,
+                    onPositiveClick = onPositiveClick,
+                    positiveClickText = positiveClickText,
+                    onNegativeClick = onNegativeClick,
+                    negativeClickText = negativeClickText,
+                    onMiddleClick = onMiddleClick,
+                    middleClickText = middleClickText,
+                    isSavingEnabled = isSavingEnabled,
+                )
+            } else {
+                TripSingleStopExtraFields(
+                    nameText = nameText,
+                    onNameTextChange = onNameTextChange,
+                    arrivalDate = arrivalDate,
+                    onArrivalDateChange = onArrivalDateChange,
+                    departureDate = departureDate,
+                    onDepartureDateChange = onDepartureDateChange,
+                    onPositiveClick = onPositiveClick,
+                    positiveClickText = positiveClickText,
+                    onNegativeClick = onNegativeClick,
+                    negativeClickText = negativeClickText,
+                    isSavingEnabled = isSavingEnabled,
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExtraFields(
+fun TripNameField(
     nameText: String,
-    onNameTextChange: (String) -> Unit,
-    arrivalDate: String?,
-    onArrivalDateChange: (Int, Int, Int) -> Unit,
-    departureDate: String?,
-    onDepartureDateChange: (Int, Int, Int) -> Unit,
-    onPositiveClick: () -> Unit,
-    positiveClickText: String,
-    onNegativeClick: () -> Unit,
-    negativeClickText: String,
-    isSavingEnabled: Boolean,
+    onNameTextChange: (String) -> Unit
 ) {
-    Column(
+    OutlinedTextField(
+        colors = outlinedTextFieldColors(),
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White),
-    ) {
-        OutlinedTextField(
-            colors = outlinedTextFieldColors(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp, 0.dp, 8.dp, 8.dp),
-            value = nameText,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            onValueChange = { onNameTextChange(it) },
-            label = { Text(stringResource(R.string.add_trip_hint_trip_name)) },
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            DatePickingButton(
-                label = stringResource(R.string.add_trip_hint_arrival_date),
-                date = arrivalDate,
-                onDateSelected = onArrivalDateChange,
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            DatePickingButton(
-                label = stringResource(R.string.add_trip_hint_departure_date),
-                date = departureDate,
-                onDateSelected = onDepartureDateChange,
-            )
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            OutlinedButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = colorResource(R.color.primary)
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = colorResource(R.color.primary),
-                ),
-                onClick = { onNegativeClick() }) {
-                Text(text = negativeClickText)
-            }
-            Button(modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
-                enabled = isSavingEnabled,
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary)),
-                onClick = { onPositiveClick() }) {
-                Text(text = positiveClickText)
-            }
-        }
-    }
+            .padding(8.dp, 0.dp, 8.dp, 8.dp),
+        value = nameText,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        onValueChange = { onNameTextChange(it) },
+        label = { Text(stringResource(R.string.add_trip_hint_trip_name)) },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RowScope.DatePickingButton(
+fun DatePickingButton(
     label: String,
     date: String?,
     onDateSelected: (Int, Int, Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -216,26 +166,25 @@ fun RowScope.DatePickingButton(
     val month = calendar[Calendar.MONTH]
     val dayOfMonth = calendar[Calendar.DAY_OF_MONTH]
 
-    OutlinedTextField(modifier = Modifier
-        .widthIn(1.dp, 200.dp)
-        .weight(1f)
-        .padding(8.dp, 0.dp)
-        .onFocusChanged {
-            if (it.isFocused) {
-                val datePicker = DatePickerDialog(
-                    context,
-                    R.style.PinsDialog,
-                    { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int ->
-                        onDateSelected(selectedYear, selectedMonth, selectedDayOfMonth)
-                    },
-                    year,
-                    month,
-                    dayOfMonth
-                )
+    OutlinedTextField(
+        modifier = modifier
+            .padding(8.dp, 0.dp)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    val datePicker = DatePickerDialog(
+                        context,
+                        R.style.PinsDialog,
+                        { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int ->
+                            onDateSelected(selectedYear, selectedMonth, selectedDayOfMonth)
+                        },
+                        year,
+                        month,
+                        dayOfMonth
+                    )
 
-                datePicker.show()
-            }
-        },
+                    datePicker.show()
+                }
+            },
         colors = outlinedTextFieldColors(),
         value = date ?: label,
         onValueChange = {},
@@ -380,8 +329,8 @@ fun SearchResults(
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun Preview() {
-    SingleTripAddCard(
+fun TripAddCardPreview() {
+    TripAddCard(
         placeText = "Place text",
         placeErrorText = "No internet connection",
         onSearchTextChange = {},
@@ -402,9 +351,12 @@ fun Preview() {
         onPositiveClick = {},
         positiveClickText = "CONFIRM",
         onNegativeClick = {},
+        middleClickText = "CONFIRM",
+        onMiddleClick = {},
         negativeClickText = "CLOSE",
         keyboard = null,
         isSavingEnabled = true,
-        isAddressEditEnabled = true
+        isAddressEditEnabled = true,
+        multiStop = true
     )
 }

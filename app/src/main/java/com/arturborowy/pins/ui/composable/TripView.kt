@@ -23,7 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arturborowy.pins.R
-import com.arturborowy.pins.screen.triplist.TripSingleStop
+import com.arturborowy.pins.screen.triplist.TripListItem
+import com.arturborowy.pins.screen.triplist.TripListItemStopItem
 
 object TripViewTag {
     const val TRIP_NAME = "TRIP_NAME"
@@ -32,17 +33,19 @@ object TripViewTag {
 }
 
 @Composable
-fun TripView(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop) -> Unit) {
+fun TripView(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
     WideCard(margin = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp)) {
-        TripHeader(tripSingleStop, onEditTripClick)
-        TripRow(tripSingleStop)
+        TripHeader(tripListItem, onEditTripClick)
+        tripListItem.stops.forEach { stop ->
+            TripRow(stop)
+        }
     }
 }
 
 @Composable
-fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop) -> Unit) {
+fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        RoundFlag(tripSingleStop.country)
+        RoundFlag(tripListItem.stops[0].country)
 
         Text(
             modifier = Modifier
@@ -51,7 +54,7 @@ fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop)
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             color = Color.Black,
-            text = tripSingleStop.name
+            text = tripListItem.name
         )
 
         Spacer(Modifier.weight(1.0f))
@@ -60,12 +63,12 @@ fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop)
             modifier = Modifier
                 .height(20.dp)
                 .width(20.dp),
-            onClick = { onEditTripClick(tripSingleStop) }) {
+            onClick = { onEditTripClick(tripListItem) }) {
             Icon(
                 painter = painterResource(R.drawable.ic_edit),
                 contentDescription = stringResource(
                     R.string.trip_list_cd_edit,
-                    tripSingleStop.name
+                    tripListItem.name
                 )
             )
         }
@@ -73,7 +76,7 @@ fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop)
 }
 
 @Composable
-fun TripRow(tripSingleStop: TripSingleStop) {
+fun TripRow(tripListItemStopItem: TripListItemStopItem) {
     Row(
         modifier = Modifier.padding(10.dp, 8.dp, 0.dp, 0.dp)
     ) {
@@ -91,7 +94,7 @@ fun TripRow(tripSingleStop: TripSingleStop) {
                 .testTag(TripViewTag.TRIP_PLACE),
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            text = tripSingleStop.locationName
+            text = tripListItemStopItem.locationName
         )
 
         Spacer(Modifier.weight(1.0f))
@@ -100,7 +103,7 @@ fun TripRow(tripSingleStop: TripSingleStop) {
             modifier = Modifier.testTag(TripViewTag.TRIP_DATES),
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            text = tripSingleStop.dateStr
+            text = tripListItemStopItem.dateStr
         )
     }
 }

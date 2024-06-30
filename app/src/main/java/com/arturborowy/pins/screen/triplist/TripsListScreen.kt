@@ -78,7 +78,7 @@ fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
 }
 
 @Composable
-fun TripListView(trips: List<TripSingleStop>, onEditTripClick: (TripSingleStop) -> Unit) {
+fun TripListView(trips: List<Any>, onEditTripClick: (TripListItem) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +95,9 @@ fun TripListView(trips: List<TripSingleStop>, onEditTripClick: (TripSingleStop) 
             )
         }
         items(trips) {
-            TripView(it, onEditTripClick)
+            if (it is TripListItem) {
+                TripView(it, onEditTripClick)
+            }
         }
     }
 }

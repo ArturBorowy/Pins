@@ -48,18 +48,18 @@ fun NavigationComposable(
 
         composable(NavigationTarget.LICENCES.label) { LicencesScreen() }
 
-        val mapArgs = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY) {
+        val mapArgs = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_TRIP_TYPE_BAR_KEY) {
             type = NavType.BoolType
         })
         composable(NavigationTarget.ADD_TRIP.label, mapArgs) {
-            MapScreen(mapViewModel(it.arguments?.getBoolean(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY)!!))
+            MapScreen(mapViewModel(it.arguments?.getBoolean(NavigationTarget.ADD_TRIP.SHOW_TRIP_TYPE_BAR_KEY)!!))
         }
 
-        val editTripArgs = listOf(navArgument(NavigationTarget.EDIT_TRIP.PLACE_ID_KEY) {
+        val editTripArgs = listOf(navArgument(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY) {
             type = NavType.StringType
         })
         composable(NavigationTarget.EDIT_TRIP.label, editTripArgs) {
-            EditTripScreen(editTripViewModel(it.arguments?.getString(NavigationTarget.EDIT_TRIP.PLACE_ID_KEY)!!))
+            EditTripScreen(editTripViewModel(it.arguments?.getString(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY)!!))
         }
     }
 }
