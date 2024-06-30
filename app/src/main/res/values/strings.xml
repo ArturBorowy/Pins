@@ -36,10 +36,10 @@
     <string name="settings_header">Settings</string>
 
     <string name="settings_item_rate_on_store">Rate us on Play Store</string>
-    <string name="settings_item_licences">Licences</string>
+    <string name="settings_item_Licenses">Licenses</string>
     <string name="settings_item_version">Version</string>
 
-    <string name="licences_header">Licences</string>
+    <string name="Licenses_header">Licenses</string>
 
     <string name="licence_copyright">Copyright %s %s</string>
 

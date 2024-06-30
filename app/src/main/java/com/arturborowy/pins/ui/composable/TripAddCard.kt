@@ -13,9 +13,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -209,10 +209,10 @@ fun DatePickingButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun outlinedTextFieldColors() = TextFieldDefaults.outlinedTextFieldColors(
-    textColor = colorResource(R.color.primary),
+fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = colorResource(R.color.primary),
     unfocusedBorderColor = colorResource(R.color.primary),
+    focusedTextColor = colorResource(R.color.primary),
     focusedLabelColor = colorResource(R.color.primary),
     unfocusedLabelColor = colorResource(R.color.primary),
 )

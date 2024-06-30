@@ -13,6 +13,7 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.StopDetails
+import com.arturborowy.pins.domain.Trip
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.model.system.LocaleRepository
 import com.arturborowy.pins.model.system.NetworkStateRepository
@@ -53,15 +54,8 @@ class MapViewModel @AssistedInject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         viewModelScope.launch {
-            val places = placesInteractor.getPlaces().flatMap { it.stops }.map {
-                TripMarker(
-                    it.placeDetails.locationName,
-                    it.placeDetails.country.countryIcon,
-                    it.placeDetails.latitude,
-                    it.placeDetails.longitude
-                )
-            }
-            state.emit(state.value.copy(tripMarkers = places))
+            val tripMarkers = placesInteractor.getPlaces().toTripMarkers()
+            state.emit(state.value.copy(tripMarkers = tripMarkers))
         }
         viewModelScope.launch {
             state.collect {
@@ -207,19 +201,12 @@ class MapViewModel @AssistedInject constructor(
     }
 
     private suspend fun moveToTripListState() {
-        val places = placesInteractor.getPlaces().flatMap { it.stops }.map {
-            TripMarker(
-                it.placeDetails.locationName,
-                it.placeDetails.country.countryIcon,
-                it.placeDetails.latitude,
-                it.placeDetails.longitude
-            )
-        }
+        val tripMarkers = placesInteractor.getPlaces().toTripMarkers()
         state.emit(
             state.value.copy(
                 showAddPinButton = true,
                 showAddressTextField = false,
-                tripMarkers = places,
+                tripMarkers = tripMarkers,
                 placeLongitude = null,
                 placeLatitude = null,
                 showConfirmAddressButton = false,
@@ -231,6 +218,18 @@ class MapViewModel @AssistedInject constructor(
             )
         )
     }
+
+    private fun List<Trip>.toTripMarkers() =
+        map { trip ->
+            trip.stops.map { stop ->
+                TripMarkerItem(
+                    stop.placeDetails.locationName,
+                    stop.placeDetails.country.countryIcon,
+                    stop.placeDetails.latitude,
+                    stop.placeDetails.longitude
+                )
+            }
+        }
 
     fun onConfirmAddress() {
         viewModelScope.launch {
@@ -344,7 +343,7 @@ class MapViewModel @AssistedInject constructor(
         val placeLatitude: Double? = null,
         val placeLongitude: Double? = null,
         @DrawableRes val placeCountryIcon: Int? = null,
-        val tripMarkers: List<TripMarker> = listOf(),
+        val tripMarkers: List<List<TripMarkerItem>> = listOf(),
         val showAddressTextField: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,

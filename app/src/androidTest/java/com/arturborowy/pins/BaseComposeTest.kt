@@ -67,7 +67,8 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         val defaultTagSettings = TagSettings(
             shouldLogFileNameAndLineNum = true,
             shouldLogClassName = true,
-            shouldLogMethodName = true
+            shouldLogMethodName = true,
+            shouldLogThreadName = false
         )
 
         ALogInitializer.init(shouldLog, defaultTagSettings)

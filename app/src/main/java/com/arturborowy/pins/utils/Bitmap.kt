@@ -9,6 +9,7 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
@@ -56,12 +57,14 @@ fun Bitmap.cropBitmapToCircle(): Bitmap {
 }
 
 fun Bitmap.addBorderToCircle(borderSize: Float, color: Int): Bitmap {
-    val bmpWithBorder =
-        Bitmap.createBitmap(
-            width + borderSize.toInt() * 2,
-            height + borderSize.toInt() * 2,
-            config
-        )
+    val widthWithBorder = width + borderSize.toInt() * 2
+    val heightWithBorder = height + borderSize.toInt() * 2
+
+    val bmpWithBorder = if (config == null) {
+        createBitmap(widthWithBorder, heightWithBorder)
+    } else {
+        createBitmap(widthWithBorder, heightWithBorder, config!!)
+    }
     val canvas = Canvas(bmpWithBorder)
     val paint = Paint()
     paint.color = color

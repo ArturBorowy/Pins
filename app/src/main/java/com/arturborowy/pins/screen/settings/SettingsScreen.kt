@@ -62,8 +62,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             WideCard(padding = PaddingValues(0.dp, 8.dp, 0.dp, 0.dp)) {
                 SettingItem(stringResource(R.string.settings_item_rate_on_store))
                 SettingItem(
-                    stringResource(R.string.settings_item_licences),
-                    onClick = viewModel::onLicencesClick
+                    stringResource(R.string.settings_item_Licenses),
+                    onClick = viewModel::onLicensesClick
                 )
                 SettingItem(
                     stringResource(R.string.settings_item_version),
