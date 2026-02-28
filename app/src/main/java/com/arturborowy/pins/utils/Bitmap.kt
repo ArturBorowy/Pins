@@ -10,16 +10,6 @@ import android.graphics.Rect
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-
-fun bitmapDescriptor(
-    context: Context,
-    @DrawableRes vectorResId: Int
-): BitmapDescriptor {
-    val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f)
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
-}
 
 fun getBitmapFromVectorDrawable(
     context: Context,
@@ -27,10 +17,9 @@ fun getBitmapFromVectorDrawable(
     scale: Float
 ): Bitmap {
     val drawable = ContextCompat.getDrawable(context, drawableId)!!
-    val bitmap = Bitmap.createBitmap(
+    val bitmap = createBitmap(
         (drawable.intrinsicWidth.toFloat() * scale).toInt(),
-        (drawable.intrinsicHeight.toFloat() * scale).toInt(),
-        Bitmap.Config.ARGB_8888
+        (drawable.intrinsicHeight.toFloat() * scale).toInt()
     )
     val canvas = Canvas(bitmap)
     drawable.setBounds(0, 0, canvas.width, canvas.height)
@@ -39,7 +28,7 @@ fun getBitmapFromVectorDrawable(
 }
 
 fun Bitmap.cropBitmapToCircle(): Bitmap {
-    val output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val output = createBitmap(width, height)
     val canvas = Canvas(output)
     val paint = Paint()
     val rect = Rect(0, 0, width, height)
@@ -51,7 +40,7 @@ fun Bitmap.cropBitmapToCircle(): Bitmap {
         (width / 2).toFloat(),
         paint
     )
-    paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
     canvas.drawBitmap(this, rect, rect, paint)
     return output
 }

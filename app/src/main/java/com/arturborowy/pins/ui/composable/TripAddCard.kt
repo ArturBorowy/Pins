@@ -11,7 +11,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -25,11 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -42,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.ui.theme.PinsTheme
 import java.util.Calendar
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -201,7 +199,7 @@ fun DatePickingButton(
         leadingIcon = {
             Icon(
                 painter = painterResource(R.drawable.ic_calendar),
-                tint = colorResource(R.color.primary),
+                tint = PinsTheme.colorScheme.primary,
                 contentDescription = label
             )
         })
@@ -210,11 +208,11 @@ fun DatePickingButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = colorResource(R.color.primary),
-    unfocusedBorderColor = colorResource(R.color.primary),
-    focusedTextColor = colorResource(R.color.primary),
-    focusedLabelColor = colorResource(R.color.primary),
-    unfocusedLabelColor = colorResource(R.color.primary),
+    focusedBorderColor = PinsTheme.colorScheme.primary,
+    unfocusedBorderColor = PinsTheme.colorScheme.primary,
+    focusedTextColor = PinsTheme.colorScheme.primary,
+    focusedLabelColor = PinsTheme.colorScheme.primary,
+    unfocusedLabelColor = PinsTheme.colorScheme.primary,
 )
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -247,7 +245,7 @@ fun SearchField(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = errorText,
-                    color = MaterialTheme.colorScheme.error
+                    color = PinsTheme.colorScheme.error
                 )
             }
         },
@@ -272,7 +270,7 @@ fun SearchField(
                 TextButton(onClick = { onBackClick() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_back_editing),
-                        tint = colorResource(R.color.primary),
+                        tint = PinsTheme.colorScheme.primary,
                         contentDescription = stringResource(R.string.add_trip_cd_address_editing_back)
                     )
                 }
@@ -283,7 +281,7 @@ fun SearchField(
                 TextButton(onClick = { onConfirmClick() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_done),
-                        tint = colorResource(R.color.primary),
+                        tint = PinsTheme.colorScheme.primary,
                         contentDescription = stringResource(R.string.add_trip_btn_confirm)
                     )
                 }
@@ -306,7 +304,8 @@ fun SearchResults(
     predictions: List<AddressPredictionDto>,
     onAddressPredictionClick: (AddressPredictionDto) -> Unit
 ) {
-    DropdownMenu(modifier = Modifier.background(Color.White),
+    DropdownMenu(
+        modifier = Modifier.background(PinsTheme.colorScheme.surface),
         expanded = expandDropdown,
         properties = PopupProperties(
             clippingEnabled = false,
@@ -319,7 +318,7 @@ fun SearchResults(
             DropdownMenuItem(onClick = { onAddressPredictionClick(addressPrediction) }, text = {
                 Text(
                     addressPrediction.label,
-                    color = Color.Black,
+                    color = PinsTheme.colorScheme.onSurface,
                 )
             })
         }

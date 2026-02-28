@@ -14,9 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.screen.triplist.TripListItem
 import com.arturborowy.pins.screen.triplist.TripListItemStopItem
+import com.arturborowy.pins.ui.theme.PinsTheme
 
 object TripViewTag {
     const val TRIP_NAME = "TRIP_NAME"
@@ -53,7 +52,7 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
                 .testTag(TripViewTag.TRIP_NAME),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            color = Color.Black,
+            color = PinsTheme.colorScheme.onSurface,
             text = tripListItem.name
         )
 
@@ -81,7 +80,7 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
         modifier = Modifier.padding(10.dp, 8.dp, 0.dp, 0.dp)
     ) {
         Divider(
-            color = colorResource(R.color.primary),
+            color = PinsTheme.colorScheme.primary,
             modifier = Modifier
                 .fillMaxHeight()
                 .height(20.dp)
@@ -93,7 +92,7 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
                 .padding(8.dp, 0.dp, 0.dp, 0.dp)
                 .testTag(TripViewTag.TRIP_PLACE),
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = PinsTheme.colorScheme.onSurface,
             text = tripListItemStopItem.locationName
         )
 
@@ -102,7 +101,7 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
         Text(
             modifier = Modifier.testTag(TripViewTag.TRIP_DATES),
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = PinsTheme.colorScheme.onSurface,
             text = tripListItemStopItem.dateStr
         )
     }

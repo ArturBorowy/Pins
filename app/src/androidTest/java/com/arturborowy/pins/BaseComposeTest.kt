@@ -233,6 +233,8 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     ) {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_NAME), 5000L)
 
+        composeTestRule.waitUntilExactlyOneExists(hasText(tripName), 5000L)
+
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_NAME)
             .assertTextContains(tripName)
     }

@@ -17,11 +17,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,10 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
-import com.arturborowy.pins.utils.statusBarHeightPx
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
@@ -40,13 +36,10 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
 
     val (state, setState) = viewModel.state.collectAsMutableState()
 
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
-            .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
+            .background(PinsTheme.colorScheme.background)
     ) {
         PageTitle(
             stringResource(R.string.settings_header),
@@ -80,8 +73,8 @@ fun SettingItem(label: String, secondaryValue: String? = null, onClick: (() -> U
         modifier = Modifier.fillMaxWidth(),
         onClick = onClick ?: {},
         colors = ButtonDefaults.textButtonColors(
-            disabledContentColor = Color.Black,
-            contentColor = Color.Black
+            disabledContentColor = PinsTheme.colorScheme.onSurface,
+            contentColor = PinsTheme.colorScheme.onSurface
         ),
         enabled = onClick != null,
         shape = RectangleShape
@@ -107,7 +100,7 @@ fun SettingItem(label: String, secondaryValue: String? = null, onClick: (() -> U
             Box(
                 modifier = Modifier
                     .padding(0.dp, 2.dp, 0.dp, 0.dp)
-                    .background(colorResource(R.color.primary))
+                    .background(PinsTheme.colorScheme.primary)
                     .height(1.dp)
                     .fillMaxWidth()
             )

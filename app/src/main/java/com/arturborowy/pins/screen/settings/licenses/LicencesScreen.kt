@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.settings.Licenses
+package com.arturborowy.pins.screen.settings.licenses
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,10 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,12 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.Licenses.Product
+import com.arturborowy.pins.screen.settings.Licenses.LicensesViewModel
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
-import com.arturborowy.pins.utils.statusBarHeightPx
 
 @Composable
 fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
@@ -36,14 +34,11 @@ fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
 
     val (state, setState) = viewModel.state.collectAsMutableState()
 
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
+            .background(PinsTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
-            .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
             .testTag(LicenceViewTag.LICENCES_LIST)
     ) {
         item {

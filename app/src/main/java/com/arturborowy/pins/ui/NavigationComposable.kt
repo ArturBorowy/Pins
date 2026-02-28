@@ -15,7 +15,7 @@ import com.arturborowy.pins.screen.edittrip.editTripViewModel
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.screen.map.MapScreen
 import com.arturborowy.pins.screen.map.mapViewModel
-import com.arturborowy.pins.screen.settings.Licenses.LicensesScreen
+import com.arturborowy.pins.screen.settings.licenses.LicensesScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -42,7 +42,7 @@ fun NavigationComposable(
         startDestination = BottomNavItem.MAP.label,
         modifier = Modifier.padding(innerPadding)
     ) {
-        BottomNavItem.values().forEach { screen ->
+        BottomNavItem.entries.forEach { screen ->
             composable(screen.name) { screen.screenComposable() }
         }
 

@@ -25,7 +25,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,12 +33,11 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.TripAddCard
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.showShortToast
-import com.arturborowy.pins.utils.statusBarHeightPx
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -62,8 +60,6 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
 
     val pagerState = rememberPagerState { state.stops.size }
 
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
@@ -78,12 +74,11 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
+            .background(PinsTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, androidStatusBarHeight + 16.dp, 0.dp, 0.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -94,7 +89,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                         .height(24.dp)
                         .width(24.dp),
                     painter = painterResource(R.drawable.ic_arrow_back),
-                    tint = colorResource(R.color.white),
+                    tint = PinsTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_previous_stop)
                 )
             }
@@ -109,7 +104,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                         .height(24.dp)
                         .width(24.dp),
                     painter = painterResource(R.drawable.ic_arrow_forward),
-                    tint = colorResource(R.color.white),
+                    tint = PinsTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_next_stop)
                 )
             }

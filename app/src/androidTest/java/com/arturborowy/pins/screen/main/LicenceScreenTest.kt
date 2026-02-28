@@ -10,7 +10,7 @@ import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
 import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.model.system.NetworkStateRepository
-import com.arturborowy.pins.screen.settings.Licenses.LicenceViewTag
+import com.arturborowy.pins.screen.settings.licenses.LicenceViewTag
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.arturborowy.pins.screen.edittrip.EditTripViewModel
 import com.arturborowy.pins.screen.map.MapViewModel
@@ -37,8 +38,10 @@ class MainActivity : ComponentActivity() {
 
         installSplashScreen()
 
+        enableEdgeToEdge()
+
         setContent {
-            MainScreen(navigator)
+            MainScaffold(navigator)
         }
     }
 }

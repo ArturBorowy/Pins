@@ -13,12 +13,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
+import com.arturborowy.pins.ui.theme.PinsTheme
+
 
 @Composable
 fun TripMultiStopExtraFields(
@@ -37,7 +37,7 @@ fun TripMultiStopExtraFields(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White),
+            .background(PinsTheme.colorScheme.surface),
     ) {
         TripNameField(
             nameText,
@@ -58,10 +58,10 @@ fun TripMultiStopExtraFields(
                     .padding(8.dp),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = colorResource(R.color.primary)
+                    color = PinsTheme.colorScheme.primary
                 ),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = colorResource(R.color.primary),
+                    contentColor = PinsTheme.colorScheme.primary,
                 ),
                 onClick = { onNegativeClick() }) {
                 Text(text = negativeClickText)
@@ -71,7 +71,7 @@ fun TripMultiStopExtraFields(
                     .weight(1f)
                     .padding(8.dp),
                     enabled = isSavingEnabled,
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary)),
+                    colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
                     onClick = { onMiddleClick?.invoke() }) {
                     Text(text = middleClickText)
                 }
@@ -80,7 +80,7 @@ fun TripMultiStopExtraFields(
                 .weight(1f)
                 .padding(8.dp),
                 enabled = isSavingEnabled,
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary)),
+                colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
                 onClick = { onPositiveClick() }) {
                 Text(text = positiveClickText)
             }

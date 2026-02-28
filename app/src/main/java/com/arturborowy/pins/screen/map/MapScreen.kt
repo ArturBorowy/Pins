@@ -20,11 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,14 +31,13 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.TripAddCard
+import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.addBorderToCircle
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.cropBitmapToCircle
 import com.arturborowy.pins.utils.getBitmapFromVectorDrawable
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.showShortToast
-import com.arturborowy.pins.utils.statusBarHeightPx
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -67,7 +65,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
+            .background(PinsTheme.colorScheme.background)
     ) {
         CircularProgressBar(modifier = Modifier.align(Alignment.Center))
 
@@ -104,7 +102,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                                         LatLng(tripMarker.latitude, tripMarker.longitude),
                                         LatLng(nextTripMarker.latitude, nextTripMarker.longitude)
                                     ),
-                                    color = colorResource(R.color.primary)
+                                    color = PinsTheme.colorScheme.primary
                                 )
                             }
                         }
@@ -114,11 +112,9 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         }
 
         if (state.showAddressTextField) {
-            val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
             TripAddCard(
                 modifier = Modifier
-                    .padding(8.dp, 8.dp + androidStatusBarHeight, 8.dp, 8.dp),
+                    .padding(8.dp),
                 placeText = state.placeText,
                 placeErrorText = state.placeErrorText,
                 onSearchTextChange = {
@@ -192,7 +188,7 @@ fun AddTripTypesBar(
 ) {
     Card(
         shape = RoundedCornerShape(999.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = PinsTheme.colorScheme.surface),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
@@ -203,7 +199,7 @@ fun AddTripTypesBar(
             ) {
                 Text(
                     text = stringResource(R.string.add_trip_btn_single_stop),
-                    color = Color.Black,
+                    color = PinsTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .padding(4.dp, 4.dp, 0.dp, 4.dp)
@@ -217,7 +213,7 @@ fun AddTripTypesBar(
                     .width(2.dp)
                     .height(30.dp)
                     .align(Alignment.CenterVertically),
-                color = colorResource(R.color.primary)
+                color = PinsTheme.colorScheme.primary
             )
 
             TextButton(
@@ -226,7 +222,7 @@ fun AddTripTypesBar(
             ) {
                 Text(
                     text = stringResource(R.string.add_trip_btn_multi_stop),
-                    color = Color.Black,
+                    color = PinsTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .padding(0.dp, 4.dp, 4.dp, 4.dp)
@@ -242,6 +238,6 @@ fun mapIconBitmapDescriptor(
     context: Context, @DrawableRes vectorResId: Int
 ): BitmapDescriptor {
     val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f).cropBitmapToCircle()
-        .addBorderToCircle(5.dp.value, context.getColor(R.color.primary))
+        .addBorderToCircle(5.dp.value, PinsTheme.colorScheme.primary.toArgb())
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
