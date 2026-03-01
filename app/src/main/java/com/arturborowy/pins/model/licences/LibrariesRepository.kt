@@ -1,6 +1,6 @@
-package com.arturborowy.pins.model.Licenses
+package com.arturborowy.pins.model.licences
 
-import com.arturborowy.pins.domain.Licenses.Product
+import com.arturborowy.pins.domain.licences.Product
 
 object LibrariesRepository {
 

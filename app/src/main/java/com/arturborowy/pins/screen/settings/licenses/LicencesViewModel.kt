@@ -2,8 +2,8 @@ package com.arturborowy.pins.screen.settings.licenses
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.arturborowy.pins.domain.Licenses.Licence
-import com.arturborowy.pins.domain.Licenses.LicensesInteractor
+import com.arturborowy.pins.domain.licences.Licence
+import com.arturborowy.pins.domain.licences.LicensesInteractor
 import com.arturborowy.pins.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
