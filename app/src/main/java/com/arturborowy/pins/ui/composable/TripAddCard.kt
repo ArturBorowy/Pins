@@ -30,12 +30,10 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
@@ -195,7 +193,7 @@ fun DatePickingButton(
                 )
             }
         },
-        textStyle = TextStyle(fontSize = 13.sp),
+        textStyle = PinsTheme.typography.bodyMedium,
         leadingIcon = {
             Icon(
                 painter = painterResource(R.drawable.ic_calendar),

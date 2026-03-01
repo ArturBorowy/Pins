@@ -14,9 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
@@ -24,6 +22,7 @@ import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.TripView
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.headlineSmallEmphasized
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
@@ -83,8 +82,7 @@ fun TripListView(trips: List<Any>, onEditTripClick: (TripListItem) -> Unit) {
             Text(
                 modifier = Modifier
                     .padding(16.dp, 16.dp, 16.dp, 16.dp),
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                style = PinsTheme.typography.headlineSmallEmphasized,
                 color = PinsTheme.colorScheme.onBackground,
                 text = stringResource(R.string.trip_list_header)
             )

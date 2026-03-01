@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
@@ -200,7 +199,7 @@ fun AddTripTypesBar(
                 Text(
                     text = stringResource(R.string.add_trip_btn_single_stop),
                     color = PinsTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
+                    style = PinsTheme.typography.titleSmall,
                     modifier = Modifier
                         .padding(4.dp, 4.dp, 0.dp, 4.dp)
                         .align(Alignment.CenterVertically)
@@ -223,7 +222,7 @@ fun AddTripTypesBar(
                 Text(
                     text = stringResource(R.string.add_trip_btn_multi_stop),
                     color = PinsTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
+                    style = PinsTheme.typography.titleSmall,
                     modifier = Modifier
                         .padding(0.dp, 4.dp, 4.dp, 4.dp)
                         .align(Alignment.CenterVertically)

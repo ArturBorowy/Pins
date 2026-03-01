@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
@@ -88,12 +87,12 @@ fun SettingItem(label: String, secondaryValue: String? = null, onClick: (() -> U
             ) {
                 Text(
                     text = label,
-                    fontSize = 16.sp
+                    style = PinsTheme.typography.titleSmall
                 )
                 secondaryValue?.let { secondaryValue ->
                     Text(
                         text = secondaryValue,
-                        fontSize = 16.sp
+                        style = PinsTheme.typography.titleSmall
                     )
                 }
             }

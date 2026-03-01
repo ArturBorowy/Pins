@@ -15,16 +15,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.Licenses.Product
-import com.arturborowy.pins.screen.settings.Licenses.LicensesViewModel
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.titleLargeEmphasized
+import com.arturborowy.pins.ui.theme.titleSmallEmphasized
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
@@ -82,8 +81,7 @@ fun LicenceHeader(licenceName: String) {
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 24.dp)
             .testTag(LicenceViewTag.LICENCE_NAME),
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        style = PinsTheme.typography.titleLargeEmphasized
     )
 }
 
@@ -94,15 +92,14 @@ fun LicenceProduct(product: Product) {
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 4.dp)
             .testTag(LicenceViewTag.LICENCE_PRODUCT_NAME),
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp
+        style = PinsTheme.typography.titleSmallEmphasized
     )
     Text(
         text = stringResource(R.string.licence_copyright, product.year, product.name),
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 8.dp)
             .testTag(LicenceViewTag.LICENCE_PRODUCT_COPYRIGHT),
-        fontSize = 14.sp
+        style = PinsTheme.typography.labelMedium
     )
 }
 
@@ -113,7 +110,7 @@ fun LicenceContent(licenceContent: String) {
         modifier = Modifier
             .padding(0.dp, 16.dp, 0.dp, 0.dp)
             .testTag(LicenceViewTag.LICENCE_CONTENT),
-        fontSize = 13.sp,
+        style = PinsTheme.typography.bodyMedium,
         fontStyle = FontStyle.Italic
     )
 }

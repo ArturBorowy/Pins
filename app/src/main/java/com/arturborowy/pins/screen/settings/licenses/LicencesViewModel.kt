@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.settings.Licenses
+package com.arturborowy.pins.screen.settings.licenses
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
