@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,24 +12,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.TripView
+import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.headlineSmallEmphasized
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
-import com.arturborowy.pins.utils.statusBarHeightPx
 
 @Composable
 fun TripsListScreen(viewModel: TripsListViewModel = hiltViewModel()) {
@@ -36,13 +32,11 @@ fun TripsListScreen(viewModel: TripsListViewModel = hiltViewModel()) {
 
     val (state, setState) = viewModel.state.collectAsMutableState()
 
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
-            .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
+            .background(PinsTheme.colorScheme.background)
+            .navigationBarsPadding(),
     ) {
         if (state.isLoading) {
             CircularProgressBar(modifier = Modifier.align(Alignment.Center))
@@ -78,24 +72,25 @@ fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
 }
 
 @Composable
-fun TripListView(trips: List<TripSingleStop>, onEditTripClick: (TripSingleStop) -> Unit) {
+fun TripListView(trips: List<Any>, onEditTripClick: (TripListItem) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
+            .background(PinsTheme.colorScheme.background)
     ) {
         item {
             Text(
                 modifier = Modifier
                     .padding(16.dp, 16.dp, 16.dp, 16.dp),
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = Color.White,
+                style = PinsTheme.typography.headlineSmallEmphasized,
+                color = PinsTheme.colorScheme.onBackground,
                 text = stringResource(R.string.trip_list_header)
             )
         }
         items(trips) {
-            TripView(it, onEditTripClick)
+            if (it is TripListItem) {
+                TripView(it, onEditTripClick)
+            }
         }
     }
 }

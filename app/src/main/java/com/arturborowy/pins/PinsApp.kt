@@ -21,7 +21,8 @@ class PinsApp : Application() {
         val defaultTagSettings = TagSettings(
             shouldLogFileNameAndLineNum = true,
             shouldLogClassName = true,
-            shouldLogMethodName = true
+            shouldLogMethodName = true,
+            shouldLogThreadName = false
         )
 
         ALogInitializer.init(shouldLog, defaultTagSettings)

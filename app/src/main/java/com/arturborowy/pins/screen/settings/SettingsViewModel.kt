@@ -18,9 +18,9 @@ class SettingsViewModel @Inject constructor(
 
     val state = MutableStateFlow(State(buildInfoRepository.buildVersion))
 
-    fun onLicencesClick() {
+    fun onLicensesClick() {
         viewModelScope.launch {
-            navigator.navigateTo(NavigationTarget.LICENCES)
+            navigator.navigateTo(NavigationTarget.Licenses)
         }
     }
 

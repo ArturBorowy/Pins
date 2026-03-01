@@ -3,9 +3,9 @@
 
     <style name="Theme.Pins.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_pins_logo</item>
-        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenBackground">#1B1282</item>
         <item name="postSplashScreenTheme">@style/Theme.Pins</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">#1B1282</item>
     </style>
 
     <style name="Theme.Pins" parent="android:Theme.Material.Light.NoActionBar">

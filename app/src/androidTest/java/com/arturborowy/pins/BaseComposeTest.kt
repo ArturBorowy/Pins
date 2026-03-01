@@ -8,12 +8,14 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -65,7 +67,8 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         val defaultTagSettings = TagSettings(
             shouldLogFileNameAndLineNum = true,
             shouldLogClassName = true,
-            shouldLogMethodName = true
+            shouldLogMethodName = true,
+            shouldLogThreadName = false
         )
 
         ALogInitializer.init(shouldLog, defaultTagSettings)
@@ -108,7 +111,7 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     ) =
         onNodeWithContentDescription(getString(textResId))
 
-    protected fun inputTripDetails(confirm: Boolean = true) {
+    protected fun inputSingleStopTripDetails(confirm: Boolean = true) {
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -116,6 +119,27 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
 
         inputDate(R.string.add_trip_hint_arrival_date, 2017, 6, 10)
         inputDate(R.string.add_trip_hint_departure_date, 2020, 11, 30)
+
+        if (confirm) {
+            composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).performClick()
+        }
+    }
+
+    protected fun inputMultiStopTripDetails(confirm: Boolean = true) {
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
+            .performTextInput(MOCK_TRIP_NAME)
+
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
+
+        inputDate(R.string.add_trip_hint_arrival_date, 2017, 6, 10)
+
+        composeTestRule.onNodeWithText(R.string.create_trip_btn_next_stop).performClick()
+
+        inputTripPlace(MockPlacesPredictionRepository.ALTERNATIVE_EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
+
+        inputDate(R.string.add_trip_hint_arrival_date, 2020, 12, 20)
 
         if (confirm) {
             composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).performClick()
@@ -134,8 +158,19 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
     }
 
-    protected fun goToTripDetailsInput() {
+    protected fun goToSingleStopTripDetailsInput() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
+            .performClick()
+
+        inputTripPlace()
+    }
+
+    protected fun goToMultiStopTripDetailsInput() {
+        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_multi_stop)
             .performClick()
 
         inputTripPlace()
@@ -146,13 +181,21 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     ) {
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
             .performTextInput(tripPlaceName)
-        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label)
+
+        val predictionString =
+            if (tripPlaceName == MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING) {
+                MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+            } else {
+                MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS[0].label
+            }
+
+        composeTestRule.onNodeWithText(predictionString)
             .performClick()
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
     }
 
-    protected fun goToTripAddingViaTripListScreen() {
+    protected fun goToMapScreenViaTripListScreen() {
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
         composeTestRule.waitUntilExactlyOneExists(
@@ -164,7 +207,21 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
             .performClick()
     }
 
-    protected fun assertAreDatesOnTripListCorrect(dateRangeString: String = "10 Jun 2017 - 30 Nov 2020") {
+    protected fun goToSingleStopTripAddingViaTripListScreen() {
+        goToMapScreenViaTripListScreen()
+
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
+            .performClick()
+    }
+
+    protected fun goToMultiStopTripAddingViaTripListScreen() {
+        goToMapScreenViaTripListScreen()
+
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_multi_stop)
+            .performClick()
+    }
+
+    protected open fun assertAreDatesOnTripListCorrect(dateRangeString: String = "10 Jun 2017 - 30 Nov 2020") {
         composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
 
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_DATES)
@@ -174,7 +231,9 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     protected fun assertIsTripNameOnTripListCorrect(
         tripName: String = MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName
     ) {
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
+        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_NAME), 5000L)
+
+        composeTestRule.waitUntilExactlyOneExists(hasText(tripName), 5000L)
 
         composeTestRule.onNodeWithTag(TripViewTag.TRIP_NAME)
             .assertTextContains(tripName)
@@ -189,17 +248,61 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
             .assertTextContains(placeName)
     }
 
+    protected fun assertArePlaceNamesOnTripListCorrect() {
+        composeTestRule.waitUntilNodeCount(
+            hasTestTag(TripViewTag.TRIP_PLACE),
+            2,
+            5000L
+        )
+
+        composeTestRule.onAllNodesWithTag(TripViewTag.TRIP_PLACE)[0]
+            .assertTextContains(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
+
+        composeTestRule.onAllNodesWithTag(TripViewTag.TRIP_PLACE)[1]
+            .assertTextContains(MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_PLACE_DETAILS.locationName)
+    }
+
+    protected fun assertAreDatesOnTripListCorrect2() {
+        composeTestRule.waitUntilNodeCount(
+            hasTestTag(TripViewTag.TRIP_DATES),
+            2,
+            5000L
+        )
+
+        composeTestRule.onAllNodesWithTag(TripViewTag.TRIP_DATES)[0]
+            .assertTextContains("10 Jun 2017")
+
+        composeTestRule.onAllNodesWithTag(TripViewTag.TRIP_DATES)[1]
+            .assertTextContains("20 Dec 2020")
+    }
+
     protected fun assertIsFlagOnTripListCorrect() {
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(MockGeocodingRepository.GEOCODED_COUNTRY.label),
+            5000L
+        )
 
         composeTestRule.onNodeWithContentDescription(MockGeocodingRepository.GEOCODED_COUNTRY.label)
             .assertIsDisplayed()
     }
 
-    protected fun addTripViaTripList() {
-        goToTripAddingViaTripListScreen()
+    protected fun addSingleStopTripViaTripList() {
+        goToSingleStopTripAddingViaTripListScreen()
         inputTripPlace()
-        inputTripDetails()
+        inputSingleStopTripDetails()
+    }
+
+    protected fun addMultiStopTripViaTripList() {
+        goToMultiStopTripAddingViaTripListScreen()
+        inputTripPlace()
+        inputMultiStopTripDetails()
+    }
+
+    protected fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {
+        fetchSemanticsNodes().forEachIndexed { index, _ ->
+            get(index).assertExists()
+        }
+        return this
     }
 
     protected fun isKeyboardShown(): Boolean {

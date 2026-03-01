@@ -16,5 +16,8 @@ object DatabaseModule {
     fun appDatabase(@ApplicationContext context: Context) = AppDatabase.build(context)
 
     @Provides
-    fun placesDetailsDao(appDatabase: AppDatabase) = appDatabase.placeDetailsDao()
+    fun tripDao(appDatabase: AppDatabase) = appDatabase.tripDao()
+
+    @Provides
+    fun stopEntityDao(appDatabase: AppDatabase) = appDatabase.stopEntityDao()
 }

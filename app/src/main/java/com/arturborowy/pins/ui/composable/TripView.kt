@@ -14,16 +14,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.arturborowy.pins.R
-import com.arturborowy.pins.screen.triplist.TripSingleStop
+import com.arturborowy.pins.screen.triplist.TripListItem
+import com.arturborowy.pins.screen.triplist.TripListItemStopItem
+import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.bodyLargeEmphasized
+import com.arturborowy.pins.ui.theme.labelMediumEmphasized
+import com.arturborowy.pins.ui.theme.titleMediumEmphasized
 
 object TripViewTag {
     const val TRIP_NAME = "TRIP_NAME"
@@ -32,26 +33,27 @@ object TripViewTag {
 }
 
 @Composable
-fun TripView(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop) -> Unit) {
+fun TripView(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
     WideCard(margin = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp)) {
-        TripHeader(tripSingleStop, onEditTripClick)
-        TripRow(tripSingleStop)
+        TripHeader(tripListItem, onEditTripClick)
+        tripListItem.stops.forEach { stop ->
+            TripRow(stop)
+        }
     }
 }
 
 @Composable
-fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop) -> Unit) {
+fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        RoundFlag(tripSingleStop.country)
+        RoundFlag(tripListItem.stops[0].country)
 
         Text(
             modifier = Modifier
                 .padding(8.dp, 0.dp, 0.dp, 0.dp)
                 .testTag(TripViewTag.TRIP_NAME),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = Color.Black,
-            text = tripSingleStop.name
+            style = PinsTheme.typography.titleMediumEmphasized,
+            color = PinsTheme.colorScheme.onSurface,
+            text = tripListItem.name
         )
 
         Spacer(Modifier.weight(1.0f))
@@ -60,12 +62,12 @@ fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop)
             modifier = Modifier
                 .height(20.dp)
                 .width(20.dp),
-            onClick = { onEditTripClick(tripSingleStop) }) {
+            onClick = { onEditTripClick(tripListItem) }) {
             Icon(
                 painter = painterResource(R.drawable.ic_edit),
                 contentDescription = stringResource(
                     R.string.trip_list_cd_edit,
-                    tripSingleStop.name
+                    tripListItem.name
                 )
             )
         }
@@ -73,12 +75,12 @@ fun TripHeader(tripSingleStop: TripSingleStop, onEditTripClick: (TripSingleStop)
 }
 
 @Composable
-fun TripRow(tripSingleStop: TripSingleStop) {
+fun TripRow(tripListItemStopItem: TripListItemStopItem) {
     Row(
         modifier = Modifier.padding(10.dp, 8.dp, 0.dp, 0.dp)
     ) {
         Divider(
-            color = colorResource(R.color.primary),
+            color = PinsTheme.colorScheme.primary,
             modifier = Modifier
                 .fillMaxHeight()
                 .height(20.dp)
@@ -89,18 +91,18 @@ fun TripRow(tripSingleStop: TripSingleStop) {
             modifier = Modifier
                 .padding(8.dp, 0.dp, 0.dp, 0.dp)
                 .testTag(TripViewTag.TRIP_PLACE),
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            text = tripSingleStop.locationName
+            style = PinsTheme.typography.bodyLargeEmphasized,
+            color = PinsTheme.colorScheme.onSurface,
+            text = tripListItemStopItem.locationName
         )
 
         Spacer(Modifier.weight(1.0f))
 
         Text(
             modifier = Modifier.testTag(TripViewTag.TRIP_DATES),
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            text = tripSingleStop.dateStr
+            style = PinsTheme.typography.labelMediumEmphasized,
+            color = PinsTheme.colorScheme.onSurface,
+            text = tripListItemStopItem.dateStr
         )
     }
 }

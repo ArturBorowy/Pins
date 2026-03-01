@@ -3,9 +3,8 @@ package com.arturborowy.pins.ui.composable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.headlineSmallEmphasized
 
 @Composable
 fun PageTitle(
@@ -14,9 +13,8 @@ fun PageTitle(
 ) {
     Text(
         modifier = modifier,
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        color = Color.White,
+        style = PinsTheme.typography.headlineSmallEmphasized,
+        color = PinsTheme.colorScheme.onBackground,
         text = text
     )
 }

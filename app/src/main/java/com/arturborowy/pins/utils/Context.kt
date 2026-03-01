@@ -5,8 +5,9 @@ import android.content.Context
 import android.util.DisplayMetrics
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import com.arturborowy.pins.R
+import com.arturborowy.pins.ui.theme.Primary
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
@@ -50,6 +51,6 @@ fun mapIconBitmapDescriptor(
 ): BitmapDescriptor {
     val bitmap = getBitmapFromVectorDrawable(context, vectorResId, 0.05f)
         .cropBitmapToCircle()
-        .addBorderToCircle(5.dp.value, context.getColor(R.color.primary))
+        .addBorderToCircle(5.dp.value, Primary.toArgb())
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

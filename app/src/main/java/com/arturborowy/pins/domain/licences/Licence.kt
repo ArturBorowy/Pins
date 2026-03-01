@@ -1,4 +1,4 @@
-package com.arturborowy.pins.domain.licences
+package com.arturborowy.pins.domain.Licenses
 
 data class Licence(
     val name: String,

@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.settings.licences
+package com.arturborowy.pins.screen.settings.licenses
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,53 +11,49 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
-import com.arturborowy.pins.domain.licences.Product
+import com.arturborowy.pins.domain.Licenses.Product
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.titleLargeEmphasized
+import com.arturborowy.pins.ui.theme.titleSmallEmphasized
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
-import com.arturborowy.pins.utils.statusBarHeightPx
 
 @Composable
-fun LicencesScreen(viewModel: LicencesViewModel = hiltViewModel()) {
+fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
     val (state, setState) = viewModel.state.collectAsMutableState()
 
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
+            .background(PinsTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
-            .padding(0.dp, androidStatusBarHeight, 0.dp, 0.dp)
+            .testTag(LicenceViewTag.LICENCES_LIST)
     ) {
         item {
             PageTitle(
-                text = stringResource(R.string.licences_header),
+                text = stringResource(R.string.Licenses_header),
                 modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 0.dp)
             )
         }
-        items(state.licences) {
+        items(state.Licenses) {
             LicenceItem(it.name, it.products, it.content)
         }
     }
 }
 
 object LicenceViewTag {
+    const val LICENCES_LIST = "LICENCES_LIST"
     const val LICENCE_NAME = "LICENCE_NAME"
     const val LICENCE_PRODUCT_NAME = "LICENCE_PRODUCT_NAME"
     const val LICENCE_PRODUCT_COPYRIGHT = "LICENCE_PRODUCT_COPYRIGHT"
@@ -85,8 +81,7 @@ fun LicenceHeader(licenceName: String) {
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 24.dp)
             .testTag(LicenceViewTag.LICENCE_NAME),
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        style = PinsTheme.typography.titleLargeEmphasized
     )
 }
 
@@ -97,15 +92,14 @@ fun LicenceProduct(product: Product) {
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 4.dp)
             .testTag(LicenceViewTag.LICENCE_PRODUCT_NAME),
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp
+        style = PinsTheme.typography.titleSmallEmphasized
     )
     Text(
         text = stringResource(R.string.licence_copyright, product.year, product.name),
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 8.dp)
             .testTag(LicenceViewTag.LICENCE_PRODUCT_COPYRIGHT),
-        fontSize = 14.sp
+        style = PinsTheme.typography.labelMedium
     )
 }
 
@@ -116,7 +110,7 @@ fun LicenceContent(licenceContent: String) {
         modifier = Modifier
             .padding(0.dp, 16.dp, 0.dp, 0.dp)
             .testTag(LicenceViewTag.LICENCE_CONTENT),
-        fontSize = 13.sp,
+        style = PinsTheme.typography.bodyMedium,
         fontStyle = FontStyle.Italic
     )
 }

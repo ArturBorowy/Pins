@@ -1,0 +1,281 @@
+package com.arturborowy.pins.screen.main.edittrip
+
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextReplacement
+import com.arturborowy.pins.BaseComposeTest
+import com.arturborowy.pins.R
+import com.arturborowy.pins.di.SystemAbstractionModule
+import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.screen.main.BottomNavItem
+import com.arturborowy.pins.screen.main.MainActivity
+import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
+import com.arturborowy.pins.ui.composable.TripViewTag
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import org.junit.Test
+
+@UninstallModules(SystemAbstractionModule::class)
+@OptIn(ExperimentalTestApi::class)
+@HiltAndroidTest
+class EditMultiStopTripScreenTest : BaseComposeTest<MainActivity>() {
+
+    override val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @BindValue
+    @JvmField
+    val networkStateRepository: NetworkStateRepository =
+        MockSystemAbstractionModule.networkStateRepository
+
+    @BindValue
+    @JvmField
+    val localeRepository = MockSystemAbstractionModule.localeRepository
+
+    @Test
+    fun isDataCorrect_onEditingScreen() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        composeTestRule.onNodeWithText(MOCK_TRIP_NAME).assertIsDisplayed()
+
+        assertFirstStopData { assertIsDisplayed() }
+
+        composeTestRule.onNodeWithContentDescription(R.string.edit_trip_cd_next_stop).performClick()
+
+        assertFirstStopData { assertIsNotDisplayed() }
+        assertSecondStopData { assertIsDisplayed() }
+
+        composeTestRule.onNodeWithContentDescription(R.string.edit_trip_cd_previous_stop)
+            .performClick()
+
+        assertFirstStopData { assertIsDisplayed() }
+        assertSecondStopData { assertIsNotDisplayed() }
+    }
+
+    private fun assertFirstStopData(operation: SemanticsNodeInteraction.() -> Unit) {
+        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
+            .operation()
+
+        composeTestRule.onNodeWithText("10 Jun 2017").operation()
+    }
+
+    private fun assertSecondStopData(operation: SemanticsNodeInteraction.() -> Unit) {
+        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_PLACE_DETAILS.locationName)
+            .operation()
+
+        composeTestRule.onNodeWithText("20 Dec 2020").operation()
+    }
+
+    @Test
+    fun isTripChangedOnList_whenEdited() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        val newTripName = "newTripName"
+
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
+            .performTextReplacement(newTripName)
+
+        inputDate("10 Jun 2017", 2000, 1, 1)
+
+        composeTestRule.onNodeWithContentDescription(R.string.edit_trip_cd_next_stop).performClick()
+
+        inputDate("20 Dec 2020", 2000, 4, 10)
+
+        composeTestRule.onAllNodes(hasText(R.string.edit_trip_btn_save_changes)).onFirst()
+            .performClick()
+
+        assertIsTripNameOnTripListCorrect(newTripName)
+        assertAreDatesOnTripListCorrect()
+    }
+
+    private fun assertAreDatesOnTripListCorrect() {
+        composeTestRule.waitUntilNodeCount(hasTestTag(TripViewTag.TRIP_DATES), 2, 5000L)
+
+        val nodes = composeTestRule.onAllNodesWithTag(TripViewTag.TRIP_DATES)
+        nodes[0].assertTextContains("01 Jan 2000")
+        nodes[1].assertTextContains("10 Apr 2000")
+    }
+
+    @Test
+    fun isAddressCleared_whenBackIsClicked() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .performClick()
+
+        //isAddressCleared_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
+            .assertTextContains(getString(R.string.add_trip_hint_name))
+
+        //isBackShown_evenWhenBackIsClicked
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .assertIsDisplayed()
+
+        //isTripNameHidden_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name).assertDoesNotExist()
+
+        //isArrivalDateHidden_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).assertDoesNotExist()
+
+        //isDepartureDateHidden_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).assertDoesNotExist()
+
+        //isDeleteTripBtnHidden_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).assertDoesNotExist()
+
+        //isSaveChangesBtnHidden_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes).assertDoesNotExist()
+    }
+
+    @Test
+    fun arePredictionsShown_whenPlaceNameIsProvided() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .performClick()
+
+        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
+            .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
+            composeTestRule.onNodeWithText(it.label).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun isPlaceConfirmShown_whenPredictionIsChosen() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
+            .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        //isPlaceConfirmShown_whenPredictionIsChosen
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
+            .assertIsDisplayed()
+
+        //arePredictionsHidden_whenPredictionIsChosen
+        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
+            composeTestRule.onNodeWithText(it.label).assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun tripDoesNotAppearOnList_whenDeleted() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).performClick()
+
+        composeTestRule.onNodeWithTag(TripViewTag.TRIP_DATES).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(TripViewTag.TRIP_NAME).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(TripViewTag.TRIP_PLACE).assertDoesNotExist()
+    }
+
+    @Test
+    fun isTripNameShown_whenPlaceConfirmIsClicked() {
+        addMultiStopTripViaTripListAndGoToEdit()
+        editPlace()
+
+        //isTripNameShown_whenPlaceConfirmIsClicked
+        composeTestRule.onNodeWithText(MOCK_TRIP_NAME).assertIsDisplayed()
+
+        //isBackShown_whenPlaceConfirmIsClicked
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .assertIsDisplayed()
+
+        //isArrivalDateShown_whenPlaceConfirmIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).assertIsDisplayed()
+
+        //isDeleteTripBtnShown_whenPlaceConfirmIsClicked
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).assertIsDisplayed()
+
+        //isSaveChangesBtnShown_whenPlaceConfirmIsClicked
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes).assertIsDisplayed()
+    }
+
+    @Test
+    fun isTripNameShown_whenBackIsClicked() {
+        addMultiStopTripViaTripListAndGoToEdit()
+        editPlace()
+
+        //isTripNameShown_whenBackIsClicked
+        composeTestRule.onNodeWithText(MOCK_TRIP_NAME).assertIsDisplayed()
+
+        //isBackShown_whenBackIsClicked
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .assertIsDisplayed()
+
+        //isArrivalDateShown_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).assertIsDisplayed()
+
+        //isDeleteTripBtnShown_whenBackIsClicked
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).assertIsDisplayed()
+    }
+
+    @Test
+    fun isSaveChangesBtnShown_whenBackIsClickedTwice() {
+        addMultiStopTripViaTripListAndGoToEdit()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .performClick().performClick()
+    }
+
+    private fun addMultiStopTripViaTripListAndGoToEdit() {
+        addMultiStopTripViaTripList()
+
+        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+
+        chooseTripToEdit()
+    }
+
+    private fun chooseTripToEdit() {
+        val expectedContentDescription = resourcesRepository.getString(
+            R.string.trip_list_cd_edit, MOCK_TRIP_NAME
+        )
+
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(expectedContentDescription), 5000L
+        )
+
+        composeTestRule.onNodeWithContentDescription(expectedContentDescription).performClick()
+
+
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(MOCK_TRIP_NAME), 5000L
+        )
+    }
+
+    private fun editPlace() {
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
+            .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
+    }
+}

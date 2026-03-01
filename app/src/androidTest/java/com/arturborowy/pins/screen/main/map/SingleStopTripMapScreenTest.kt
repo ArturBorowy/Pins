@@ -1,7 +1,6 @@
-package com.arturborowy.pins.screen.main
+package com.arturborowy.pins.screen.main.map
 
 import android.widget.DatePicker
-import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -19,6 +18,8 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
 import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.screen.main.MainActivity
+import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -27,9 +28,7 @@ import org.junit.Test
 
 @UninstallModules(SystemAbstractionModule::class)
 @HiltAndroidTest
-class MapScreenTest : BaseComposeTest<MainActivity>() {
-
-    override val composeTestRule = createAndroidComposeRule<MainActivity>()
+class SingleStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
 
     @BindValue
     @JvmField
@@ -40,6 +39,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
     @JvmField
     val localeRepository = MockSystemAbstractionModule.localeRepository
 
+    override val composeTestRule = createAndroidComposeRule<MainActivity>()
+
     @Test
     fun isAddTripFabHidden_whenAddTripFabIsClicked() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
@@ -49,7 +50,10 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .assertDoesNotExist()
 
-        //isSearchBarShown_whenAddTripFabIsClicked
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
+            .performClick()
+
+        //isSearchBarShown_whenAddSingleStopTripIsClicked
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertIsDisplayed()
 
         //isKeyboardShown_whenAddTripFabIsClicked
@@ -62,6 +66,10 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
     fun isSearchBarHidden_whenAddressEditBackIsClicked() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
+            .performClick()
+
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
 
@@ -77,6 +85,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
     fun arePredictionsShown_whenTextIsProvided() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
             .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
+            .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
             .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
@@ -87,16 +97,11 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
         }
     }
 
-    private fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {
-        fetchSemanticsNodes().forEachIndexed { index, _ ->
-            get(index).assertExists()
-        }
-        return this
-    }
-
     @Test
     fun arePredictionsHidden_whenPredictionIsChosen() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
@@ -119,13 +124,24 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameCleared_whenAddressEditBackIsClickedTwice() {
-        goToTripDetailsInput()
-        inputTripDetails(confirm = false)
+        goToSingleStopTripDetailsInput()
+        inputSingleStopTripDetails(confirm = false)
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
+            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+
+        composeTestRule.onNodeWithText(
+            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
+        ).performClick()
+
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
@@ -152,12 +168,14 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameCleared_whenCancelTripIsClicked() {
-        goToTripDetailsInput()
-        inputTripDetails(confirm = false)
+        goToSingleStopTripDetailsInput()
+        inputSingleStopTripDetails(confirm = false)
 
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
             .performClick()
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
@@ -184,7 +202,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenTripNameIsNotProvided() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
 
         composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
 
@@ -203,7 +221,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenTripNameIsErased() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -227,7 +245,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenArrivalDateNotProvided() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -242,7 +260,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnDisabled_whenDepartureDateIsNotProvided() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -257,7 +275,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isSaveTripBtnEnabled_whenTripNameArrivalDepartureDateIsProvided() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
         composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
             .performTextInput(MOCK_TRIP_NAME)
 
@@ -278,7 +296,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isCancelTripBtnShown_whenPlaceConfirmIsClicked() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
 
         //isCancelTripBtnShown_whenPlaceConfirmIsClicked
         composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel).assertIsDisplayed()
@@ -289,7 +307,7 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isCancelTripBtnHidden_whenBackIsClicked() {
-        goToTripDetailsInput()
+        goToSingleStopTripDetailsInput()
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
@@ -304,6 +322,8 @@ class MapScreenTest : BaseComposeTest<MainActivity>() {
     @Test
     fun isNetworkUnavailableErrorNotShown_whenAddTripFabIsClicked_whileInternetAvailable() {
         composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
+            .performClick()
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
             .performClick()
 
         composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.PlacesInteractor
+import com.arturborowy.pins.domain.Trip
 import com.arturborowy.pins.model.system.LocaleRepository
 import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.ui.NavigationTarget
@@ -13,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,35 +26,41 @@ class TripsListViewModel @Inject constructor(
 
     val state = MutableStateFlow(State())
 
+    private val dateFormatter = SimpleDateFormat("dd MMM yyyy", localeRepository.locale)
+
     override fun onResume(owner: LifecycleOwner) {
         viewModelScope.launch {
-            val dateFormatter = SimpleDateFormat("dd MMM yyyy", localeRepository.locale)
-
             val places = placesInteractor.getPlaces()
-                .map {
-                    TripSingleStop(
-                        it.id,
-                        it.name,
-                        it.locationName,
-                        if (it.departureDate == null) {
-                            dateFormatter.format(Date(it.arrivalDate))
-                        } else {
-                            resourcesRepository.getString(
-                                R.string.trip_list_pattern_date_range,
-                                dateFormatter.format(Date(it.arrivalDate)),
-                                dateFormatter.format(Date(it.departureDate)),
-                            )
-                        },
-                        it.country
-                    )
-                }
+                .map { createTripVM(it) }
             state.emit(state.value.copy(tripDetails = places, isLoading = false))
         }
     }
 
-    fun onEditTripClick(tripSingleStop: TripSingleStop) {
+    private fun createTripVM(trip: Trip): TripListItem {
+        return TripListItem(
+            trip.id,
+            trip.name,
+            trip.stops.map { stop ->
+                TripListItemStopItem(
+                    stop.placeDetails.locationName,
+                    if (stop.departureDate == null) {
+                        dateFormatter.format(stop.arrivalDate)
+                    } else {
+                        resourcesRepository.getString(
+                            R.string.trip_list_pattern_date_range,
+                            dateFormatter.format(stop.arrivalDate),
+                            dateFormatter.format(stop.departureDate),
+                        )
+                    },
+                    stop.placeDetails.country
+                )
+            }
+        )
+    }
+
+    fun onEditTripClick(tripListItem: TripListItem) {
         viewModelScope.launch {
-            navigator.navigateTo(NavigationTarget.EDIT_TRIP.create(tripSingleStop.id))
+            navigator.navigateTo(NavigationTarget.EDIT_TRIP.create(tripListItem.id))
         }
     }
 
@@ -66,6 +72,6 @@ class TripsListViewModel @Inject constructor(
 
     data class State(
         val isLoading: Boolean = true,
-        val tripDetails: List<TripSingleStop> = listOf(),
+        val tripDetails: List<Any> = listOf(),
     )
 }

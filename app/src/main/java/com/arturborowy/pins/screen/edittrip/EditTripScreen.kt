@@ -1,38 +1,52 @@
 package com.arturborowy.pins.screen.edittrip
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
-import com.arturborowy.pins.ui.composable.SingleTripAddCard
+import com.arturborowy.pins.ui.composable.TripAddCard
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
-import com.arturborowy.pins.utils.pxToDp
 import com.arturborowy.pins.utils.showShortToast
-import com.arturborowy.pins.utils.statusBarHeightPx
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import kotlinx.coroutines.flow.distinctUntilChanged
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
@@ -44,31 +58,90 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
         setState(state.copy(errorText = null))
     }
 
-    val keyboard = LocalSoftwareKeyboardController.current
+    val pagerState = rememberPagerState { state.stops.size }
 
-    val androidStatusBarHeight = pxToDp(LocalContext.current.statusBarHeightPx ?: 0)
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collect { page ->
+                viewModel.onPageChanged(page)
+            }
+    }
+    LaunchedEffect(state.currentStopId) {
+        pagerState.scrollToPage(state.currentStopId)
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.primary))
-            .padding(16.dp, androidStatusBarHeight + 16.dp, 16.dp, 16.dp)
+            .background(PinsTheme.colorScheme.background)
     ) {
-        PageTitle(
-            text = stringResource(R.string.edit_trip_header),
-            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 16.dp)
-        )
-
-        SingleTripAddCard(
-            placeText = state.placeText,
-            placeErrorText = state.placeErrorText,
-            onSearchTextChange = {
-                setState(
-                    state.copy(
-                        placeText = it, placeTextChangedByUser = true
-                    )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(modifier = Modifier.alpha(if (state.isPreviousStopAvailable) 1f else 0f),
+                onClick = { viewModel.onPreviousStopClick() }) {
+                Icon(
+                    modifier = Modifier
+                        .height(24.dp)
+                        .width(24.dp),
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    tint = PinsTheme.colorScheme.onBackground,
+                    contentDescription = stringResource(R.string.edit_trip_cd_previous_stop)
                 )
-            },
+            }
+            PageTitle(
+                text = stringResource(R.string.edit_trip_header),
+            )
+
+            IconButton(modifier = Modifier.alpha(if (state.isNextStopAvailable) 1f else 0f),
+                onClick = { viewModel.onNextStopClick() }) {
+                Icon(
+                    modifier = Modifier
+                        .height(24.dp)
+                        .width(24.dp),
+                    painter = painterResource(R.drawable.ic_arrow_forward),
+                    tint = PinsTheme.colorScheme.onBackground,
+                    contentDescription = stringResource(R.string.edit_trip_cd_next_stop)
+                )
+            }
+        }
+
+        HorizontalPager(state = pagerState) { page ->
+            val stop = state.stops.getOrNull(page)
+
+            stop?.let {
+                EditStop(
+                    viewModel,
+                    state,
+                    stop
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun EditStop(
+    viewModel: EditTripViewModel,
+    state: EditTripViewModel.State,
+    stop: EditTripStopItem
+) {
+    val keyboard = LocalSoftwareKeyboardController.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp, 16.dp, 16.dp, 16.dp)
+    ) {
+        TripAddCard(
+            placeText = stop.locationName,
+            placeErrorText = state.placeErrorText,
+            onSearchTextChange = { viewModel.onSearchTextChange(placeText = it) },
             onBackClick = { viewModel.onBackEditingAddress() },
             showBackArrow = true,
             onConfirmClick = { viewModel.onConfirmAddress() },
@@ -77,41 +150,42 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
             showExtraEditionFields = state.showExtraFields,
             predictions = state.predictions,
             onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
-            nameText = state.nameText,
+            nameText = state.tripName,
             onNameTextChange = { viewModel.onTripNameChange(it) },
-            arrivalDate = state.arrivalDate,
+            arrivalDate = stop.arrivalDateStr,
             onArrivalDateChange = { year: Int, month: Int, dayOfMonth: Int ->
                 viewModel.onArrivalDateChange(year, month, dayOfMonth)
             },
-            departureDate = state.departureDate,
+            departureDate = stop.departureDateStr,
             onDepartureDateChange = { year: Int, month: Int, dayOfMonth: Int ->
                 viewModel.onDepartureDateChange(year, month, dayOfMonth)
             },
             onPositiveClick = { viewModel.onSaveChangesClick() },
             positiveClickText = stringResource(R.string.edit_trip_btn_save_changes),
-            onNegativeClick = { viewModel.onTripCancelClick() },
+            onNegativeClick = { viewModel.onTripRemoveClick() },
             negativeClickText = stringResource(R.string.edit_trip_btn_delete),
+            onMiddleClick = null,
+            middleClickText = null,
             keyboard = keyboard,
             isSavingEnabled = state.isSavingTripEnabled,
-            isAddressEditEnabled = state.isAddressEditEnabled
+            isAddressEditEnabled = state.isAddressEditEnabled,
+            multiStop = state.stops.size > 1
         )
         WideCard(padding = PaddingValues(0.dp)) {
-            if (state.placeLongitude != null && state.placeLatitude != null && state.placeCountryIcon != null) {
-                val location = LatLng(state.placeLatitude, state.placeLongitude)
+            val location = LatLng(stop.latitude, stop.longitude)
 
-                val cameraPositionState =
-                    CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
+            val cameraPositionState =
+                CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
 
-                GoogleMap(cameraPositionState = cameraPositionState) {
-                    Marker(
-                        icon = mapIconBitmapDescriptor(
-                            LocalContext.current,
-                            state.placeCountryIcon
-                        ),
-                        state = MarkerState(location),
-                        title = state.placeText
-                    )
-                }
+            GoogleMap(cameraPositionState = cameraPositionState) {
+                Marker(
+                    icon = mapIconBitmapDescriptor(
+                        LocalContext.current,
+                        stop.country.countryIcon
+                    ),
+                    state = MarkerState(location),
+                    title = stop.locationName
+                )
             }
         }
     }

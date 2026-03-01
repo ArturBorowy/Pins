@@ -15,7 +15,7 @@ import com.arturborowy.pins.screen.edittrip.editTripViewModel
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.screen.map.MapScreen
 import com.arturborowy.pins.screen.map.mapViewModel
-import com.arturborowy.pins.screen.settings.licences.LicencesScreen
+import com.arturborowy.pins.screen.settings.licenses.LicensesScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -42,24 +42,24 @@ fun NavigationComposable(
         startDestination = BottomNavItem.MAP.label,
         modifier = Modifier.padding(innerPadding)
     ) {
-        BottomNavItem.values().forEach { screen ->
+        BottomNavItem.entries.forEach { screen ->
             composable(screen.name) { screen.screenComposable() }
         }
 
-        composable(NavigationTarget.LICENCES.label) { LicencesScreen() }
+        composable(NavigationTarget.Licenses.label) { LicensesScreen() }
 
-        val mapArgs = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY) {
+        val mapArgs = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_TRIP_TYPE_BAR_KEY) {
             type = NavType.BoolType
         })
         composable(NavigationTarget.ADD_TRIP.label, mapArgs) {
-            MapScreen(mapViewModel(it.arguments?.getBoolean(NavigationTarget.ADD_TRIP.SHOW_SEARCH_BAR_KEY)!!))
+            MapScreen(mapViewModel(it.arguments?.getBoolean(NavigationTarget.ADD_TRIP.SHOW_TRIP_TYPE_BAR_KEY)!!))
         }
 
-        val editTripArgs = listOf(navArgument(NavigationTarget.EDIT_TRIP.PLACE_ID_KEY) {
+        val editTripArgs = listOf(navArgument(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY) {
             type = NavType.StringType
         })
         composable(NavigationTarget.EDIT_TRIP.label, editTripArgs) {
-            EditTripScreen(editTripViewModel(it.arguments?.getString(NavigationTarget.EDIT_TRIP.PLACE_ID_KEY)!!))
+            EditTripScreen(editTripViewModel(it.arguments?.getString(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY)!!))
         }
     }
 }
