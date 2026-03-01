@@ -1,6 +1,5 @@
-package com.arturborowy.pins.ui.composable
+package com.arturborowy.pins.ui.composable.tripcard
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,16 +8,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
+import com.arturborowy.pins.ui.composable.FilledButton
+import com.arturborowy.pins.ui.composable.OutlinedButton
+import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.theme.PinsTheme
 
 @Composable
@@ -68,24 +66,20 @@ fun TripSingleStopExtraFields(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             OutlinedButton(
+                text = negativeClickText,
+                onClick = onNegativeClick,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = PinsTheme.colorScheme.onBackground
-                ),
-                onClick = { onNegativeClick() }) {
-                Text(text = negativeClickText, color = PinsTheme.colorScheme.onBackground)
-            }
-            Button(modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
+                    .padding(8.dp)
+            )
+            FilledButton(
+                text = positiveClickText,
+                onClick = onPositiveClick,
                 enabled = isSavingEnabled,
-                colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
-                onClick = { onPositiveClick() }) {
-                Text(text = positiveClickText, color = PinsTheme.colorScheme.onPrimary)
-            }
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+            )
         }
     }
 }

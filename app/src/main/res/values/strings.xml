@@ -35,6 +35,7 @@
 
     <string name="settings_header">Settings</string>
     <string name="settings_section_about_app">About This App</string>
+    <string name="settings_section_other">Other</string>
 
     <string name="settings_item_rate_on_store">Rate us on Play Store</string>
     <string name="settings_item_Licenses">Licenses</string>

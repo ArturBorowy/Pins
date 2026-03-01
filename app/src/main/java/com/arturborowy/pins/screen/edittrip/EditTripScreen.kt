@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
-import com.arturborowy.pins.ui.composable.TripAddCard
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.mapIconBitmapDescriptor
