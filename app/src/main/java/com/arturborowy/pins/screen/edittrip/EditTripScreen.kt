@@ -117,7 +117,6 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 EditStop(
                     viewModel,
                     state,
-                    setState,
                     stop
                 )
             }
@@ -130,7 +129,6 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
 fun EditStop(
     viewModel: EditTripViewModel,
     state: EditTripViewModel.State,
-    setState: (EditTripViewModel.State) -> Unit,
     stop: EditTripStopItem
 ) {
     val keyboard = LocalSoftwareKeyboardController.current

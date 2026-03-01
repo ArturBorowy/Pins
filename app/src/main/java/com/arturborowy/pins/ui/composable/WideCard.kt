@@ -26,7 +26,7 @@ fun WideCard(
         modifier = modifier
             .padding(margin)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier

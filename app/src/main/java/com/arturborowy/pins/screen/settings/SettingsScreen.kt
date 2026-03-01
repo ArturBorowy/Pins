@@ -1,23 +1,22 @@
 package com.arturborowy.pins.screen.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.titleSmallEmphasized
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
@@ -38,71 +38,82 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(16.dp)
             .background(PinsTheme.colorScheme.background)
     ) {
         PageTitle(
             stringResource(R.string.settings_header),
-            modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 0.dp)
+            modifier = Modifier.padding(vertical = 16.dp)
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .wrapContentSize(Alignment.Center)
-        ) {
-            WideCard(padding = PaddingValues(0.dp, 8.dp, 0.dp, 0.dp)) {
-                SettingItem(stringResource(R.string.settings_item_rate_on_store))
-                SettingItem(
-                    stringResource(R.string.settings_item_Licenses),
-                    onClick = viewModel::onLicensesClick
-                )
-                SettingItem(
-                    stringResource(R.string.settings_item_version),
-                    state.versionNumber
-                )
-            }
+        WideCard(padding = PaddingValues(0.dp)) {
+            SettingItem(stringResource(R.string.settings_item_rate_on_store))
+            SettingItem(
+                stringResource(R.string.settings_item_Licenses),
+                onClick = viewModel::onLicensesClick,
+                showDivider = false
+            )
+        }
+
+        SettingSectionLabel(stringResource(R.string.settings_section_about_app))
+        WideCard(padding = PaddingValues(0.dp)) {
+            SettingItem(
+                stringResource(R.string.settings_item_version),
+                secondaryValue = state.versionNumber,
+                showDivider = false
+            )
         }
     }
 }
 
 @Composable
-fun SettingItem(label: String, secondaryValue: String? = null, onClick: (() -> Unit)? = null) {
-    TextButton(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick ?: {},
-        colors = ButtonDefaults.textButtonColors(
-            disabledContentColor = PinsTheme.colorScheme.onSurface,
-            contentColor = PinsTheme.colorScheme.onSurface
-        ),
-        enabled = onClick != null,
-        shape = RectangleShape
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
+fun SettingSectionLabel(text: String) {
+    Text(
+        text = text,
+        style = PinsTheme.typography.labelMedium,
+        color = PinsTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+}
+
+@Composable
+fun SettingItem(
+    label: String,
+    secondaryValue: String? = null,
+    onClick: (() -> Unit)? = null,
+    showDivider: Boolean = true
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = label,
-                    style = PinsTheme.typography.titleSmall
-                )
-                secondaryValue?.let { secondaryValue ->
-                    Text(
-                        text = secondaryValue,
-                        style = PinsTheme.typography.titleSmall
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(0.dp, 2.dp, 0.dp, 0.dp)
-                    .background(PinsTheme.colorScheme.primary)
-                    .height(1.dp)
-                    .fillMaxWidth()
+            Text(
+                text = label,
+                style = PinsTheme.typography.titleSmallEmphasized,
+                color = PinsTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
             )
+            when {
+                secondaryValue != null -> Text(
+                    text = secondaryValue,
+                    style = PinsTheme.typography.bodyMedium,
+                    color = PinsTheme.colorScheme.onSurfaceVariant
+                )
+
+                onClick != null -> Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = PinsTheme.colorScheme.primary
+                )
+            }
+        }
+        if (showDivider) {
+            HorizontalDivider(color = PinsTheme.colorScheme.outlineVariant)
         }
     }
 }

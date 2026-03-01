@@ -189,7 +189,7 @@ fun AddTripTypesBar(
         shape = RoundedCornerShape(999.dp),
         colors = CardDefaults.cardColors(containerColor = PinsTheme.colorScheme.surface),
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row {
             TextButton(
