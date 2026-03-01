@@ -1,12 +1,12 @@
 package com.arturborowy.pins.di
 
-import com.arturborowy.pins.domain.Licenses.LicensesInteractor
 import com.arturborowy.pins.domain.PlacesInteractor
-import com.arturborowy.pins.model.Licenses.LibrariesRepository
+import com.arturborowy.pins.domain.licences.LicensesInteractor
 import com.arturborowy.pins.model.Licenses.LicensesContentRepository
-import com.arturborowy.pins.model.countryicons.CountryIconsRepository
+import com.arturborowy.pins.model.com.arturborowy.pins.flags.CountryIconsRepository
 import com.arturborowy.pins.model.db.StopEntityDao
 import com.arturborowy.pins.model.db.TripDao
+import com.arturborowy.pins.model.licences.LibrariesRepository
 import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
 import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
 import com.arturborowy.pins.model.system.ResourcesRepository
@@ -40,12 +40,12 @@ object MainModule {
     @Provides
     fun LicensesInteractor(
         librariesRepository: LibrariesRepository,
-        LicensesContentRepository: LicensesContentRepository,
+        licensesContentRepository: LicensesContentRepository,
         resourcesRepository: ResourcesRepository
     ) = LicensesInteractor(
         resourcesRepository,
         librariesRepository,
-        LicensesContentRepository
+        licensesContentRepository
     )
 
     @Singleton

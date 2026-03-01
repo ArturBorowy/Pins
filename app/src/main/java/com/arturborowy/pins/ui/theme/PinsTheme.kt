@@ -12,12 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Primary,
-    onPrimary = Color(0xFF1E1B4B),
+    primary = PinsColor.Primary,
+    onPrimary = Color.White,
     primaryContainer = Color(0xFF3730A3),
     onPrimaryContainer = Color(0xFFC7D2FE),
 
-    secondary = Primary,
+    secondary = PinsColor.Primary,
     onSecondary = Color(0xFF1E1B4B),
     secondaryContainer = Color(0xFF312E81),
     onSecondaryContainer = Color(0xFFC7D2FE),
@@ -45,18 +45,18 @@ private val DarkColorScheme = darkColorScheme(
 
     inverseSurface = Color(0xFFE6E1E5),
     inverseOnSurface = Color(0xFF313033),
-    inversePrimary = Primary,
+    inversePrimary = PinsColor.Primary,
 
     scrim = Color.Black,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Primary,
+    primary = PinsColor.Primary,
     onPrimary = Color.White,
     primaryContainer = Color(0xFFDEDAFF),
     onPrimaryContainer = Color(0xFF04006B),
 
-    secondary = PrimaryLight,
+    secondary = PinsColor.PrimaryLight,
     onSecondary = Color.White,
     secondaryContainer = Color(0xFFEADDFF),
     onSecondaryContainer = Color(0xFF22005D),

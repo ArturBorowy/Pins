@@ -3,9 +3,9 @@ package com.arturborowy.pins.ui.composable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -17,14 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
+import com.arturborowy.pins.domain.Country
 import com.arturborowy.pins.screen.triplist.TripListItem
 import com.arturborowy.pins.screen.triplist.TripListItemStopItem
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.ui.theme.bodyLargeEmphasized
 import com.arturborowy.pins.ui.theme.labelMediumEmphasized
 import com.arturborowy.pins.ui.theme.titleMediumEmphasized
+import com.arturborowy.flags.R as FlagsR
 
 object TripViewTag {
     const val TRIP_NAME = "TRIP_NAME"
@@ -34,7 +37,7 @@ object TripViewTag {
 
 @Composable
 fun TripView(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
-    WideCard(margin = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp)) {
+    WideCard(margin = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
         TripHeader(tripListItem, onEditTripClick)
         tripListItem.stops.forEach { stop ->
             TripRow(stop)
@@ -45,11 +48,11 @@ fun TripView(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit
 @Composable
 fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        RoundFlag(tripListItem.stops[0].country)
+        RoundFlagIcon(tripListItem.stops[0].country)
 
         Text(
             modifier = Modifier
-                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                .padding(start = 8.dp)
                 .testTag(TripViewTag.TRIP_NAME),
             style = PinsTheme.typography.titleMediumEmphasized,
             color = PinsTheme.colorScheme.onSurface,
@@ -60,8 +63,7 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
 
         IconButton(
             modifier = Modifier
-                .height(20.dp)
-                .width(20.dp),
+                .size(20.dp),
             onClick = { onEditTripClick(tripListItem) }) {
             Icon(
                 painter = painterResource(R.drawable.ic_edit),
@@ -77,19 +79,18 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
 @Composable
 fun TripRow(tripListItemStopItem: TripListItemStopItem) {
     Row(
-        modifier = Modifier.padding(10.dp, 8.dp, 0.dp, 0.dp)
+        modifier = Modifier.padding(start = 10.dp, top = 8.dp)
     ) {
         Divider(
             color = PinsTheme.colorScheme.primary,
             modifier = Modifier
-                .fillMaxHeight()
                 .height(20.dp)
                 .width(3.dp)
         )
 
         Text(
             modifier = Modifier
-                .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                .padding(start = 8.dp)
                 .testTag(TripViewTag.TRIP_PLACE),
             style = PinsTheme.typography.bodyLargeEmphasized,
             color = PinsTheme.colorScheme.onSurface,
@@ -105,4 +106,34 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
             text = tripListItemStopItem.dateStr
         )
     }
+}
+
+private val previewCountry = Country(
+    countryId = "pl",
+    countryLabel = "Poland",
+    countryIcon = FlagsR.drawable.pl
+)
+
+private val previewStop = TripListItemStopItem(
+    locationName = "Warsaw",
+    dateStr = "01.03.2026",
+    country = previewCountry
+)
+
+private val previewTrip = TripListItem(
+    id = 1L,
+    name = "Poland Trip",
+    stops = listOf(previewStop, previewStop.copy(locationName = "Kraków", dateStr = "05.03.2026"))
+)
+
+@Preview
+@Composable
+fun TripViewPreview() = PreviewTheme {
+    TripView(tripListItem = previewTrip, onEditTripClick = {})
+}
+
+@Preview
+@Composable
+fun TripRowPreview() = PreviewTheme {
+    TripRow(tripListItemStopItem = previewStop)
 }

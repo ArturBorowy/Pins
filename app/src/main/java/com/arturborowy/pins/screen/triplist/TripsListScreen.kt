@@ -17,9 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
-import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PageTitle
+import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.ui.composable.TripView
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.ui.theme.headlineSmallEmphasized
@@ -39,7 +39,7 @@ fun TripsListScreen(viewModel: TripsListViewModel = hiltViewModel()) {
             .navigationBarsPadding(),
     ) {
         if (state.isLoading) {
-            CircularProgressBar(modifier = Modifier.align(Alignment.Center))
+            PrimaryColorCircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else if (state.tripDetails.isEmpty()) {
             EmptyListView { viewModel.onAddTripClick() }
         } else {

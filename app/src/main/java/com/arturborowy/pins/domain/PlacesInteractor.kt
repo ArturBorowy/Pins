@@ -1,6 +1,6 @@
 package com.arturborowy.pins.domain
 
-import com.arturborowy.pins.model.countryicons.CountryIconsRepository
+import com.arturborowy.pins.model.com.arturborowy.pins.flags.CountryIconsRepository
 import com.arturborowy.pins.model.db.StopEntityDao
 import com.arturborowy.pins.model.db.TripDao
 import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository

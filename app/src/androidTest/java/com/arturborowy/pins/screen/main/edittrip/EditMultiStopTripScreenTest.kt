@@ -237,7 +237,9 @@ class EditMultiStopTripScreenTest : BaseComposeTest<MainActivity>() {
         addMultiStopTripViaTripListAndGoToEdit()
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick().performClick()
+            .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
+            .performClick()
     }
 
     private fun addMultiStopTripViaTripListAndGoToEdit() {
