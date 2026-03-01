@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-    <style name="PinsDialog" parent="android:Theme.Material.Light.Dialog">
+    <style name="PinsLightDialog" parent="android:Theme.Material.Light.Dialog">
         <item name="colorAccent">#1B1282</item>
         <item name="android:colorAccent">#1B1282</item>
+    </style>
+
+    <style name="PinsDarkDialog" parent="android:Theme.Material.Dialog">
+        <item name="android:colorBackground">#0F172A</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 </resources>

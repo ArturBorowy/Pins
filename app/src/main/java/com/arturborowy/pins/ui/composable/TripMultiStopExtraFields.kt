@@ -58,13 +58,10 @@ fun TripMultiStopExtraFields(
                     .padding(8.dp),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = PinsTheme.colorScheme.primary
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = PinsTheme.colorScheme.primary,
+                    color = PinsTheme.colorScheme.onBackground
                 ),
                 onClick = { onNegativeClick() }) {
-                Text(text = negativeClickText)
+                Text(text = negativeClickText, color = PinsTheme.colorScheme.onBackground)
             }
             if (middleClickText != null) {
                 Button(modifier = Modifier
@@ -73,7 +70,7 @@ fun TripMultiStopExtraFields(
                     enabled = isSavingEnabled,
                     colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
                     onClick = { onMiddleClick?.invoke() }) {
-                    Text(text = middleClickText)
+                    Text(text = middleClickText, color = PinsTheme.colorScheme.onPrimary)
                 }
             }
             Button(modifier = Modifier
@@ -82,7 +79,7 @@ fun TripMultiStopExtraFields(
                 enabled = isSavingEnabled,
                 colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
                 onClick = { onPositiveClick() }) {
-                Text(text = positiveClickText)
+                Text(text = positiveClickText, color = PinsTheme.colorScheme.onPrimary)
             }
         }
     }

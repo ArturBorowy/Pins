@@ -73,13 +73,10 @@ fun TripSingleStopExtraFields(
                     .padding(8.dp),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = PinsTheme.colorScheme.primary
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = PinsTheme.colorScheme.primary,
+                    color = PinsTheme.colorScheme.onBackground
                 ),
                 onClick = { onNegativeClick() }) {
-                Text(text = negativeClickText)
+                Text(text = negativeClickText, color = PinsTheme.colorScheme.onBackground)
             }
             Button(modifier = Modifier
                 .weight(1f)
@@ -87,7 +84,7 @@ fun TripSingleStopExtraFields(
                 enabled = isSavingEnabled,
                 colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
                 onClick = { onPositiveClick() }) {
-                Text(text = positiveClickText)
+                Text(text = positiveClickText, color = PinsTheme.colorScheme.onPrimary)
             }
         }
     }

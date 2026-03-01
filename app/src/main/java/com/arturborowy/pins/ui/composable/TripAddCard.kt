@@ -3,6 +3,7 @@ package com.arturborowy.pins.ui.composable
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -162,6 +163,8 @@ fun DatePickingButton(
     val month = calendar[Calendar.MONTH]
     val dayOfMonth = calendar[Calendar.DAY_OF_MONTH]
 
+    val isDarkTheme = isSystemInDarkTheme()
+
     OutlinedTextField(
         modifier = modifier
             .padding(8.dp, 0.dp)
@@ -169,7 +172,11 @@ fun DatePickingButton(
                 if (it.isFocused) {
                     val datePicker = DatePickerDialog(
                         context,
-                        R.style.PinsDialog,
+                        if (isDarkTheme) {
+                            R.style.PinsDarkDialog
+                        } else {
+                            R.style.PinsLightDialog
+                        },
                         { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int ->
                             onDateSelected(selectedYear, selectedMonth, selectedDayOfMonth)
                         },
@@ -197,7 +204,7 @@ fun DatePickingButton(
         leadingIcon = {
             Icon(
                 painter = painterResource(R.drawable.ic_calendar),
-                tint = PinsTheme.colorScheme.primary,
+                tint = PinsTheme.colorScheme.onBackground,
                 contentDescription = label
             )
         })
@@ -206,11 +213,11 @@ fun DatePickingButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = PinsTheme.colorScheme.primary,
-    unfocusedBorderColor = PinsTheme.colorScheme.primary,
-    focusedTextColor = PinsTheme.colorScheme.primary,
-    focusedLabelColor = PinsTheme.colorScheme.primary,
-    unfocusedLabelColor = PinsTheme.colorScheme.primary,
+    focusedBorderColor = PinsTheme.colorScheme.onBackground,
+    unfocusedBorderColor = PinsTheme.colorScheme.onBackground,
+    focusedTextColor = PinsTheme.colorScheme.onBackground,
+    focusedLabelColor = PinsTheme.colorScheme.onBackground,
+    unfocusedLabelColor = PinsTheme.colorScheme.onBackground,
 )
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -268,7 +275,7 @@ fun SearchField(
                 TextButton(onClick = { onBackClick() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_back_editing),
-                        tint = PinsTheme.colorScheme.primary,
+                        tint = PinsTheme.colorScheme.onBackground,
                         contentDescription = stringResource(R.string.add_trip_cd_address_editing_back)
                     )
                 }
@@ -279,7 +286,7 @@ fun SearchField(
                 TextButton(onClick = { onConfirmClick() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_done),
-                        tint = PinsTheme.colorScheme.primary,
+                        tint = PinsTheme.colorScheme.onBackground,
                         contentDescription = stringResource(R.string.add_trip_btn_confirm)
                     )
                 }

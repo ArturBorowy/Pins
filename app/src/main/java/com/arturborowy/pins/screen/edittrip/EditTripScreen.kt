@@ -2,6 +2,7 @@ package com.arturborowy.pins.screen.edittrip
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,8 +41,10 @@ import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -82,7 +85,8 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(modifier = Modifier.alpha(if (state.isPreviousStopAvailable) 1f else 0f),
+            IconButton(
+                modifier = Modifier.alpha(if (state.isPreviousStopAvailable) 1f else 0f),
                 onClick = { viewModel.onPreviousStopClick() }) {
                 Icon(
                     modifier = Modifier
@@ -97,7 +101,8 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 text = stringResource(R.string.edit_trip_header),
             )
 
-            IconButton(modifier = Modifier.alpha(if (state.isNextStopAvailable) 1f else 0f),
+            IconButton(
+                modifier = Modifier.alpha(if (state.isNextStopAvailable) 1f else 0f),
                 onClick = { viewModel.onNextStopClick() }) {
                 Icon(
                     modifier = Modifier
@@ -132,6 +137,8 @@ fun EditStop(
     stop: EditTripStopItem
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -177,7 +184,19 @@ fun EditStop(
             val cameraPositionState =
                 CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
 
-            GoogleMap(cameraPositionState = cameraPositionState) {
+            GoogleMap(
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(
+                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
+                        context,
+                        if (isSystemInDarkTheme()) {
+                            R.raw.map_style_options_dark
+                        } else {
+                            R.raw.map_style_options_light
+                        }
+                    )
+                )
+            ) {
                 Marker(
                     icon = mapIconBitmapDescriptor(
                         LocalContext.current,

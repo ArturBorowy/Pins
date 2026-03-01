@@ -3,6 +3,7 @@ package com.arturborowy.pins.screen.map
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,8 +42,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
@@ -61,6 +64,8 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
 
     val keyboard = LocalSoftwareKeyboardController.current
 
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +79,19 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
             val cameraPositionState =
                 CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
 
-            GoogleMap(cameraPositionState = cameraPositionState) {
+            GoogleMap(
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(
+                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
+                        context,
+                        if (isSystemInDarkTheme()) {
+                            R.raw.map_style_options_dark
+                        } else {
+                            R.raw.map_style_options_light
+                        }
+                    )
+                )
+            ) {
                 Marker(
                     icon = mapIconBitmapDescriptor(LocalContext.current, state.placeCountryIcon),
                     state = MarkerState(location),
@@ -84,7 +101,18 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         } else {
 
             //todo maybe on start just show some random pin on camera, but less zoom when setting?
-            GoogleMap {
+            GoogleMap(
+                properties = MapProperties(
+                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
+                        context,
+                        if (isSystemInDarkTheme()) {
+                            R.raw.map_style_options_dark
+                        } else {
+                            R.raw.map_style_options_light
+                        }
+                    )
+                )
+            ) {
                 state.tripMarkers.forEach { tripMarkers ->
                     if (tripMarkers.size == 1) {
                         TripMarker(tripMarkers[0])

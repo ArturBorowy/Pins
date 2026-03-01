@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = PinsColor.Primary,
-    onPrimary = Color(0xFF1E1B4B),
+    onPrimary = Color.White,
     primaryContainer = Color(0xFF3730A3),
     onPrimaryContainer = Color(0xFFC7D2FE),
 
