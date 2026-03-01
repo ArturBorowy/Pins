@@ -259,15 +259,8 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
-    }
-
-    private fun addMultiStopTripViaTripListAndGoToEdit() {
-        addMultiStopTripViaTripList()
-
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
-        chooseTripToEdit()
     }
 
     private fun addSingleStopTripViaTripListAndGoToEdit() {

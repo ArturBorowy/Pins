@@ -3,6 +3,7 @@ package com.arturborowy.pins.screen.main.map
 import android.widget.DatePicker
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -57,9 +58,8 @@ class SingleStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertIsDisplayed()
 
         //isKeyboardShown_whenAddTripFabIsClicked
-        composeTestRule.waitUntil(5000L) {
-            isKeyboardShown()
-        }
+        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
+            .assertIsFocused()
     }
 
     @Test

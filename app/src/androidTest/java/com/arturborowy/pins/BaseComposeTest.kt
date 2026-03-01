@@ -37,7 +37,6 @@ import com.ultimatelogger.android.output.ALogInitializer
 import com.ultimatelogger.multiplatform.tag.TagSettings
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.hamcrest.Matchers
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -60,6 +59,7 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     open fun init() {
         initLogger()
         hiltRule.inject()
+        appDatabase.clearAllTables()
     }
 
     private fun initLogger() {
@@ -74,16 +74,11 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         ALogInitializer.init(shouldLog, defaultTagSettings)
     }
 
-    @After
-    open fun tearDown() {
-        appDatabase.clearAllTables()
-    }
-
     protected fun test(message: String, action: () -> Unit) {
         try {
             action()
         } catch (e: AssertionError) {
-            throw AssertionError(message)
+            throw AssertionError(message, e)
         }
     }
 
@@ -179,6 +174,11 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     protected fun inputTripPlace(
         tripPlaceName: String = MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING
     ) {
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(getString(R.string.add_trip_hint_name)),
+            5000L
+        )
+
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
             .performTextInput(tripPlaceName)
 
@@ -188,6 +188,8 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
             } else {
                 MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS[0].label
             }
+
+        composeTestRule.waitUntilExactlyOneExists(hasText(predictionString), 5000L)
 
         composeTestRule.onNodeWithText(predictionString)
             .performClick()
