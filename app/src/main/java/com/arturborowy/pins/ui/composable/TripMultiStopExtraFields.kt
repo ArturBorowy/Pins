@@ -90,7 +90,7 @@ fun TripMultiStopExtraFields(
 
 @Preview
 @Composable
-fun TripMultiStopExtraFieldsPreview() {
+fun TripMultiStopExtraFieldsPreview() = PreviewTheme {
     TripMultiStopExtraFields(
         nameText = "Name text",
         onNameTextChange = {},

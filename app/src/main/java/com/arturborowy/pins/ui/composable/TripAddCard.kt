@@ -326,7 +326,7 @@ fun SearchResults(
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun TripAddCardPreview() {
+fun TripAddCardPreview() = PreviewTheme {
     TripAddCard(
         placeText = "Place text",
         placeErrorText = "No internet connection",

@@ -27,8 +27,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
-import com.arturborowy.pins.ui.composable.CircularProgressBar
 import com.arturborowy.pins.ui.composable.Fab
+import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.ui.composable.TripAddCard
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.addBorderToCircle
@@ -66,7 +66,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
             .fillMaxSize()
             .background(PinsTheme.colorScheme.background)
     ) {
-        CircularProgressBar(modifier = Modifier.align(Alignment.Center))
+        PrimaryColorCircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
         if (state.placeLongitude != null && state.placeLatitude != null && state.placeCountryIcon != null) {
             val location = LatLng(state.placeLatitude, state.placeLongitude)
