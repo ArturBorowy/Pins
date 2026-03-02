@@ -1,7 +1,6 @@
 package com.arturborowy.pins.screen.map
 
 import android.app.Activity
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
@@ -24,6 +23,7 @@ import com.ultimatelogger.android.output.ALog
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -45,6 +45,8 @@ class MapViewModel @AssistedInject constructor(
         )
     )
 
+    val errorEvents = MutableSharedFlow<String>(extraBufferCapacity = 1)
+
     private var arrivalDate: Date? = null
     private var departureDate: Date? = null
 
@@ -64,7 +66,7 @@ class MapViewModel @AssistedInject constructor(
                         showAddressPredictions(it.placeText)
                     } catch (e: Exception) {
                         ALog.e(e)
-                        state.emit(state.value.copy(errorText = e.message))
+                        errorEvents.tryEmit(e.message ?: "")
                     }
                 }
                 validateSingleTripInput()
@@ -127,7 +129,7 @@ class MapViewModel @AssistedInject constructor(
                 loadPlacesDetails(placeId)
             } catch (e: Exception) {
                 ALog.e(e)
-                state.emit(state.value.copy(errorText = e.message))
+                errorEvents.tryEmit(e.message ?: "")
             }
         }
     }
@@ -141,9 +143,12 @@ class MapViewModel @AssistedInject constructor(
                 showConfirmAddressButton = true,
                 placeText = placeAddress.locationName,
                 placeTextChangedByUser = false,
-                placeLatitude = placeAddress.latitude,
-                placeLongitude = placeAddress.longitude,
-                placeCountryIcon = placeAddress.country.countryIcon
+                marker = MapMarkerItem(
+                    placeAddress.locationName,
+                    placeAddress.country.countryIcon,
+                    placeAddress.latitude,
+                    placeAddress.longitude,
+                ),
             )
         )
         selectedPlace = placeAddress
@@ -207,8 +212,7 @@ class MapViewModel @AssistedInject constructor(
                 showAddPinButton = true,
                 showAddressTextField = false,
                 tripMarkers = tripMarkers,
-                placeLongitude = null,
-                placeLatitude = null,
+                marker = null,
                 showConfirmAddressButton = false,
                 showExtraFields = false,
                 placeText = "",
@@ -222,7 +226,7 @@ class MapViewModel @AssistedInject constructor(
     private fun List<Trip>.toTripMarkers() =
         map { trip ->
             trip.stops.map { stop ->
-                TripMarkerItem(
+                MapMarkerItem(
                     stop.placeDetails.locationName,
                     stop.placeDetails.country.countryIcon,
                     stop.placeDetails.latitude,
@@ -301,6 +305,12 @@ class MapViewModel @AssistedInject constructor(
         }
     }
 
+    fun onAddressSearchTextChange(text: String) {
+        viewModelScope.launch {
+            state.emit(state.value.copy(placeText = text, placeTextChangedByUser = true))
+        }
+    }
+
     fun onTripCancelClick() {
         viewModelScope.launch {
             moveToTripListState()
@@ -339,16 +349,12 @@ class MapViewModel @AssistedInject constructor(
         val placeErrorText: String? = null,
         val nameText: String = "",
         val placeTextChangedByUser: Boolean = false,
-        val placeDescription: String = "",
-        val placeLatitude: Double? = null,
-        val placeLongitude: Double? = null,
-        @DrawableRes val placeCountryIcon: Int? = null,
-        val tripMarkers: List<List<TripMarkerItem>> = listOf(),
+        val marker: MapMarkerItem? = null,
+        val tripMarkers: List<List<MapMarkerItem>> = listOf(),
         val showAddressTextField: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
-        val errorText: String? = null,
         val showKeyboard: Boolean = false,
         val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false,

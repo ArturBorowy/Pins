@@ -8,50 +8,64 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
+import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun TripAddOverlay(
-    state: MapViewModel.State,
-    setState: (MapViewModel.State) -> Unit,
-    viewModel: MapViewModel,
+    placeText: String,
+    placeErrorText: String?,
+    onSearchTextChange: (String) -> Unit,
+    showConfirm: Boolean,
+    expandDropdown: Boolean,
+    showExtraFields: Boolean,
+    predictions: List<AddressPredictionDto>,
+    nameText: String,
+    arrivalDate: String?,
+    departureDate: String?,
+    isSavingEnabled: Boolean,
+    isAddressEditEnabled: Boolean,
+    multiStop: Boolean,
+    onBackClick: () -> Unit,
+    onConfirmClick: () -> Unit,
+    onAddressPredictionClick: (AddressPredictionDto) -> Unit,
+    onNameTextChange: (String) -> Unit,
+    onArrivalDateChange: (Int, Int, Int) -> Unit,
+    onDepartureDateChange: (Int, Int, Int) -> Unit,
+    onPositiveClick: () -> Unit,
+    onNegativeClick: () -> Unit,
+    onMiddleClick: () -> Unit,
     keyboard: SoftwareKeyboardController?
 ) {
     TripAddCard(
         modifier = Modifier.padding(8.dp),
-        placeText = state.placeText,
-        placeErrorText = state.placeErrorText,
-        onSearchTextChange = {
-            setState(state.copy(placeText = it, placeTextChangedByUser = true))
-        },
-        onBackClick = { viewModel.onBackEditingAddress() },
+        placeText = placeText,
+        placeErrorText = placeErrorText,
+        onSearchTextChange = onSearchTextChange,
+        onBackClick = onBackClick,
         showBackArrow = true,
-        onConfirmClick = { viewModel.onConfirmAddress() },
-        showConfirm = state.showConfirmAddressButton,
-        expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
-        showExtraEditionFields = state.showExtraFields,
-        predictions = state.predictions,
-        onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
-        nameText = state.nameText,
-        onNameTextChange = { viewModel.onTripNameChange(it) },
-        arrivalDate = state.arrivalDate,
-        onArrivalDateChange = { year: Int, month: Int, dayOfMonth: Int ->
-            viewModel.onArrivalDateChange(year, month, dayOfMonth)
-        },
-        departureDate = state.departureDate,
-        onDepartureDateChange = { year: Int, month: Int, dayOfMonth: Int ->
-            viewModel.onDepartureDateChange(year, month, dayOfMonth)
-        },
-        onPositiveClick = { viewModel.onTripConfirmClick() },
+        onConfirmClick = onConfirmClick,
+        showConfirm = showConfirm,
+        expandDropdown = expandDropdown,
+        showExtraEditionFields = showExtraFields,
+        predictions = predictions,
+        onAddressPredictionClick = onAddressPredictionClick,
+        nameText = nameText,
+        onNameTextChange = onNameTextChange,
+        arrivalDate = arrivalDate,
+        onArrivalDateChange = onArrivalDateChange,
+        departureDate = departureDate,
+        onDepartureDateChange = onDepartureDateChange,
+        onPositiveClick = onPositiveClick,
         positiveClickText = stringResource(R.string.create_trip_btn_confirm),
-        onNegativeClick = { viewModel.onTripCancelClick() },
+        onNegativeClick = onNegativeClick,
         negativeClickText = stringResource(R.string.create_trip_btn_cancel),
-        onMiddleClick = { viewModel.onAddNextStopClick() },
+        onMiddleClick = onMiddleClick,
         middleClickText = stringResource(R.string.create_trip_btn_next_stop),
         keyboard = keyboard,
-        isSavingEnabled = state.isSavingTripEnabled,
-        isAddressEditEnabled = state.isAddressEditEnabled,
-        multiStop = state.multiStop
+        isSavingEnabled = isSavingEnabled,
+        isAddressEditEnabled = isAddressEditEnabled,
+        multiStop = multiStop
     )
 }

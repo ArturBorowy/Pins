@@ -24,6 +24,7 @@ import com.ultimatelogger.android.output.ALog
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -40,6 +41,8 @@ class EditTripViewModel @AssistedInject constructor(
 ) : BaseViewModel() {
 
     val state = MutableStateFlow(State())
+
+    val errorEvents = MutableSharedFlow<String>(extraBufferCapacity = 1)
 
     init {
         viewModelScope.launch {
@@ -89,7 +92,7 @@ class EditTripViewModel @AssistedInject constructor(
                         showAddressPredictions(it.stops[it.currentStopId].locationName)
                     } catch (e: Exception) {
                         ALog.e(e)
-                        state.emit(state.value.copy(errorText = e.message))
+                        errorEvents.tryEmit(e.message ?: "")
                     }
                 }
                 validateTripInput()
@@ -132,7 +135,7 @@ class EditTripViewModel @AssistedInject constructor(
                 loadPlacesDetails(placeId)
             } catch (e: Exception) {
                 ALog.e(e)
-                state.emit(state.value.copy(errorText = e.message))
+                errorEvents.tryEmit(e.message ?: "")
             }
         }
     }
@@ -349,7 +352,6 @@ class EditTripViewModel @AssistedInject constructor(
         val placeErrorText: String? = null,
         val placeTextChangedByUser: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
-        val errorText: String? = null,
         val showKeyboard: Boolean = false,
         val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false,

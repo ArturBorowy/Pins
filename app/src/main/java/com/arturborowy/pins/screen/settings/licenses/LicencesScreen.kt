@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -24,14 +26,13 @@ import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.ui.theme.titleLargeEmphasized
 import com.arturborowy.pins.ui.theme.titleSmallEmphasized
-import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
 fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-    val (state, setState) = viewModel.state.collectAsMutableState()
+    val state by viewModel.state.collectAsState()
 
     LazyColumn(
         modifier = Modifier

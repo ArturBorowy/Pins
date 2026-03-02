@@ -72,6 +72,6 @@ class TripsListViewModel @Inject constructor(
 
     data class State(
         val isLoading: Boolean = true,
-        val tripDetails: List<Any> = listOf(),
+        val tripDetails: List<TripListItem> = listOf(),
     )
 }
