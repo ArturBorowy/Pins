@@ -18,6 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -35,7 +37,6 @@ import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
@@ -54,11 +55,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-    val (state, setState) = viewModel.state.collectAsMutableState()
+    val state by viewModel.state.collectAsState()
 
-    if (state.errorText != null) {
-        showShortToast(LocalContext.current, state.errorText)
-        setState(state.copy(errorText = null))
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.errorEvents.collect { showShortToast(context, it) }
     }
 
     val pagerState = rememberPagerState { state.stops.size }

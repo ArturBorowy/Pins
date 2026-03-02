@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -17,14 +19,13 @@ import com.arturborowy.pins.ui.composable.SettingItem
 import com.arturborowy.pins.ui.composable.SettingSectionLabel
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-    val (state, setState) = viewModel.state.collectAsMutableState()
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier

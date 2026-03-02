@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -18,7 +21,6 @@ import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.ui.composable.map.AllTripsMap
 import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 
@@ -27,11 +29,11 @@ import com.arturborowy.pins.utils.showShortToast
 fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-    val (state, setState) = viewModel.state.collectAsMutableState()
+    val state by viewModel.state.collectAsState()
 
-    if (state.errorText != null) {
-        showShortToast(LocalContext.current, state.errorText)
-        setState(state.copy(errorText = null))
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.errorEvents.collect { showShortToast(context, it) }
     }
 
     val keyboard = LocalSoftwareKeyboardController.current
@@ -46,16 +48,14 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         if (state.marker == null) {
             AllTripsMap(state.tripMarkers)
         } else {
-            SelectedPlaceMap(state.marker)
+            SelectedPlaceMap(state.marker!!)
         }
 
         if (state.showAddressTextField) {
             TripAddOverlay(
                 placeText = state.placeText,
                 placeErrorText = state.placeErrorText,
-                onSearchTextChange = {
-                    setState(state.copy(placeText = it, placeTextChangedByUser = true))
-                },
+                onSearchTextChange = { viewModel.onAddressSearchTextChange(it) },
                 showConfirm = state.showConfirmAddressButton,
                 expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
                 showExtraFields = state.showExtraFields,

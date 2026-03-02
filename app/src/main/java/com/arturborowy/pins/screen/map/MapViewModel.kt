@@ -23,6 +23,7 @@ import com.ultimatelogger.android.output.ALog
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -44,6 +45,8 @@ class MapViewModel @AssistedInject constructor(
         )
     )
 
+    val errorEvents = MutableSharedFlow<String>(extraBufferCapacity = 1)
+
     private var arrivalDate: Date? = null
     private var departureDate: Date? = null
 
@@ -63,7 +66,7 @@ class MapViewModel @AssistedInject constructor(
                         showAddressPredictions(it.placeText)
                     } catch (e: Exception) {
                         ALog.e(e)
-                        state.emit(state.value.copy(errorText = e.message))
+                        errorEvents.tryEmit(e.message ?: "")
                     }
                 }
                 validateSingleTripInput()
@@ -126,7 +129,7 @@ class MapViewModel @AssistedInject constructor(
                 loadPlacesDetails(placeId)
             } catch (e: Exception) {
                 ALog.e(e)
-                state.emit(state.value.copy(errorText = e.message))
+                errorEvents.tryEmit(e.message ?: "")
             }
         }
     }
@@ -302,6 +305,12 @@ class MapViewModel @AssistedInject constructor(
         }
     }
 
+    fun onAddressSearchTextChange(text: String) {
+        viewModelScope.launch {
+            state.emit(state.value.copy(placeText = text, placeTextChangedByUser = true))
+        }
+    }
+
     fun onTripCancelClick() {
         viewModelScope.launch {
             moveToTripListState()
@@ -346,7 +355,6 @@ class MapViewModel @AssistedInject constructor(
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
-        val errorText: String? = null,
         val showKeyboard: Boolean = false,
         val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false,
