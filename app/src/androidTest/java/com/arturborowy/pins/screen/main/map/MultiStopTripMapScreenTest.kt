@@ -1,9 +1,11 @@
 package com.arturborowy.pins.screen.main.map
 
 import android.widget.DatePicker
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -27,6 +29,7 @@ import org.hamcrest.Matchers
 import org.junit.Test
 
 @UninstallModules(SystemAbstractionModule::class)
+@OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
 class MultiStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
 
@@ -141,6 +144,9 @@ class MultiStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
             .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
 
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label), 5000L
+        )
         composeTestRule.onNodeWithText(
             MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
         ).performClick()
@@ -155,6 +161,9 @@ class MultiStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
             .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
 
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label), 5000L
+        )
         composeTestRule.onNodeWithText(
             MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
         ).performClick()
