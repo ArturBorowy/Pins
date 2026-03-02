@@ -9,7 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -48,9 +51,22 @@ fun SearchField(
 
     val focusRequester = remember { FocusRequester() }
 
-    var isFocused = remember { false }
+    var isFocused by remember { mutableStateOf(false) }
 
-    var textFieldValueState = TextFieldValue(placeText, TextRange(placeText.length))
+    var textFieldValueState by remember {
+        mutableStateOf(
+            TextFieldValue(
+                placeText,
+                TextRange(placeText.length)
+            )
+        )
+    }
+
+    LaunchedEffect(placeText) {
+        if (textFieldValueState.text != placeText) {
+            textFieldValueState = TextFieldValue(placeText, TextRange(placeText.length))
+        }
+    }
 
     PinsOutlinedTextField(
         isError = errorText != null && showExtraEditionFields.not(),

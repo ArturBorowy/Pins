@@ -2,9 +2,9 @@ package com.arturborowy.pins.screen.map
 
 import androidx.annotation.DrawableRes
 
-data class TripMarkerItem(
+data class MapMarkerItem(
     val label: String,
-    @DrawableRes val countryIconResId: Int,
+    @DrawableRes val iconResId: Int,
     val latitude: Double,
     val longitude: Double
 )

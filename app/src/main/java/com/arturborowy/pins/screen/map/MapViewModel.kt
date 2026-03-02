@@ -1,7 +1,6 @@
 package com.arturborowy.pins.screen.map
 
 import android.app.Activity
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
@@ -141,9 +140,12 @@ class MapViewModel @AssistedInject constructor(
                 showConfirmAddressButton = true,
                 placeText = placeAddress.locationName,
                 placeTextChangedByUser = false,
-                placeLatitude = placeAddress.latitude,
-                placeLongitude = placeAddress.longitude,
-                placeCountryIcon = placeAddress.country.countryIcon
+                marker = MapMarkerItem(
+                    placeAddress.locationName,
+                    placeAddress.country.countryIcon,
+                    placeAddress.latitude,
+                    placeAddress.longitude,
+                ),
             )
         )
         selectedPlace = placeAddress
@@ -207,8 +209,7 @@ class MapViewModel @AssistedInject constructor(
                 showAddPinButton = true,
                 showAddressTextField = false,
                 tripMarkers = tripMarkers,
-                placeLongitude = null,
-                placeLatitude = null,
+                marker = null,
                 showConfirmAddressButton = false,
                 showExtraFields = false,
                 placeText = "",
@@ -222,7 +223,7 @@ class MapViewModel @AssistedInject constructor(
     private fun List<Trip>.toTripMarkers() =
         map { trip ->
             trip.stops.map { stop ->
-                TripMarkerItem(
+                MapMarkerItem(
                     stop.placeDetails.locationName,
                     stop.placeDetails.country.countryIcon,
                     stop.placeDetails.latitude,
@@ -339,11 +340,8 @@ class MapViewModel @AssistedInject constructor(
         val placeErrorText: String? = null,
         val nameText: String = "",
         val placeTextChangedByUser: Boolean = false,
-        val placeDescription: String = "",
-        val placeLatitude: Double? = null,
-        val placeLongitude: Double? = null,
-        @DrawableRes val placeCountryIcon: Int? = null,
-        val tripMarkers: List<List<TripMarkerItem>> = listOf(),
+        val marker: MapMarkerItem? = null,
+        val tripMarkers: List<List<MapMarkerItem>> = listOf(),
         val showAddressTextField: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,

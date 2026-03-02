@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
+import com.arturborowy.pins.ui.composable.map.AllTripsMap
+import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.utils.collectAsMutableState
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -33,7 +35,6 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
     }
 
     val keyboard = LocalSoftwareKeyboardController.current
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -42,14 +43,52 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
     ) {
         PrimaryColorCircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
-        if (state.placeLongitude != null && state.placeLatitude != null && state.placeCountryIcon != null) {
-            SelectedPlaceMap(state, context)
+        if (state.marker == null) {
+            AllTripsMap(state.tripMarkers)
         } else {
-            TripsMap(state, context)
+            SelectedPlaceMap(state.marker)
         }
 
         if (state.showAddressTextField) {
-            TripAddOverlay(state, setState, viewModel, keyboard)
+            TripAddOverlay(
+                placeText = state.placeText,
+                placeErrorText = state.placeErrorText,
+                onSearchTextChange = {
+                    setState(state.copy(placeText = it, placeTextChangedByUser = true))
+                },
+                showConfirm = state.showConfirmAddressButton,
+                expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
+                showExtraFields = state.showExtraFields,
+                predictions = state.predictions,
+                nameText = state.nameText,
+                arrivalDate = state.arrivalDate,
+                departureDate = state.departureDate,
+                isSavingEnabled = state.isSavingTripEnabled,
+                isAddressEditEnabled = state.isAddressEditEnabled,
+                multiStop = state.multiStop,
+                onBackClick = { viewModel.onBackEditingAddress() },
+                onConfirmClick = { viewModel.onConfirmAddress() },
+                onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
+                onNameTextChange = { viewModel.onTripNameChange(it) },
+                onArrivalDateChange = { year, month, day ->
+                    viewModel.onArrivalDateChange(
+                        year,
+                        month,
+                        day
+                    )
+                },
+                onDepartureDateChange = { year, month, day ->
+                    viewModel.onDepartureDateChange(
+                        year,
+                        month,
+                        day
+                    )
+                },
+                onPositiveClick = { viewModel.onTripConfirmClick() },
+                onNegativeClick = { viewModel.onTripCancelClick() },
+                onMiddleClick = { viewModel.onAddNextStopClick() },
+                keyboard = keyboard
+            )
         } else if (state.showAddPinButton) {
             Fab(
                 R.drawable.ic_add_trip,

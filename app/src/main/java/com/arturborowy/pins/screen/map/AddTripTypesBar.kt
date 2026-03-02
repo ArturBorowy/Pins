@@ -25,7 +25,7 @@ fun AddTripTypesBar(
     modifier: Modifier, onSingleStopTripClick: () -> Unit, onMultipleStopTripClick: () -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(999.dp),
+        shape = RoundedCornerShape(percent = 100),
         colors = CardDefaults.cardColors(containerColor = PinsTheme.colorScheme.surface),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -33,7 +33,7 @@ fun AddTripTypesBar(
         Row {
             TextButton(
                 onClick = { onSingleStopTripClick() },
-                shape = RoundedCornerShape(999.dp, 0.dp, 0.dp, 999.dp)
+                shape = RoundedCornerShape(topStartPercent = 100, bottomStartPercent = 100)
             ) {
                 Text(
                     text = stringResource(R.string.add_trip_btn_single_stop),
@@ -47,7 +47,7 @@ fun AddTripTypesBar(
 
             Divider(
                 modifier = Modifier
-                    .padding(0.dp, 6.dp)
+                    .padding(vertical = 6.dp)
                     .width(2.dp)
                     .height(30.dp)
                     .align(Alignment.CenterVertically),
@@ -56,7 +56,7 @@ fun AddTripTypesBar(
 
             TextButton(
                 onClick = { onMultipleStopTripClick() },
-                shape = RoundedCornerShape(0.dp, 999.dp, 999.dp, 0.dp)
+                shape = RoundedCornerShape(topEndPercent = 100, bottomEndPercent = 100)
             ) {
                 Text(
                     text = stringResource(R.string.add_trip_btn_multi_stop),
