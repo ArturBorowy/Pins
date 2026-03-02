@@ -1,0 +1,28 @@
+name: Build and test (only debug)
+run-name: PULL REQUEST workflow
+
+on: [ pull_request ]
+
+jobs:
+  buildAndTest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create keys.xml from secret
+        env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+        run: printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <string name="maps_api_key">%s</string>\n</resources>' "$MAPS_API_KEY" > app/src/main/res/values/keys.xml
+
+      - name: assembleDebug
+        run: bash ./gradlew assembleDebug
+
+      - name: testDebugUnitTest
+        run: bash ./gradlew testDebugUnitTest
