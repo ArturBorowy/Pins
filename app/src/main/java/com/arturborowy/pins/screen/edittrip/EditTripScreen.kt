@@ -2,16 +2,13 @@ package com.arturborowy.pins.screen.edittrip
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
@@ -27,27 +24,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
+import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -78,7 +66,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(PinsTheme.colorScheme.background)
+            .background(BrandTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -91,10 +79,9 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 onClick = { viewModel.onPreviousStopClick() }) {
                 Icon(
                     modifier = Modifier
-                        .height(24.dp)
-                        .width(24.dp),
+                        .size(BrandTheme.sizing.icon),
                     painter = painterResource(R.drawable.ic_arrow_back),
-                    tint = PinsTheme.colorScheme.onBackground,
+                    tint = BrandTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_previous_stop)
                 )
             }
@@ -107,10 +94,9 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 onClick = { viewModel.onNextStopClick() }) {
                 Icon(
                     modifier = Modifier
-                        .height(24.dp)
-                        .width(24.dp),
+                        .size(BrandTheme.sizing.icon),
                     painter = painterResource(R.drawable.ic_arrow_forward),
-                    tint = PinsTheme.colorScheme.onBackground,
+                    tint = BrandTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_next_stop)
                 )
             }
@@ -137,14 +123,10 @@ fun EditStop(
     state: EditTripViewModel.State,
     stop: EditTripStopItem
 ) {
-    val keyboard = LocalSoftwareKeyboardController.current
-
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, 16.dp, 16.dp, 16.dp)
+            .padding(BrandTheme.spacing.screenPadding)
     ) {
         TripAddCard(
             placeText = stop.locationName,
@@ -174,39 +156,19 @@ fun EditStop(
             negativeClickText = stringResource(R.string.edit_trip_btn_delete),
             onMiddleClick = null,
             middleClickText = null,
-            keyboard = keyboard,
             isSavingEnabled = state.isSavingTripEnabled,
             isAddressEditEnabled = state.isAddressEditEnabled,
             multiStop = state.stops.size > 1
         )
-        WideCard(padding = PaddingValues(0.dp)) {
-            val location = LatLng(stop.latitude, stop.longitude)
-
-            val cameraPositionState =
-                CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
-
-            GoogleMap(
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(
-                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
-                        context,
-                        if (isSystemInDarkTheme()) {
-                            R.raw.map_style_options_dark
-                        } else {
-                            R.raw.map_style_options_light
-                        }
-                    )
+        WideCard {
+            SelectedPlaceMap(
+                MapMarkerItem(
+                    stop.locationName,
+                    stop.country.countryIcon,
+                    stop.latitude,
+                    stop.longitude
                 )
-            ) {
-                Marker(
-                    icon = mapIconBitmapDescriptor(
-                        LocalContext.current,
-                        stop.country.countryIcon
-                    ),
-                    state = MarkerState(location),
-                    title = stop.locationName
-                )
-            }
+            )
         }
     }
 }

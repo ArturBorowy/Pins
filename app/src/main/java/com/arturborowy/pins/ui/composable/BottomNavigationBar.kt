@@ -13,9 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.screen.main.BottomNavItem
-import com.arturborowy.pins.ui.theme.PinsTheme
 
 @Composable
 fun BottomNavigationBar(
@@ -24,11 +23,11 @@ fun BottomNavigationBar(
 ) {
     NavigationBar(
         modifier = Modifier
-            .shadow(10.dp)
-            .background(PinsTheme.colorScheme.surface)
+            .shadow(BrandTheme.sizing.bottomBarShadow)
+            .background(BrandTheme.colorScheme.surface)
             .navigationBarsPadding()
-            .height(65.dp),
-        containerColor = PinsTheme.colorScheme.surface,
+            .height(BrandTheme.sizing.bottomBarHeight),
+        containerColor = BrandTheme.colorScheme.surface,
     ) {
         BottomNavItem.entries.forEach { item ->
             val selected = item.name == currentRoute
@@ -36,14 +35,14 @@ fun BottomNavigationBar(
             NavigationBarItem(
                 selected = selected,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = PinsTheme.colorScheme.primary,
-                    unselectedIconColor = PinsTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = PinsTheme.colorScheme.primaryContainer
+                    selectedIconColor = BrandTheme.colorScheme.primary,
+                    unselectedIconColor = BrandTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = BrandTheme.colorScheme.primaryContainer
                 ),
                 onClick = { onNavigationItemClick(item.name) },
                 icon = {
                     Icon(
-                        modifier = Modifier.padding(vertical = 8.dp),
+                        modifier = Modifier.padding(vertical = BrandTheme.spacing.textSpacing),
                         painter = painterResource(item.iconResId),
                         contentDescription = item.name,
                     )

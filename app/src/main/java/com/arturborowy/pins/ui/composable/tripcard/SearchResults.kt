@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.PreviewTheme
-import com.arturborowy.pins.ui.theme.PinsTheme
 
 @Composable
 fun SearchResults(
@@ -19,7 +19,7 @@ fun SearchResults(
     onAddressPredictionClick: (AddressPredictionDto) -> Unit
 ) {
     DropdownMenu(
-        modifier = Modifier.background(PinsTheme.colorScheme.surface),
+        modifier = Modifier.background(BrandTheme.colorScheme.surface),
         expanded = expandDropdown,
         properties = PopupProperties(
             clippingEnabled = false,
@@ -32,7 +32,7 @@ fun SearchResults(
             DropdownMenuItem(onClick = { onAddressPredictionClick(addressPrediction) }, text = {
                 Text(
                     addressPrediction.label,
-                    color = PinsTheme.colorScheme.onSurface,
+                    color = BrandTheme.colorScheme.onSurface,
                 )
             })
         }

@@ -8,8 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.brand.designsystem.BrandTheme
 
 @Composable
 fun OutlinedButton(
@@ -19,10 +18,13 @@ fun OutlinedButton(
 ) {
     OutlinedButton(
         modifier = modifier,
-        border = BorderStroke(width = 1.dp, color = PinsTheme.colorScheme.onBackground),
+        border = BorderStroke(
+            width = BrandTheme.sizing.strokeWidth,
+            color = BrandTheme.colorScheme.onBackground
+        ),
         onClick = onClick
     ) {
-        Text(text = text, color = PinsTheme.colorScheme.onBackground)
+        Text(text = text, color = BrandTheme.colorScheme.onBackground)
     }
 }
 
@@ -36,10 +38,10 @@ fun FilledButton(
     Button(
         modifier = modifier,
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(containerColor = PinsTheme.colorScheme.primary),
+        colors = ButtonDefaults.buttonColors(containerColor = BrandTheme.colorScheme.primary),
         onClick = onClick
     ) {
-        Text(text = text, color = PinsTheme.colorScheme.onPrimary)
+        Text(text = text, color = BrandTheme.colorScheme.onPrimary)
     }
 }
 

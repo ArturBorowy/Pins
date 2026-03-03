@@ -18,7 +18,7 @@
     <string name="add_trip_btn_multi_stop">Multi stop</string>
 
     <string name="create_trip_btn_confirm">Confirm</string>
-    <string name="create_trip_btn_next_stop">Next stop</string>
+    <string name="create_trip_btn_next_stop">Next</string>
     <string name="create_trip_btn_cancel">Cancel</string>
 
     <string name="trip_list_header">Your trips</string>

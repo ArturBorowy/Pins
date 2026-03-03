@@ -25,7 +25,7 @@ fun NavigationComposable(
     navigator: Navigator,
     innerPadding: PaddingValues
 ) {
-    LaunchedEffect("navigation") {
+    LaunchedEffect(Unit) {
         navigator.sharedFlow.onEach {
             navController.navigate(it.label)
         }.launchIn(this)

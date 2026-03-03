@@ -15,17 +15,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.ui.theme.titleSmallEmphasized
+import com.arturborowy.brand.designsystem.BrandTheme
+import com.arturborowy.brand.designsystem.typography.titleSmallEmphasized
 
 @Composable
 fun SettingSectionLabel(text: String) {
     Text(
         text = text,
-        style = PinsTheme.typography.labelMedium,
-        color = PinsTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(bottom = 8.dp)
+        style = BrandTheme.typography.labelMedium,
+        color = BrandTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(
+            top = BrandTheme.spacing.cardPadding,
+            bottom = BrandTheme.spacing.textSpacing
+        )
     )
 }
 
@@ -41,32 +43,32 @@ fun SettingItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
-                .padding(16.dp),
+                .padding(BrandTheme.spacing.cardPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = label,
-                style = PinsTheme.typography.titleSmallEmphasized,
-                color = PinsTheme.colorScheme.onSurface,
+                style = BrandTheme.typography.titleSmallEmphasized,
+                color = BrandTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
             when {
                 secondaryValue != null -> Text(
                     text = secondaryValue,
-                    style = PinsTheme.typography.bodyMedium,
-                    color = PinsTheme.colorScheme.onSurfaceVariant
+                    style = BrandTheme.typography.bodyMedium,
+                    color = BrandTheme.colorScheme.onSurfaceVariant
                 )
 
                 onClick != null -> Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = PinsTheme.colorScheme.onBackground
+                    tint = BrandTheme.colorScheme.onBackground
                 )
             }
         }
         if (showDivider) {
-            HorizontalDivider(color = PinsTheme.colorScheme.outlineVariant)
+            HorizontalDivider(color = BrandTheme.colorScheme.outlineVariant)
         }
     }
 }

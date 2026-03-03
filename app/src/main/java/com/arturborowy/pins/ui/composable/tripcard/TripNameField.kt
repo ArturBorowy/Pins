@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PinsOutlinedTextField
 import com.arturborowy.pins.ui.composable.PreviewTheme
@@ -22,7 +22,7 @@ fun TripNameField(
     PinsOutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp, 0.dp, 8.dp, 8.dp),
+            .padding(BrandTheme.spacing.textSpacing),
         value = nameText,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         onValueChange = { onNameTextChange(it) },

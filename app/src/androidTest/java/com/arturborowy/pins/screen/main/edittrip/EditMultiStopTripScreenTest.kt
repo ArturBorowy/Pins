@@ -151,6 +151,10 @@ class EditMultiStopTripScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
             .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
 
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label),
+            5000L
+        )
         MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
             composeTestRule.onNodeWithText(it.label).assertIsDisplayed()
         }
@@ -261,9 +265,8 @@ class EditMultiStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(expectedContentDescription).performClick()
 
-
         composeTestRule.waitUntilExactlyOneExists(
-            hasText(MOCK_TRIP_NAME), 5000L
+            hasText(getString(R.string.edit_trip_btn_save_changes)), 5000L
         )
     }
 

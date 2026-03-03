@@ -10,12 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.FilledButton
 import com.arturborowy.pins.ui.composable.OutlinedButton
 import com.arturborowy.pins.ui.composable.PreviewTheme
-import com.arturborowy.pins.ui.theme.PinsTheme
 
 
 @Composable
@@ -35,7 +34,7 @@ fun TripMultiStopExtraFields(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PinsTheme.colorScheme.surface),
+            .background(BrandTheme.colorScheme.surface),
     ) {
         TripNameField(
             nameText,
@@ -48,32 +47,26 @@ fun TripMultiStopExtraFields(
             modifier = Modifier.fillMaxWidth()
         )
         Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = BrandTheme.spacing.cardPadding),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             OutlinedButton(
                 text = negativeClickText,
                 onClick = onNegativeClick,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp)
             )
             if (middleClickText != null) {
                 FilledButton(
                     text = middleClickText,
                     onClick = { onMiddleClick?.invoke() },
                     enabled = isSavingEnabled,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
                 )
             }
             FilledButton(
                 text = positiveClickText,
                 onClick = onPositiveClick,
                 enabled = isSavingEnabled,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp)
             )
         }
     }
@@ -92,7 +85,7 @@ fun TripMultiStopExtraFieldsPreview() = PreviewTheme {
         onNegativeClick = {},
         negativeClickText = "CLOSE",
         onMiddleClick = {},
-        middleClickText = "ADD NEXT",
+        middleClickText = "NEXT",
         isSavingEnabled = true,
     )
 }
