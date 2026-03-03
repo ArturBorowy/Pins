@@ -1,7 +1,6 @@
 package com.arturborowy.pins.ui.composable.map
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.google.android.gms.maps.model.CameraPosition
@@ -17,14 +16,12 @@ fun Map(
     cameraLatitude: Double,
     cameraLongitude: Double,
 ) {
-    val context = LocalContext.current
-
     val cameraLatLng = LatLng(cameraLatitude, cameraLongitude)
     val cameraPosition = CameraPositionState(CameraPosition.fromLatLngZoom(cameraLatLng, zoom))
 
     GoogleMap(
         cameraPositionState = cameraPosition,
-        properties = themedMapProperties(context)
+        properties = themedMapProperties()
     ) {
         markerLists.forEach { trip ->
             trip.forEachIndexed { index, marker ->

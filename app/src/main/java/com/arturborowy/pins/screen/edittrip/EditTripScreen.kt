@@ -2,7 +2,6 @@ package com.arturborowy.pins.screen.edittrip
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,23 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.arturborowy.pins.R
+import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
+import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.ui.theme.sizing
 import com.arturborowy.pins.ui.theme.spacing
-import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -138,8 +130,6 @@ fun EditStop(
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
 
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -179,33 +169,14 @@ fun EditStop(
             multiStop = state.stops.size > 1
         )
         WideCard(padding = PaddingValues(0.dp)) {
-            val location = LatLng(stop.latitude, stop.longitude)
-
-            val cameraPositionState =
-                CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
-
-            GoogleMap(
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(
-                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
-                        context,
-                        if (isSystemInDarkTheme()) {
-                            R.raw.map_style_options_dark
-                        } else {
-                            R.raw.map_style_options_light
-                        }
-                    )
+            SelectedPlaceMap(
+                MapMarkerItem(
+                    stop.locationName,
+                    stop.country.countryIcon,
+                    stop.latitude,
+                    stop.longitude
                 )
-            ) {
-                Marker(
-                    icon = mapIconBitmapDescriptor(
-                        LocalContext.current,
-                        stop.country.countryIcon
-                    ),
-                    state = MarkerState(location),
-                    title = stop.locationName
-                )
-            }
+            )
         }
     }
 }
