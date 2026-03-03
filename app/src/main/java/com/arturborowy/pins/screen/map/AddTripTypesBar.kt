@@ -16,10 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PreviewTheme
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.ui.theme.spacing
 
 @Composable
 fun AddTripTypesBar(
@@ -27,9 +26,9 @@ fun AddTripTypesBar(
 ) {
     Card(
         shape = RoundedCornerShape(percent = 100),
-        colors = CardDefaults.cardColors(containerColor = PinsTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = BrandTheme.colorScheme.surface),
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = BrandTheme.sizing.shadow)
     ) {
         Row {
             TextButton(
@@ -38,14 +37,14 @@ fun AddTripTypesBar(
             ) {
                 Text(
                     text = stringResource(R.string.add_trip_btn_single_stop),
-                    color = PinsTheme.colorScheme.onSurface,
-                    style = PinsTheme.typography.titleSmall,
+                    color = BrandTheme.colorScheme.onSurface,
+                    style = BrandTheme.typography.titleSmall,
                     modifier = Modifier
                         .padding(
-                            PinsTheme.spacing.xSmall,
-                            PinsTheme.spacing.xSmall,
+                            BrandTheme.spacing.buttonPadding,
+                            BrandTheme.spacing.buttonPadding,
                             0.dp,
-                            PinsTheme.spacing.xSmall
+                            BrandTheme.spacing.buttonPadding
                         )
                         .align(Alignment.CenterVertically)
                 )
@@ -57,7 +56,7 @@ fun AddTripTypesBar(
                     .width(2.dp)
                     .height(30.dp)
                     .align(Alignment.CenterVertically),
-                color = PinsTheme.colorScheme.primary
+                color = BrandTheme.colorScheme.primary
             )
 
             TextButton(
@@ -66,14 +65,14 @@ fun AddTripTypesBar(
             ) {
                 Text(
                     text = stringResource(R.string.add_trip_btn_multi_stop),
-                    color = PinsTheme.colorScheme.onSurface,
-                    style = PinsTheme.typography.titleSmall,
+                    color = BrandTheme.colorScheme.onSurface,
+                    style = BrandTheme.typography.titleSmall,
                     modifier = Modifier
                         .padding(
                             0.dp,
-                            PinsTheme.spacing.xSmall,
-                            PinsTheme.spacing.xSmall,
-                            PinsTheme.spacing.xSmall
+                            BrandTheme.spacing.buttonPadding,
+                            BrandTheme.spacing.buttonPadding,
+                            BrandTheme.spacing.buttonPadding
                         )
                         .align(Alignment.CenterVertically)
                 )

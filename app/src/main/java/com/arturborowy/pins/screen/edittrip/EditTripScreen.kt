@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,20 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.ui.theme.sizing
-import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -71,7 +66,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(PinsTheme.colorScheme.background)
+            .background(BrandTheme.colorScheme.background)
     ) {
         Row(
             modifier = Modifier
@@ -84,9 +79,9 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 onClick = { viewModel.onPreviousStopClick() }) {
                 Icon(
                     modifier = Modifier
-                        .size(PinsTheme.sizing.iconMedium),
+                        .size(BrandTheme.sizing.icon),
                     painter = painterResource(R.drawable.ic_arrow_back),
-                    tint = PinsTheme.colorScheme.onBackground,
+                    tint = BrandTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_previous_stop)
                 )
             }
@@ -99,9 +94,9 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 onClick = { viewModel.onNextStopClick() }) {
                 Icon(
                     modifier = Modifier
-                        .size(PinsTheme.sizing.iconMedium),
+                        .size(BrandTheme.sizing.icon),
                     painter = painterResource(R.drawable.ic_arrow_forward),
-                    tint = PinsTheme.colorScheme.onBackground,
+                    tint = BrandTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_next_stop)
                 )
             }
@@ -128,12 +123,10 @@ fun EditStop(
     state: EditTripViewModel.State,
     stop: EditTripStopItem
 ) {
-    val keyboard = LocalSoftwareKeyboardController.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PinsTheme.spacing.medium)
+            .padding(BrandTheme.spacing.screenPadding)
     ) {
         TripAddCard(
             placeText = stop.locationName,
@@ -163,12 +156,11 @@ fun EditStop(
             negativeClickText = stringResource(R.string.edit_trip_btn_delete),
             onMiddleClick = null,
             middleClickText = null,
-            keyboard = keyboard,
             isSavingEnabled = state.isSavingTripEnabled,
             isAddressEditEnabled = state.isAddressEditEnabled,
             multiStop = state.stops.size > 1
         )
-        WideCard(padding = PaddingValues(0.dp)) {
+        WideCard {
             SelectedPlaceMap(
                 MapMarkerItem(
                     stop.locationName,

@@ -1,8 +1,8 @@
 package com.arturborowy.pins.ui.composable.map
 
 import androidx.compose.runtime.Composable
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.screen.map.MapMarkerItem
-import com.arturborowy.pins.ui.theme.PinsTheme
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -36,7 +36,7 @@ fun Map(
                             LatLng(marker.latitude, marker.longitude),
                             LatLng(nextMarker.latitude, nextMarker.longitude)
                         ),
-                        color = PinsTheme.colorScheme.primary
+                        color = BrandTheme.colorScheme.primary
                     )
                 }
             }

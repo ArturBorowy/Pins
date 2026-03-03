@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.FilledButton
 import com.arturborowy.pins.ui.composable.OutlinedButton
 import com.arturborowy.pins.ui.composable.PreviewTheme
-import com.arturborowy.pins.ui.theme.PinsTheme
 
 @Composable
 fun TripSingleStopExtraFields(
@@ -36,7 +36,7 @@ fun TripSingleStopExtraFields(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PinsTheme.colorScheme.surface),
+            .background(BrandTheme.colorScheme.surface),
     ) {
         TripNameField(
             nameText,
@@ -63,14 +63,17 @@ fun TripSingleStopExtraFields(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = BrandTheme.spacing.cardPadding),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             OutlinedButton(
                 text = negativeClickText,
                 onClick = onNegativeClick,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp)
+                    .padding(start = 8.dp)
             )
             FilledButton(
                 text = positiveClickText,
@@ -78,7 +81,7 @@ fun TripSingleStopExtraFields(
                 enabled = isSavingEnabled,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp)
+                    .padding(start = 8.dp)
             )
         }
     }

@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.ui.NavigationComposable
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.ui.composable.BottomNavigationBar
-import com.arturborowy.pins.ui.theme.PinsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,11 +20,11 @@ fun MainScaffold(navigator: Navigator) {
 
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    PinsTheme {
+    BrandTheme {
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
-            color = PinsTheme.colorScheme.background
+            color = BrandTheme.colorScheme.background
         ) {
             Scaffold(
                 bottomBar = {

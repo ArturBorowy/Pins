@@ -1,6 +1,6 @@
 package com.arturborowy.pins.ui.composable
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,15 +19,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
+import com.arturborowy.brand.designsystem.typography.bodyLargeEmphasized
+import com.arturborowy.brand.designsystem.typography.labelMediumEmphasized
+import com.arturborowy.brand.designsystem.typography.titleMediumEmphasized
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.Country
 import com.arturborowy.pins.screen.triplist.TripListItem
 import com.arturborowy.pins.screen.triplist.TripListItemStopItem
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.ui.theme.bodyLargeEmphasized
-import com.arturborowy.pins.ui.theme.labelMediumEmphasized
-import com.arturborowy.pins.ui.theme.spacing
-import com.arturborowy.pins.ui.theme.titleMediumEmphasized
 import com.arturborowy.flags.R as FlagsR
 
 object TripViewTag {
@@ -38,16 +37,12 @@ object TripViewTag {
 
 @Composable
 fun TripView(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
-    WideCard(
-        margin = PaddingValues(
-            start = PinsTheme.spacing.medium,
-            end = PinsTheme.spacing.medium,
-            bottom = PinsTheme.spacing.medium
-        )
-    ) {
-        TripHeader(tripListItem, onEditTripClick)
-        tripListItem.stops.forEach { stop ->
-            TripRow(stop)
+    WideCard {
+        Column {
+            TripHeader(tripListItem, onEditTripClick)
+            tripListItem.stops.forEach { stop ->
+                TripRow(stop)
+            }
         }
     }
 }
@@ -59,10 +54,10 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
 
         Text(
             modifier = Modifier
-                .padding(start = PinsTheme.spacing.small)
+                .padding(start = BrandTheme.spacing.textSpacing)
                 .testTag(TripViewTag.TRIP_NAME),
-            style = PinsTheme.typography.titleMediumEmphasized,
-            color = PinsTheme.colorScheme.onSurface,
+            style = BrandTheme.typography.titleMediumEmphasized,
+            color = BrandTheme.colorScheme.onSurface,
             text = tripListItem.name
         )
 
@@ -86,10 +81,10 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
 @Composable
 fun TripRow(tripListItemStopItem: TripListItemStopItem) {
     Row(
-        modifier = Modifier.padding(start = 10.dp, top = PinsTheme.spacing.small)
+        modifier = Modifier.padding(start = 10.dp, top = BrandTheme.spacing.textSpacing)
     ) {
         Divider(
-            color = PinsTheme.colorScheme.primary,
+            color = BrandTheme.colorScheme.primary,
             modifier = Modifier
                 .height(20.dp)
                 .width(3.dp)
@@ -97,10 +92,10 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
 
         Text(
             modifier = Modifier
-                .padding(start = PinsTheme.spacing.small)
+                .padding(start = BrandTheme.spacing.textSpacing)
                 .testTag(TripViewTag.TRIP_PLACE),
-            style = PinsTheme.typography.bodyLargeEmphasized,
-            color = PinsTheme.colorScheme.onSurface,
+            style = BrandTheme.typography.bodyLargeEmphasized,
+            color = BrandTheme.colorScheme.onSurface,
             text = tripListItemStopItem.locationName
         )
 
@@ -108,8 +103,8 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
 
         Text(
             modifier = Modifier.testTag(TripViewTag.TRIP_DATES),
-            style = PinsTheme.typography.labelMediumEmphasized,
-            color = PinsTheme.colorScheme.onSurface,
+            style = BrandTheme.typography.labelMediumEmphasized,
+            color = BrandTheme.colorScheme.onSurface,
             text = tripListItemStopItem.dateStr
         )
     }

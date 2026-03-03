@@ -1,4 +1,4 @@
-package com.arturborowy.pins.ui.theme
+package com.arturborowy.brand.designsystem.typography
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

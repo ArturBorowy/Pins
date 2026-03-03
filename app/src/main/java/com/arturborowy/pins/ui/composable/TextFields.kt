@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
-import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.brand.designsystem.BrandTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,9 +70,9 @@ fun PinsOutlinedTextField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = PinsTheme.colorScheme.onBackground,
-    unfocusedBorderColor = PinsTheme.colorScheme.onBackground,
-    focusedTextColor = PinsTheme.colorScheme.onBackground,
-    focusedLabelColor = PinsTheme.colorScheme.onBackground,
-    unfocusedLabelColor = PinsTheme.colorScheme.onBackground,
+    focusedBorderColor = BrandTheme.colorScheme.onBackground,
+    unfocusedBorderColor = BrandTheme.colorScheme.onBackground,
+    focusedTextColor = BrandTheme.colorScheme.onBackground,
+    focusedLabelColor = BrandTheme.colorScheme.onBackground,
+    unfocusedLabelColor = BrandTheme.colorScheme.onBackground,
 )

@@ -9,21 +9,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.domain.Country
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.flags.R as FlagsR
 
 @Composable
 fun RoundFlagIcon(country: Country) {
     Card(
         shape = CircleShape,
-        border = BorderStroke(1.dp, PinsTheme.colorScheme.primary),
+        border = BorderStroke(BrandTheme.sizing.strokeWidth, BrandTheme.colorScheme.primary),
     ) {
         Image(
             modifier = Modifier
-                .size(PinsTheme.spacing.large),
+                .size(BrandTheme.sizing.icon),
             painter = painterResource(country.countryIcon),
             contentDescription = country.countryLabel
         )

@@ -1,13 +1,10 @@
 package com.arturborowy.pins.ui.composable.tripcard
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.PreviewTheme
@@ -40,15 +37,11 @@ fun TripAddCard(
     negativeClickText: String,
     onMiddleClick: (() -> Unit)?,
     middleClickText: String?,
-    keyboard: SoftwareKeyboardController?,
     isSavingEnabled: Boolean,
     isAddressEditEnabled: Boolean,
     multiStop: Boolean
 ) {
-    WideCard(
-        modifier = modifier,
-        padding = PaddingValues(0.dp)
-    ) {
+    WideCard(modifier = modifier) {
         SearchField(
             placeText = placeText,
             errorText = placeErrorText,
@@ -57,7 +50,6 @@ fun TripAddCard(
             showBackArrow = showBackArrow,
             onConfirmClick = onConfirmClick,
             showConfirm = showConfirm,
-            keyboard = keyboard,
             isAddressEditEnabled = isAddressEditEnabled,
             showExtraEditionFields = showExtraEditionFields
         )
@@ -126,10 +118,9 @@ fun TripAddCardPreview() = PreviewTheme {
         onPositiveClick = {},
         positiveClickText = "CONFIRM",
         onNegativeClick = {},
-        middleClickText = "CONFIRM",
+        middleClickText = "NEXT",
         onMiddleClick = {},
         negativeClickText = "CLOSE",
-        keyboard = null,
         isSavingEnabled = true,
         isAddressEditEnabled = true,
         multiStop = true

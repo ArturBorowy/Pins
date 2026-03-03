@@ -8,29 +8,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.brand.designsystem.BrandTheme
 
 @Composable
 fun PreviewTheme(
     composable: @Composable () -> Unit,
 ) {
     Column {
-        PinsTheme(false, dynamicColor = false, content = {
+        BrandTheme(false, dynamicColor = false, content = {
             Box(
                 Modifier
-                    .background(PinsTheme.colorScheme.background)
-                    .padding(16.dp)
+                    .background(BrandTheme.colorScheme.background)
+                    .padding(BrandTheme.spacing.previewPadding)
             ) {
                 composable()
             }
         })
-        Spacer(Modifier.height(16.dp))
-        PinsTheme(true, dynamicColor = false, content = {
+        Spacer(Modifier.height(BrandTheme.spacing.previewPadding))
+        BrandTheme(true, dynamicColor = false, content = {
             Box(
                 Modifier
-                    .background(PinsTheme.colorScheme.background)
-                    .padding(16.dp)
+                    .background(BrandTheme.colorScheme.background)
+                    .padding(BrandTheme.spacing.previewPadding)
             ) {
                 composable()
             }

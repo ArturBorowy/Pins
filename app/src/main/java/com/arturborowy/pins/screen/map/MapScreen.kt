@@ -13,14 +13,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.ui.composable.map.AllTripsMap
 import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
-import com.arturborowy.pins.ui.theme.PinsTheme
-import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 
@@ -36,12 +34,10 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         viewModel.errorEvents.collect { showShortToast(context, it) }
     }
 
-    val keyboard = LocalSoftwareKeyboardController.current
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PinsTheme.colorScheme.background)
+            .background(BrandTheme.colorScheme.background)
     ) {
         PrimaryColorCircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
@@ -87,7 +83,6 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                 onPositiveClick = { viewModel.onTripConfirmClick() },
                 onNegativeClick = { viewModel.onTripCancelClick() },
                 onMiddleClick = { viewModel.onAddNextStopClick() },
-                keyboard = keyboard
             )
         } else if (state.showAddPinButton) {
             Fab(
@@ -95,13 +90,13 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                 R.string.main_bottom_nav_label_add,
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(PinsTheme.spacing.medium),
+                    .padding(BrandTheme.spacing.fabMargin),
             ) { viewModel.onAddTripClick() }
         } else if (state.showTripTypeBar) {
             AddTripTypesBar(
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(PinsTheme.spacing.medium),
+                    .padding(BrandTheme.spacing.fabMargin),
                 { viewModel.onAddSingleStopTripClick() },
                 { viewModel.onAddMultiStopTripClick() })
         }

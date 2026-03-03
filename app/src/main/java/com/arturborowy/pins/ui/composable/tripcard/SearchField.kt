@@ -2,7 +2,6 @@ package com.arturborowy.pins.ui.composable.tripcard
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -19,19 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PinsOutlinedTextField
 import com.arturborowy.pins.ui.composable.PreviewTheme
-import com.arturborowy.pins.ui.theme.PinsTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -43,7 +41,6 @@ fun SearchField(
     showBackArrow: Boolean,
     onConfirmClick: () -> Unit,
     showConfirm: Boolean,
-    keyboard: SoftwareKeyboardController?,
     isAddressEditEnabled: Boolean,
     showExtraEditionFields: Boolean,
 ) {
@@ -62,6 +59,8 @@ fun SearchField(
         )
     }
 
+    val keyboard = LocalSoftwareKeyboardController.current
+
     LaunchedEffect(placeText) {
         if (textFieldValueState.text != placeText) {
             textFieldValueState = TextFieldValue(placeText, TextRange(placeText.length))
@@ -75,13 +74,12 @@ fun SearchField(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = errorText,
-                    color = PinsTheme.colorScheme.error
+                    color = BrandTheme.colorScheme.error
                 )
             }
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
             .focusRequester(focusRequester)
             .onFocusChanged {
                 isFocused = it.isFocused
@@ -106,7 +104,10 @@ fun SearchField(
         },
         trailingIcon = {
             if (showConfirm) {
-                TextButton(onClick = { onConfirmClick() }) {
+                TextButton(onClick = {
+                    keyboard?.hide()
+                    onConfirmClick()
+                }) {
                     TextFieldIcon(
                         R.drawable.ic_done,
                         stringResource(R.string.add_trip_btn_confirm)
@@ -129,7 +130,7 @@ fun SearchField(
 fun TextFieldIcon(@DrawableRes drawableResId: Int, contentDescription: String?) {
     Icon(
         painter = painterResource(drawableResId),
-        tint = PinsTheme.colorScheme.onBackground,
+        tint = BrandTheme.colorScheme.onBackground,
         contentDescription = contentDescription
     )
 }
@@ -144,7 +145,6 @@ fun SearchFieldPreview() = PreviewTheme {
         showBackArrow = true,
         onConfirmClick = {},
         showConfirm = true,
-        keyboard = null,
         isAddressEditEnabled = true,
         showExtraEditionFields = false
     )
@@ -161,7 +161,6 @@ fun SearchFieldErrorPreview() = PreviewTheme {
         showBackArrow = false,
         onConfirmClick = {},
         showConfirm = false,
-        keyboard = null,
         isAddressEditEnabled = true,
         showExtraEditionFields = false
     )

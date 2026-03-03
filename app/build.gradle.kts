@@ -78,6 +78,7 @@ kapt {
 
 dependencies {
     implementation(project(":flags"))
+    implementation(project(":brand-design-system"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
