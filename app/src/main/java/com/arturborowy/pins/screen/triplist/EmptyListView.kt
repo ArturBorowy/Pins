@@ -14,6 +14,8 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.PreviewTheme
+import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 
 @Composable
 fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
@@ -21,20 +23,25 @@ fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
         text = stringResource(R.string.trip_list_header_empty),
         modifier = Modifier
             .align(Alignment.TopStart)
-            .padding(16.dp, 16.dp, 16.dp, 0.dp)
+            .padding(
+                PinsTheme.spacing.medium,
+                PinsTheme.spacing.medium,
+                PinsTheme.spacing.medium,
+                0.dp
+            )
     )
     Fab(
         R.drawable.ic_add_trip,
         R.string.main_bottom_nav_label_add,
         Modifier
-            .padding(16.dp)
+            .padding(PinsTheme.spacing.medium)
             .align(Alignment.Center),
     ) { onAddTrip() }
     PageTitle(
         text = stringResource(R.string.trip_list_footer_empty),
         modifier = Modifier
             .align(Alignment.BottomEnd)
-            .padding(16.dp)
+            .padding(PinsTheme.spacing.medium)
     )
 }
 

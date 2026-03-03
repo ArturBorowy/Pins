@@ -24,6 +24,7 @@ import com.arturborowy.pins.domain.licences.Product
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.ui.theme.titleLargeEmphasized
 import com.arturborowy.pins.ui.theme.titleSmallEmphasized
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -44,7 +45,12 @@ fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
         item {
             PageTitle(
                 text = stringResource(R.string.Licenses_header),
-                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 0.dp)
+                modifier = Modifier.padding(
+                    PinsTheme.spacing.medium,
+                    PinsTheme.spacing.medium,
+                    PinsTheme.spacing.medium,
+                    0.dp
+                )
             )
         }
         items(state.Licenses) {
@@ -64,8 +70,8 @@ object LicenceViewTag {
 @Composable
 fun LicenceItem(licenceName: String, products: Collection<Product>, licenceContent: String) {
     WideCard(
-        padding = PaddingValues(16.dp),
-        margin = PaddingValues(16.dp)
+        padding = PaddingValues(PinsTheme.spacing.medium),
+        margin = PaddingValues(PinsTheme.spacing.medium)
     ) {
         LicenceHeader(licenceName = licenceName)
         products.forEach {
@@ -80,7 +86,7 @@ fun LicenceHeader(licenceName: String) {
     Text(
         text = licenceName,
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 24.dp)
+            .padding(bottom = PinsTheme.spacing.large)
             .testTag(LicenceViewTag.LICENCE_NAME),
         style = PinsTheme.typography.titleLargeEmphasized
     )
@@ -91,14 +97,14 @@ fun LicenceProduct(product: Product) {
     Text(
         text = product.name,
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 4.dp)
+            .padding(bottom = PinsTheme.spacing.xSmall)
             .testTag(LicenceViewTag.LICENCE_PRODUCT_NAME),
         style = PinsTheme.typography.titleSmallEmphasized
     )
     Text(
         text = stringResource(R.string.licence_copyright, product.year, product.name),
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 8.dp)
+            .padding(bottom = PinsTheme.spacing.small)
             .testTag(LicenceViewTag.LICENCE_PRODUCT_COPYRIGHT),
         style = PinsTheme.typography.labelMedium
     )
@@ -109,7 +115,7 @@ fun LicenceContent(licenceContent: String) {
     Text(
         text = licenceContent,
         modifier = Modifier
-            .padding(0.dp, 16.dp, 0.dp, 0.dp)
+            .padding(top = PinsTheme.spacing.medium)
             .testTag(LicenceViewTag.LICENCE_CONTENT),
         style = PinsTheme.typography.bodyMedium,
         fontStyle = FontStyle.Italic

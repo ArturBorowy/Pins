@@ -15,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.Spacing
 
 @Composable
 fun WideCard(
     modifier: Modifier = Modifier,
-    margin: PaddingValues = PaddingValues(bottom = 16.dp),
-    padding: PaddingValues = PaddingValues(16.dp),
+    margin: PaddingValues = PaddingValues(bottom = Spacing().medium),
+    padding: PaddingValues = PaddingValues(Spacing().medium),
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(

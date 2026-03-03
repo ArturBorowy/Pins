@@ -26,6 +26,7 @@ import com.arturborowy.pins.screen.triplist.TripListItemStopItem
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.ui.theme.bodyLargeEmphasized
 import com.arturborowy.pins.ui.theme.labelMediumEmphasized
+import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.ui.theme.titleMediumEmphasized
 import com.arturborowy.flags.R as FlagsR
 
@@ -37,7 +38,13 @@ object TripViewTag {
 
 @Composable
 fun TripView(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Unit) {
-    WideCard(margin = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+    WideCard(
+        margin = PaddingValues(
+            start = PinsTheme.spacing.medium,
+            end = PinsTheme.spacing.medium,
+            bottom = PinsTheme.spacing.medium
+        )
+    ) {
         TripHeader(tripListItem, onEditTripClick)
         tripListItem.stops.forEach { stop ->
             TripRow(stop)
@@ -52,7 +59,7 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
 
         Text(
             modifier = Modifier
-                .padding(start = 8.dp)
+                .padding(start = PinsTheme.spacing.small)
                 .testTag(TripViewTag.TRIP_NAME),
             style = PinsTheme.typography.titleMediumEmphasized,
             color = PinsTheme.colorScheme.onSurface,
@@ -79,7 +86,7 @@ fun TripHeader(tripListItem: TripListItem, onEditTripClick: (TripListItem) -> Un
 @Composable
 fun TripRow(tripListItemStopItem: TripListItemStopItem) {
     Row(
-        modifier = Modifier.padding(start = 10.dp, top = 8.dp)
+        modifier = Modifier.padding(start = 10.dp, top = PinsTheme.spacing.small)
     ) {
         Divider(
             color = PinsTheme.colorScheme.primary,
@@ -90,7 +97,7 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
 
         Text(
             modifier = Modifier
-                .padding(start = 8.dp)
+                .padding(start = PinsTheme.spacing.small)
                 .testTag(TripViewTag.TRIP_PLACE),
             style = PinsTheme.typography.bodyLargeEmphasized,
             color = PinsTheme.colorScheme.onSurface,

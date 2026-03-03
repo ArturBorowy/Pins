@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.ui.composable.map.AllTripsMap
 import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 
@@ -95,13 +95,13 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
                 R.string.main_bottom_nav_label_add,
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp),
+                    .padding(PinsTheme.spacing.medium),
             ) { viewModel.onAddTripClick() }
         } else if (state.showTripTypeBar) {
             AddTripTypesBar(
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp),
+                    .padding(PinsTheme.spacing.medium),
                 { viewModel.onAddSingleStopTripClick() },
                 { viewModel.onAddMultiStopTripClick() })
         }

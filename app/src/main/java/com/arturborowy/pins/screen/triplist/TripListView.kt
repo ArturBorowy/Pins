@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.Country
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.TripView
 import com.arturborowy.pins.ui.theme.PinsTheme
 import com.arturborowy.pins.ui.theme.headlineSmallEmphasized
+import com.arturborowy.pins.ui.theme.spacing
 
 @Composable
 fun TripListView(trips: List<TripListItem>, onEditTripClick: (TripListItem) -> Unit) {
@@ -28,7 +28,7 @@ fun TripListView(trips: List<TripListItem>, onEditTripClick: (TripListItem) -> U
         item {
             Text(
                 modifier = Modifier
-                    .padding(16.dp),
+                    .padding(PinsTheme.spacing.medium),
                 style = PinsTheme.typography.headlineSmallEmphasized,
                 color = PinsTheme.colorScheme.onBackground,
                 text = stringResource(R.string.trip_list_header)

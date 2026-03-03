@@ -15,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.ui.theme.titleSmallEmphasized
 
 @Composable
@@ -25,7 +25,7 @@ fun SettingSectionLabel(text: String) {
         text = text,
         style = PinsTheme.typography.labelMedium,
         color = PinsTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = PinsTheme.spacing.small)
     )
 }
 
@@ -41,7 +41,7 @@ fun SettingItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
-                .padding(16.dp),
+                .padding(PinsTheme.spacing.medium),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

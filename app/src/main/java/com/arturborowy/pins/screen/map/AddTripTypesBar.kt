@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 
 @Composable
 fun AddTripTypesBar(
@@ -40,7 +41,12 @@ fun AddTripTypesBar(
                     color = PinsTheme.colorScheme.onSurface,
                     style = PinsTheme.typography.titleSmall,
                     modifier = Modifier
-                        .padding(4.dp, 4.dp, 0.dp, 4.dp)
+                        .padding(
+                            PinsTheme.spacing.xSmall,
+                            PinsTheme.spacing.xSmall,
+                            0.dp,
+                            PinsTheme.spacing.xSmall
+                        )
                         .align(Alignment.CenterVertically)
                 )
             }
@@ -63,7 +69,12 @@ fun AddTripTypesBar(
                     color = PinsTheme.colorScheme.onSurface,
                     style = PinsTheme.typography.titleSmall,
                     modifier = Modifier
-                        .padding(0.dp, 4.dp, 4.dp, 4.dp)
+                        .padding(
+                            0.dp,
+                            PinsTheme.spacing.xSmall,
+                            PinsTheme.spacing.xSmall,
+                            PinsTheme.spacing.xSmall
+                        )
                         .align(Alignment.CenterVertically)
                 )
             }

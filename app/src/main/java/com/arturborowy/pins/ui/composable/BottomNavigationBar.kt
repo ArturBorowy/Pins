@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 
 @Composable
 fun BottomNavigationBar(
@@ -43,7 +44,7 @@ fun BottomNavigationBar(
                 onClick = { onNavigationItemClick(item.name) },
                 icon = {
                     Icon(
-                        modifier = Modifier.padding(vertical = 8.dp),
+                        modifier = Modifier.padding(vertical = PinsTheme.spacing.small),
                         painter = painterResource(item.iconResId),
                         contentDescription = item.name,
                     )

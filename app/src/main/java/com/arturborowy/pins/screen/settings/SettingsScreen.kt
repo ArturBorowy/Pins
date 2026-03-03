@@ -19,6 +19,7 @@ import com.arturborowy.pins.ui.composable.SettingItem
 import com.arturborowy.pins.ui.composable.SettingSectionLabel
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
@@ -30,12 +31,12 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(PinsTheme.spacing.medium)
             .background(PinsTheme.colorScheme.background)
     ) {
         PageTitle(
             stringResource(R.string.settings_header),
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(vertical = PinsTheme.spacing.medium)
         )
 
         SettingSectionLabel(stringResource(R.string.settings_section_about_app))

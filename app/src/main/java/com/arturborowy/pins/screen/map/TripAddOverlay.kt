@@ -6,10 +6,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.arturborowy.pins.R
 import com.arturborowy.pins.model.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
+import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.spacing
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -39,7 +40,7 @@ internal fun TripAddOverlay(
     keyboard: SoftwareKeyboardController?
 ) {
     TripAddCard(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(PinsTheme.spacing.small),
         placeText = placeText,
         placeErrorText = placeErrorText,
         onSearchTextChange = onSearchTextChange,

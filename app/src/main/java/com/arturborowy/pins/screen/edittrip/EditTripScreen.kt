@@ -9,9 +9,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
@@ -37,6 +36,8 @@ import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 import com.arturborowy.pins.ui.theme.PinsTheme
+import com.arturborowy.pins.ui.theme.sizing
+import com.arturborowy.pins.ui.theme.spacing
 import com.arturborowy.pins.utils.mapIconBitmapDescriptor
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
@@ -91,8 +92,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 onClick = { viewModel.onPreviousStopClick() }) {
                 Icon(
                     modifier = Modifier
-                        .height(24.dp)
-                        .width(24.dp),
+                        .size(PinsTheme.sizing.iconMedium),
                     painter = painterResource(R.drawable.ic_arrow_back),
                     tint = PinsTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_previous_stop)
@@ -107,8 +107,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
                 onClick = { viewModel.onNextStopClick() }) {
                 Icon(
                     modifier = Modifier
-                        .height(24.dp)
-                        .width(24.dp),
+                        .size(PinsTheme.sizing.iconMedium),
                     painter = painterResource(R.drawable.ic_arrow_forward),
                     tint = PinsTheme.colorScheme.onBackground,
                     contentDescription = stringResource(R.string.edit_trip_cd_next_stop)
@@ -144,7 +143,7 @@ fun EditStop(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, 16.dp, 16.dp, 16.dp)
+            .padding(PinsTheme.spacing.medium)
     ) {
         TripAddCard(
             placeText = stop.locationName,
