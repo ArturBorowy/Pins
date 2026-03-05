@@ -8,10 +8,10 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.ultimatelogger.android.output.ALog
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class GooglePlacesClientRepository @Inject constructor(
     private val placesClient: PlacesClient,
@@ -27,7 +27,7 @@ class GooglePlacesClientRepository @Inject constructor(
             }
 
     private suspend fun getAutocompletePredictions(inputString: String) =
-        suspendCoroutine<List<AutocompletePrediction>> {
+        suspendCancellableCoroutine<List<AutocompletePrediction>> {
             ALog.d("inputString: $inputString")
 
             val request = buildAutocompletePredictionsRequest(inputString)
@@ -54,7 +54,7 @@ class GooglePlacesClientRepository @Inject constructor(
             .build()
 
     override suspend fun getPlaceDetails(id: String) =
-        suspendCoroutine {
+        suspendCancellableCoroutine {
             ALog.d("placeId: $id")
 
             val placeFields = mutableListOf(
