@@ -23,6 +23,8 @@ import com.ultimatelogger.android.output.ALog
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -54,38 +56,49 @@ class MapViewModel @AssistedInject constructor(
 
     private val stops = mutableListOf<StopDetails>()
 
-    override fun onResume(owner: LifecycleOwner) {
-        viewModelScope.launch {
-            val tripMarkers = placesInteractor.getPlaces().toTripMarkers()
-            state.emit(state.value.copy(tripMarkers = tripMarkers))
-        }
-        viewModelScope.launch {
-            state.collect {
-                if (it.placeText.isNotEmpty() && it.placeTextChangedByUser) {
-                    try {
-                        showAddressPredictions(it.placeText)
-                    } catch (e: Exception) {
-                        ALog.e(e)
-                        errorEvents.tryEmit(e.message ?: "")
-                    }
-                }
-                validateSingleTripInput()
-            }
-        }
+    private var job: Job? = null
 
-        viewModelScope.launch {
-            networkStateRepository.hasInternet.collect {
-                state.emit(
-                    state.value.copy(
-                        placeErrorText = if (it) {
-                            null
-                        } else {
-                            resourcesRepository.getString(R.string.add_trip_error_internet_unavailable)
+    override fun onResume(owner: LifecycleOwner) {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
+            launch {
+                try {
+                    val tripMarkers = placesInteractor.getPlaces().toTripMarkers()
+                    state.emit(state.value.copy(tripMarkers = tripMarkers))
+                } catch (e: Exception) {
+                    ALog.e(e)
+                    errorEvents.tryEmit(e.message ?: "")
+                }
+                state.collect {
+                    if (it.placeText.isNotEmpty() && it.placeTextChangedByUser) {
+                        try {
+                            showAddressPredictions(it.placeText)
+                        } catch (e: Exception) {
+                            ALog.e(e)
+                            errorEvents.tryEmit(e.message ?: "")
                         }
+                    }
+                    validateSingleTripInput()
+                }
+            }
+            launch {
+                networkStateRepository.hasInternet.collect {
+                    state.emit(
+                        state.value.copy(
+                            placeErrorText = if (it) {
+                                null
+                            } else {
+                                resourcesRepository.getString(R.string.add_trip_error_internet_unavailable)
+                            }
+                        )
                     )
-                )
+                }
             }
         }
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        job?.cancel()
     }
 
     private fun validateSingleTripInput() {
