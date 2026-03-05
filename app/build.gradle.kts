@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.arturborowy.pins"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.arturborowy.pins"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -65,13 +65,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    testOptions {
-        packaging {
-            jniLibs {
-                useLegacyPackaging = true
-            }
         }
     }
 }

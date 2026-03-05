@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.arturborowy.brand.designsystem"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
