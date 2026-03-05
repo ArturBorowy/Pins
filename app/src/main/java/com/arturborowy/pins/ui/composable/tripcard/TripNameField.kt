@@ -22,7 +22,7 @@ fun TripNameField(
     PinsOutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(BrandTheme.spacing.textSpacing),
+            .padding(bottom = BrandTheme.spacing.textSpacing),
         value = nameText,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         onValueChange = { onNameTextChange(it) },
