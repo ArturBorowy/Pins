@@ -1,5 +1,9 @@
 package com.arturborowy.pins.model.remote.places
 
+import com.arturborowy.pins.data.remote.places.AddressPredictionDto
+import com.arturborowy.pins.data.remote.places.PlaceDetailsDto
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
+import com.arturborowy.pins.domain.AddressPrediction
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -53,25 +57,25 @@ class GooglePlacesClientRepository @Inject constructor(
             .setQuery(inputString)
             .build()
 
-    override suspend fun getPlaceDetails(id: String) =
+    override suspend fun getPlaceDetails(id: AddressPrediction.Id) =
         suspendCancellableCoroutine {
             ALog.d("placeId: $id")
 
             val placeFields = mutableListOf(
-                Place.Field.NAME,
-                Place.Field.LAT_LNG
+                Place.Field.DISPLAY_NAME,
+                Place.Field.LOCATION
             )
 
-            placesClient.fetchPlace(FetchPlaceRequest.newInstance(id, placeFields))
+            placesClient.fetchPlace(FetchPlaceRequest.newInstance(id.value, placeFields))
                 .addOnCompleteListener { completedTask ->
                     if (completedTask.exception == null) {
                         val fetchedPlace = completedTask.result.place
                         ALog.d("Fetched place: $fetchedPlace")
 
                         val placeDetails = PlaceDetailsDto(
-                            fetchedPlace.name!!,
-                            fetchedPlace.latLng!!.latitude,
-                            fetchedPlace.latLng!!.longitude,
+                            fetchedPlace.displayName!!,
+                            fetchedPlace.location!!.latitude,
+                            fetchedPlace.location!!.longitude,
                         )
                         ALog.d("result: $placeDetails")
 
