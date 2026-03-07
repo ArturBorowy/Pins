@@ -20,8 +20,9 @@ class PlacesInteractor @Inject constructor(
 
     suspend fun getAddressPredictions(inputString: String) =
         placesPredictionRepository.getAddressPredictions(inputString)
+            .map { AddressPrediction(AddressPrediction.Id(it.id), it.label) }
 
-    suspend fun getPlaceDetails(id: String): PlaceDetails {
+    suspend fun getPlaceDetails(id: AddressPrediction.Id): PlaceDetails {
         val placeDetailsDto = placesPredictionRepository.getPlaceDetails(id)
         val country =
             getCountryOfGivenLatLong(placeDetailsDto.latitude, placeDetailsDto.longitude)
@@ -34,8 +35,8 @@ class PlacesInteractor @Inject constructor(
         )
     }
 
-    suspend fun getSingleStopTrip(tripId: String): Trip {
-        val tripEntity = tripDao.select(tripId)
+    suspend fun getSingleStopTrip(tripId: Trip.Id): Trip {
+        val tripEntity = tripDao.select(tripId.value)
         return getTripFromTripEntity(tripEntity)
     }
 
@@ -59,7 +60,7 @@ class PlacesInteractor @Inject constructor(
     }
 
     suspend fun updateTrip(trip: Trip) {
-        tripDao.insert(TripEntity(trip.name, trip.id))
+        tripDao.insert(TripEntity(trip.name, trip.id.value))
 
         trip.stops.forEach { stop ->
             stopEntityDao.insert(
@@ -70,7 +71,7 @@ class PlacesInteractor @Inject constructor(
                     stop.placeDetails.latitude,
                     stop.placeDetails.longitude,
                     stop.placeDetails.country,
-                    trip.id
+                    trip.id.value
                 )
             )
         }
@@ -78,7 +79,7 @@ class PlacesInteractor @Inject constructor(
 
     suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double): Country {
         val countryDto = geocodingRepository.getCountryOfGivenLatLong(latitude, longitude)
-        val countryIcon = countryIconsRepository.getIcon(countryDto.id)
+        val countryIcon = countryIconsRepository.getIcon(countryDto.id.value)
 
         return Country(countryDto.id, countryDto.label, countryIcon!!)
     }
@@ -110,7 +111,7 @@ class PlacesInteractor @Inject constructor(
         }
 
         return Trip(
-            tripEntity.id,
+            Trip.Id(tripEntity.id),
             tripEntity.name,
             stops
         )

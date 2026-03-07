@@ -10,7 +10,7 @@ import com.arturborowy.pins.data.trip.TripEntity
 interface TripDao {
 
     @Query("SELECT * FROM tripEntity WHERE id=:id ")
-    suspend fun select(id: String): TripEntity
+    suspend fun select(id: Long): TripEntity
 
     @Query("SELECT * FROM tripEntity")
     suspend fun select(): List<TripEntity>

@@ -9,10 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arturborowy.pins.R
-import com.arturborowy.pins.data.remote.places.AddressPredictionDto
 import com.arturborowy.pins.data.system.LocaleRepository
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.data.system.ResourcesRepository
+import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.StopDetails
@@ -37,8 +37,10 @@ class EditTripViewModel @AssistedInject constructor(
     private val networkStateRepository: NetworkStateRepository,
     private val resourcesRepository: ResourcesRepository,
     private val navigator: Navigator,
-    @Assisted private val tripId: String
+    @Assisted private val tripIdRaw: Long
 ) : BaseViewModel() {
+
+    private val tripId = Trip.Id(tripIdRaw)
 
     val state = MutableStateFlow(State())
 
@@ -129,7 +131,7 @@ class EditTripViewModel @AssistedInject constructor(
         }
     }
 
-    fun onAddressSelect(placeId: String) {
+    fun onAddressSelect(placeId: AddressPrediction.Id) {
         viewModelScope.launch {
             try {
                 loadPlacesDetails(placeId)
@@ -140,7 +142,7 @@ class EditTripViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun loadPlacesDetails(placeId: String) {
+    private suspend fun loadPlacesDetails(placeId: AddressPrediction.Id) {
         val placeAddress = placesInteractor.getPlaceDetails(placeId)
         state.emit(
             state.value.copy(
@@ -286,7 +288,7 @@ class EditTripViewModel @AssistedInject constructor(
 
     fun onTripRemoveClick() {
         viewModelScope.launch {
-            placesInteractor.removePlaceDetails(state.value.tripId!!)
+            placesInteractor.removePlaceDetails(state.value.tripId!!.value)
             navigator.goBack()
         }
     }
@@ -343,10 +345,10 @@ class EditTripViewModel @AssistedInject constructor(
     }
 
     data class State(
-        val tripId: Long? = null,
+        val tripId: Trip.Id? = null,
         val tripName: String = "",
         val stops: List<EditTripStopItem> = listOf(),
-        val predictions: List<AddressPredictionDto> = listOf(),
+        val predictions: List<AddressPrediction> = listOf(),
         val expandAddressPredictions: Boolean = false,
         val showExtraFields: Boolean = true,
         val placeErrorText: String? = null,
@@ -362,13 +364,13 @@ class EditTripViewModel @AssistedInject constructor(
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
-        fun create(tripId: String): EditTripViewModel
+        fun create(tripId: Long): EditTripViewModel
     }
 
     companion object {
         fun provideFactory(
             assistedFactory: AssistedFactory,
-            tripId: String
+            tripId: Long
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(tripId) as T
@@ -378,7 +380,7 @@ class EditTripViewModel @AssistedInject constructor(
 }
 
 @Composable
-fun editTripViewModel(tripId: String): EditTripViewModel {
+fun editTripViewModel(tripId: Long): EditTripViewModel {
     val factory = EntryPointAccessors.fromActivity(
         LocalContext.current as Activity, MainActivity.ViewModelFactoryProvider::class.java
     ).editTripViewModelFactory()

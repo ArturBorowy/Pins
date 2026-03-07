@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -119,6 +120,7 @@ fun SearchField(
     LaunchedEffect(focusRequester) {
         snapshotFlow { windowInfo.isWindowFocused }.collect { isWindowFocused ->
             if (isWindowFocused && isFocused.not()) {
+                withFrameMillis {}
                 focusRequester.requestFocus()
                 keyboard?.show()
             }

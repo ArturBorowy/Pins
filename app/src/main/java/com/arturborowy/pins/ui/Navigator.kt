@@ -1,5 +1,6 @@
 package com.arturborowy.pins.ui
 
+import com.arturborowy.pins.domain.Trip
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -31,7 +32,7 @@ interface NavigationTarget {
 
         val label = create("{$TRIP_ID_KEY}").label
 
-        fun create(tripId: Long) = create(tripId.toString())
+        fun create(tripId: Trip.Id) = create(tripId.value.toString())
 
         private fun create(tripId: String) = object : NavigationTarget {
             override val label = "EDIT_PIN/$tripId"

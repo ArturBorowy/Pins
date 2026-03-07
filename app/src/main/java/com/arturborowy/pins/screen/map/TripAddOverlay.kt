@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
-import com.arturborowy.pins.data.remote.places.AddressPredictionDto
+import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -19,7 +19,7 @@ internal fun TripAddOverlay(
     showConfirm: Boolean,
     expandDropdown: Boolean,
     showExtraFields: Boolean,
-    predictions: List<AddressPredictionDto>,
+    predictions: List<AddressPrediction>,
     nameText: String,
     arrivalDate: String?,
     departureDate: String?,
@@ -28,7 +28,7 @@ internal fun TripAddOverlay(
     multiStop: Boolean,
     onBackClick: () -> Unit,
     onConfirmClick: () -> Unit,
-    onAddressPredictionClick: (AddressPredictionDto) -> Unit,
+    onAddressPredictionClick: (AddressPrediction) -> Unit,
     onNameTextChange: (String) -> Unit,
     onArrivalDateChange: (Int, Int, Int) -> Unit,
     onDepartureDateChange: (Int, Int, Int) -> Unit,

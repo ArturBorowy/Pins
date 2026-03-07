@@ -9,10 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arturborowy.pins.R
-import com.arturborowy.pins.data.remote.places.AddressPredictionDto
 import com.arturborowy.pins.data.system.LocaleRepository
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.data.system.ResourcesRepository
+import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.domain.PlaceDetails
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.StopDetails
@@ -136,7 +136,7 @@ class MapViewModel @AssistedInject constructor(
         }
     }
 
-    fun onAddressSelect(placeId: String) {
+    fun onAddressSelect(placeId: AddressPrediction.Id) {
         viewModelScope.launch {
             try {
                 loadPlacesDetails(placeId)
@@ -147,7 +147,7 @@ class MapViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun loadPlacesDetails(placeId: String) {
+    private suspend fun loadPlacesDetails(placeId: AddressPrediction.Id) {
         val placeAddress = placesInteractor.getPlaceDetails(placeId)
         state.emit(
             state.value.copy(
@@ -353,11 +353,11 @@ class MapViewModel @AssistedInject constructor(
     }
 
     data class State(
-        val predictions: List<AddressPredictionDto> = listOf(),
+        val predictions: List<AddressPrediction> = listOf(),
         val showRemoveBtn: Boolean = false,
         val expandAddressPredictions: Boolean = false,
         val showExtraFields: Boolean = false,
-        val placeId: String? = "",
+        val placeId: AddressPrediction.Id? = AddressPrediction.Id(""),
         val placeText: String = "",
         val placeErrorText: String? = null,
         val nameText: String = "",

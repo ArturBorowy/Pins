@@ -1,6 +1,7 @@
 package com.arturborowy.pins.ui.composable.map
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.google.android.gms.maps.model.CameraPosition
@@ -16,8 +17,9 @@ fun Map(
     cameraLatitude: Double,
     cameraLongitude: Double,
 ) {
-    val cameraLatLng = LatLng(cameraLatitude, cameraLongitude)
-    val cameraPosition = CameraPositionState(CameraPosition.fromLatLngZoom(cameraLatLng, zoom))
+    val cameraLatLng = remember { LatLng(cameraLatitude, cameraLongitude) }
+    val cameraPosition =
+        remember { CameraPositionState(CameraPosition.fromLatLngZoom(cameraLatLng, zoom)) }
 
     GoogleMap(
         cameraPositionState = cameraPosition,

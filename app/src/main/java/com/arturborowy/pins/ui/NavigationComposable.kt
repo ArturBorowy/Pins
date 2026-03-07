@@ -56,10 +56,10 @@ fun NavigationComposable(
         }
 
         val editTripArgs = listOf(navArgument(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY) {
-            type = NavType.StringType
+            type = NavType.LongType
         })
         composable(NavigationTarget.EDIT_TRIP.label, editTripArgs) {
-            EditTripScreen(editTripViewModel(it.arguments?.getString(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY)!!))
+            EditTripScreen(editTripViewModel(it.arguments?.getLong(NavigationTarget.EDIT_TRIP.TRIP_ID_KEY)!!))
         }
     }
 }

@@ -25,6 +25,7 @@ import com.arturborowy.brand.designsystem.typography.labelMediumEmphasized
 import com.arturborowy.brand.designsystem.typography.titleMediumEmphasized
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.Country
+import com.arturborowy.pins.domain.Trip
 import com.arturborowy.pins.screen.triplist.TripListItem
 import com.arturborowy.pins.screen.triplist.TripListItemStopItem
 import com.arturborowy.flags.R as FlagsR
@@ -111,7 +112,7 @@ fun TripRow(tripListItemStopItem: TripListItemStopItem) {
 }
 
 private val previewCountry = Country(
-    countryId = "pl",
+    countryId = Country.Id("pl"),
     countryLabel = "Poland",
     countryIcon = FlagsR.drawable.pl
 )
@@ -123,7 +124,7 @@ private val previewStop = TripListItemStopItem(
 )
 
 private val previewTrip = TripListItem(
-    id = 1L,
+    id = Trip.Id(1L),
     name = "Poland Trip",
     stops = listOf(previewStop, previewStop.copy(locationName = "Kraków", dateStr = "05.03.2026"))
 )

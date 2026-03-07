@@ -1,5 +1,6 @@
 package com.arturborowy.pins.data.remote.places
 
+import com.arturborowy.pins.domain.AddressPrediction
 import com.ultimatelogger.android.output.ALog
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -30,7 +31,7 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
             }
         }
 
-    override suspend fun getPlaceDetails(id: String) =
+    override suspend fun getPlaceDetails(id: AddressPrediction.Id) =
         suspendCoroutine {
             ALog.d("placeId: $id")
 
@@ -55,7 +56,7 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
 
     companion object {
         const val EXPECTED_ADDRESS_PREDICTION_STRING = "krak"
-        const val EXPECTED_PLACE_ID_FOR_DETAILS = "001"
+        val EXPECTED_PLACE_ID_FOR_DETAILS = AddressPrediction.Id("001")
 
         val FETCHED_PLACE_DETAILS = PlaceDetailsDto("Kraków", 50.0647, 19.9450)
         val FETCHED_ADDRESS_PREDICTIONS = listOf(
@@ -65,7 +66,7 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
         )
 
         const val ALTERNATIVE_EXPECTED_ADDRESS_PREDICTION_STRING = "war"
-        const val ALTERNATIVE_EXPECTED_PLACE_ID_FOR_DETAILS = "004"
+        val ALTERNATIVE_EXPECTED_PLACE_ID_FOR_DETAILS = AddressPrediction.Id("004")
 
         val ALTERNATIVE_FETCHED_PLACE_DETAILS = PlaceDetailsDto("Warszawa", 52.2297, 21.0122)
         val ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS = listOf(

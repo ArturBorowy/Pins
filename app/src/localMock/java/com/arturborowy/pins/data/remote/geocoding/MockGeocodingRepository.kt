@@ -2,6 +2,7 @@ package com.arturborowy.pins.data.remote.geocoding
 
 import com.arturborowy.pins.data.remote.places.MockInputException
 import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.domain.Country
 import com.ultimatelogger.android.output.ALog
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -29,6 +30,6 @@ class MockGeocodingRepository : GeocodingRepository {
         }
 
     companion object {
-        val GEOCODED_COUNTRY = CountryDto("pl", "Poland")
+        val GEOCODED_COUNTRY = CountryDto(Country.Id("pl"), "Poland")
     }
 }
