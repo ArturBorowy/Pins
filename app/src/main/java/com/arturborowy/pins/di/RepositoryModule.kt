@@ -3,9 +3,13 @@ package com.arturborowy.pins.di
 import android.content.Context
 import com.arturborowy.pins.data.Licenses.LicensesContentRepository
 import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.data.db.StopEntityDao
+import com.arturborowy.pins.data.db.TripDao
 import com.arturborowy.pins.data.licences.LibrariesRepository
 import com.arturborowy.pins.data.system.BuildInfoRepository
 import com.arturborowy.pins.data.system.ResourcesRepository
+import com.arturborowy.pins.data.trip.TripDaoRepository
+import com.arturborowy.pins.domain.TripRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,4 +38,8 @@ object RepositoryModule {
     @Provides
     fun librariesRepository() =
         LibrariesRepository
+
+    @Provides
+    fun tripRepository(tripDao: TripDao, stopEntityDao: StopEntityDao): TripRepository =
+        TripDaoRepository(tripDao, stopEntityDao)
 }

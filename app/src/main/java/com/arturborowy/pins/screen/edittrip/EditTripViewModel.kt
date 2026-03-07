@@ -288,7 +288,7 @@ class EditTripViewModel @AssistedInject constructor(
 
     fun onTripRemoveClick() {
         viewModelScope.launch {
-            placesInteractor.removePlaceDetails(state.value.tripId!!.value)
+            placesInteractor.removePlaceDetails(state.value.tripId!!)
             navigator.goBack()
         }
     }

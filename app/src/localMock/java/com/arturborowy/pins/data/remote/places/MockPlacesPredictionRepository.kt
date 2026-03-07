@@ -2,14 +2,14 @@ package com.arturborowy.pins.data.remote.places
 
 import com.arturborowy.pins.domain.AddressPrediction
 import com.ultimatelogger.android.output.ALog
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class MockPlacesPredictionRepository : PlacesPredictionRepository {
 
     override suspend fun getAddressPredictions(inputString: String) =
-        suspendCoroutine {
+        suspendCancellableCoroutine {
             ALog.d("inputString: $inputString")
 
             when (inputString) {
@@ -32,7 +32,7 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
         }
 
     override suspend fun getPlaceDetails(id: AddressPrediction.Id) =
-        suspendCoroutine {
+        suspendCancellableCoroutine {
             ALog.d("placeId: $id")
 
             when (id) {
