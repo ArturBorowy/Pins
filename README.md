@@ -3,9 +3,8 @@
 > A travel planning app for Android — pin locations on a map and organize them into trips.
 
 ![Min SDK](https://img.shields.io/badge/minSdk-24%20(Android%207.0)-blue)
-![Target SDK](https://img.shields.io/badge/targetSdk-34-blue)
-![Kotlin](https://img.shields.io/badge/Kotlin-1.9.24-purple)
-![License](https://img.shields.io/badge/license-TBD-lightgrey)
+![Target SDK](https://img.shields.io/badge/targetSdk-36-blue)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-purple)
 
 ---
 
@@ -34,11 +33,11 @@ visualized on an interactive Google Map.
 | Category              | Library / Tool                         |
 |-----------------------|----------------------------------------|
 | UI                    | Jetpack Compose + Material 3           |
-| Navigation            | Navigation Compose 2.7.4               |
-| Dependency Injection  | Hilt 2.48.1 (AssistedInject)           |
-| Maps                  | Google Maps Compose 2.15.0             |
-| Places Search         | Google Places API 3.2.0                |
-| Local Database        | Room 2.6.0                             |
+| Navigation            | Navigation Compose 2.9.7               |
+| Dependency Injection  | Hilt 2.59.2                            |
+| Maps                  | Google Maps Compose 8.2.0              |
+| Places Search         | Google Places API 5.1.1                |
+| Local Database        | Room 2.8.4                             |
 | Async                 | Kotlin Coroutines + StateFlow          |
 | Testing               | JUnit 4, MockK, Espresso, Hilt Testing |
 | Memory Leak Detection | LeakCanary (debug only)                |
