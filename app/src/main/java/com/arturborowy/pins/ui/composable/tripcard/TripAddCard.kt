@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.arturborowy.pins.R
-import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.data.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.WideCard
 

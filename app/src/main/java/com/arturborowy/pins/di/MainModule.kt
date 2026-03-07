@@ -1,15 +1,15 @@
 package com.arturborowy.pins.di
 
+import com.arturborowy.pins.data.Licenses.LicensesContentRepository
+import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.data.db.StopEntityDao
+import com.arturborowy.pins.data.db.TripDao
+import com.arturborowy.pins.data.licences.LibrariesRepository
+import com.arturborowy.pins.data.remote.geocoding.GeocodingRepository
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
+import com.arturborowy.pins.data.system.ResourcesRepository
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.licences.LicensesInteractor
-import com.arturborowy.pins.model.Licenses.LicensesContentRepository
-import com.arturborowy.pins.model.com.arturborowy.pins.flags.CountryIconsRepository
-import com.arturborowy.pins.model.db.StopEntityDao
-import com.arturborowy.pins.model.db.TripDao
-import com.arturborowy.pins.model.licences.LibrariesRepository
-import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
-import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
-import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.ui.Navigator
 import dagger.Module
 import dagger.Provides

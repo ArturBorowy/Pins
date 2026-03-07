@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.licences
+package com.arturborowy.pins.data.licences
 
 import com.arturborowy.pins.domain.licences.Product
 

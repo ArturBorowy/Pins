@@ -1,7 +1,7 @@
-package com.arturborowy.pins.model.remote.geocoding
+package com.arturborowy.pins.data.remote.geocoding
 
-import com.arturborowy.pins.model.remote.places.MockInputException
-import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.data.remote.places.MockInputException
+import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
 import com.ultimatelogger.android.output.ALog
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException

@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.remote.places
+package com.arturborowy.pins.data.remote.places
 
 import com.ultimatelogger.android.output.ALog
 import kotlin.coroutines.resume

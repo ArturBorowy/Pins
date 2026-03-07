@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
-import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.data.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
 
 @OptIn(ExperimentalComposeUiApi::class)

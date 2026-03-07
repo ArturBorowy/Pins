@@ -1,11 +1,11 @@
 package com.arturborowy.pins.di
 
 import android.content.Context
-import com.arturborowy.pins.model.Licenses.LicensesContentRepository
-import com.arturborowy.pins.model.com.arturborowy.pins.flags.CountryIconsRepository
-import com.arturborowy.pins.model.licences.LibrariesRepository
-import com.arturborowy.pins.model.system.BuildInfoRepository
-import com.arturborowy.pins.model.system.ResourcesRepository
+import com.arturborowy.pins.data.Licenses.LicensesContentRepository
+import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.data.licences.LibrariesRepository
+import com.arturborowy.pins.data.system.BuildInfoRepository
+import com.arturborowy.pins.data.system.ResourcesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

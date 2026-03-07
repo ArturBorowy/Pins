@@ -1,7 +1,7 @@
-package com.arturborowy.pins.model.Licenses
+package com.arturborowy.pins.data.Licenses
 
 import com.arturborowy.pins.R
-import com.arturborowy.pins.model.system.ResourcesRepository
+import com.arturborowy.pins.data.system.ResourcesRepository
 
 class LicensesContentRepository(private val resourcesRepository: ResourcesRepository) {
 

@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.trip
+package com.arturborowy.pins.data.trip
 
 import androidx.room.Embedded
 import androidx.room.Entity

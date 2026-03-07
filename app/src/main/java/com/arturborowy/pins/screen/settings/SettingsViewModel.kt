@@ -1,7 +1,7 @@
 package com.arturborowy.pins.screen.settings
 
 import androidx.lifecycle.viewModelScope
-import com.arturborowy.pins.model.system.BuildInfoRepository
+import com.arturborowy.pins.data.system.BuildInfoRepository
 import com.arturborowy.pins.ui.NavigationTarget
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.utils.BaseViewModel

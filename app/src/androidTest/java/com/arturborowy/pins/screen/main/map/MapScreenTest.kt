@@ -5,8 +5,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
-import com.arturborowy.pins.model.system.NetworkStateRepository
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
 import dagger.hilt.android.testing.BindValue

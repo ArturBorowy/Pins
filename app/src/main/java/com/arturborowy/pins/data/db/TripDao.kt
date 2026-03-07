@@ -1,10 +1,10 @@
-package com.arturborowy.pins.model.db
+package com.arturborowy.pins.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.arturborowy.pins.model.trip.TripEntity
+import com.arturborowy.pins.data.trip.TripEntity
 
 @Dao
 interface TripDao {

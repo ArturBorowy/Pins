@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.remote.geocoding
+package com.arturborowy.pins.data.remote.geocoding
 
 interface GeocodingRepository {
 

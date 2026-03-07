@@ -1,11 +1,11 @@
-package com.arturborowy.pins.model.db
+package com.arturborowy.pins.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.arturborowy.pins.model.trip.StopEntity
-import com.arturborowy.pins.model.trip.TripEntity
+import com.arturborowy.pins.data.trip.StopEntity
+import com.arturborowy.pins.data.trip.TripEntity
 
 @Database(
     entities = [TripEntity::class, StopEntity::class],

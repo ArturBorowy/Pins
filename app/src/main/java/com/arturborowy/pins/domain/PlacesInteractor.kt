@@ -1,12 +1,12 @@
 package com.arturborowy.pins.domain
 
-import com.arturborowy.pins.model.com.arturborowy.pins.flags.CountryIconsRepository
-import com.arturborowy.pins.model.db.StopEntityDao
-import com.arturborowy.pins.model.db.TripDao
-import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
-import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
-import com.arturborowy.pins.model.trip.StopEntity
-import com.arturborowy.pins.model.trip.TripEntity
+import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.data.db.StopEntityDao
+import com.arturborowy.pins.data.db.TripDao
+import com.arturborowy.pins.data.remote.geocoding.GeocodingRepository
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
+import com.arturborowy.pins.data.trip.StopEntity
+import com.arturborowy.pins.data.trip.TripEntity
 import java.util.Calendar
 import javax.inject.Inject
 

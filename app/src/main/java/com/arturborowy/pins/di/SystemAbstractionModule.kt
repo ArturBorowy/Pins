@@ -2,8 +2,8 @@ package com.arturborowy.pins.di
 
 import android.content.Context
 import android.net.ConnectivityManager
-import com.arturborowy.pins.model.system.LocaleRepository
-import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.data.system.LocaleRepository
+import com.arturborowy.pins.data.system.NetworkStateRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

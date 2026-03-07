@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.system
+package com.arturborowy.pins.data.system
 
 import android.net.ConnectivityManager
 import android.net.Network

@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.brand.designsystem.BrandTheme
-import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.data.remote.places.AddressPredictionDto
 import com.arturborowy.pins.ui.composable.PreviewTheme
 
 @Composable
