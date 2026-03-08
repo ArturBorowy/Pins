@@ -1,5 +1,6 @@
 package com.arturborowy.pins.screen.triplist
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.R
@@ -70,6 +71,7 @@ class TripsListViewModel @Inject constructor(
         }
     }
 
+    @Immutable
     data class State(
         val isLoading: Boolean = true,
         val tripDetails: List<TripListItem> = listOf(),

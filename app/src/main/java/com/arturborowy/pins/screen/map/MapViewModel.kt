@@ -2,6 +2,7 @@ package com.arturborowy.pins.screen.map
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -78,7 +79,6 @@ class MapViewModel @AssistedInject constructor(
                             errorEvents.tryEmit(e.message ?: "")
                         }
                     }
-                    validateSingleTripInput()
                 }
             }
             launch {
@@ -101,25 +101,6 @@ class MapViewModel @AssistedInject constructor(
         job?.cancel()
     }
 
-    private fun validateSingleTripInput() {
-        viewModelScope.launch {
-            state.emit(state.value.copy(isSavingTripEnabled = isSavingAllowed))
-        }
-    }
-
-    private val isSavingAllowed
-        get() = if (state.value.multiStop) {
-            isSavingAllowedForTripMultiStop
-        } else {
-            isSavingAllowedForTripSingleStop
-        }
-
-    private val isSavingAllowedForTripSingleStop
-        get() = isSavingAllowedForTripMultiStop && state.value.departureDate?.isNotEmpty() == true
-
-    private val isSavingAllowedForTripMultiStop
-        get() = state.value.placeText.isNotEmpty() && state.value.nameText.isNotEmpty() && state.value.arrivalDate?.isNotEmpty() == true
-
     private suspend fun showAddressPredictions(placeText: String) {
         val addressTexts = placesInteractor.getAddressPredictions(placeText)
         state.emit(
@@ -128,10 +109,7 @@ class MapViewModel @AssistedInject constructor(
 
         if (addressTexts.isNotEmpty()) {
             state.emit(
-                state.value.copy(
-                    expandAddressPredictions = true,
-                    placeTextChangedByUser = true,
-                )
+                state.value.copy(placeTextChangedByUser = true)
             )
         }
     }
@@ -151,7 +129,6 @@ class MapViewModel @AssistedInject constructor(
         val placeAddress = placesInteractor.getPlaceDetails(placeId)
         state.emit(
             state.value.copy(
-                expandAddressPredictions = false,
                 placeId = placeId,
                 showConfirmAddressButton = true,
                 placeText = placeAddress.locationName,
@@ -189,7 +166,6 @@ class MapViewModel @AssistedInject constructor(
                     showAddressTextField = true,
                     tripMarkers = listOf(),
                     showTripTypeBar = false,
-                    showKeyboard = true,
                     isAddressEditEnabled = true,
                     multiStop = multiStop
                 )
@@ -264,8 +240,7 @@ class MapViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val date = dateValuesToDate(selectedYear, selectedMonth, selectedDayOfMonth)
             arrivalDate = date
-            state.emit(state.value.copy(arrivalDate = dateToString(date), showKeyboard = false))
-            validateSingleTripInput()
+            state.emit(state.value.copy(arrivalDate = dateToString(date)))
         }
     }
 
@@ -291,7 +266,6 @@ class MapViewModel @AssistedInject constructor(
             val date = dateValuesToDate(selectedYear, selectedMonth, selectedDayOfMonth)
             departureDate = date
             state.emit(state.value.copy(departureDate = dateToString(date)))
-            validateSingleTripInput()
         }
     }
 
@@ -333,7 +307,6 @@ class MapViewModel @AssistedInject constructor(
     fun onTripNameChange(tripName: String) {
         viewModelScope.launch {
             state.emit(state.value.copy(nameText = tripName))
-            validateSingleTripInput()
         }
     }
 
@@ -352,10 +325,9 @@ class MapViewModel @AssistedInject constructor(
         }
     }
 
+    @Immutable
     data class State(
         val predictions: List<AddressPrediction> = listOf(),
-        val showRemoveBtn: Boolean = false,
-        val expandAddressPredictions: Boolean = false,
         val showExtraFields: Boolean = false,
         val placeId: AddressPrediction.Id? = AddressPrediction.Id(""),
         val placeText: String = "",
@@ -368,13 +340,18 @@ class MapViewModel @AssistedInject constructor(
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
-        val showKeyboard: Boolean = false,
-        val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false,
         val showTripTypeBar: Boolean = false,
         val showAddPinButton: Boolean = true,
         val multiStop: Boolean = false
-    )
+    ) {
+        val isSavingTripEnabled: Boolean
+            get() = if (multiStop) {
+                placeText.isNotEmpty() && nameText.isNotEmpty() && arrivalDate?.isNotEmpty() == true
+            } else {
+                placeText.isNotEmpty() && nameText.isNotEmpty() && arrivalDate?.isNotEmpty() == true && departureDate?.isNotEmpty() == true
+            }
+    }
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {

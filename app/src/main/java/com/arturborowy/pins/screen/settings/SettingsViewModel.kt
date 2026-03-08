@@ -1,5 +1,6 @@
 package com.arturborowy.pins.screen.settings
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.data.system.BuildInfoRepository
 import com.arturborowy.pins.ui.NavigationTarget
@@ -24,5 +25,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    @Immutable
     data class State(val versionNumber: String)
 }

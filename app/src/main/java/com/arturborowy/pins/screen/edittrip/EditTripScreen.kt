@@ -142,7 +142,7 @@ fun EditStop(
             showBackArrow = true,
             onConfirmClick = { viewModel.onConfirmAddress() },
             showConfirm = state.showConfirmAddressButton,
-            expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
+            expandDropdown = state.predictions.isNotEmpty() && state.placeTextChangedByUser,
             showExtraEditionFields = state.showExtraFields,
             predictions = state.predictions,
             onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },

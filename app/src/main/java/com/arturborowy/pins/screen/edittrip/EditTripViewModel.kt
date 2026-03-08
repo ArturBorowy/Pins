@@ -2,6 +2,7 @@ package com.arturborowy.pins.screen.edittrip
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -108,10 +109,7 @@ class EditTripViewModel @AssistedInject constructor(
 
         if (addressTexts.isNotEmpty()) {
             state.emit(
-                state.value.copy(
-                    expandAddressPredictions = true,
-                    placeTextChangedByUser = true,
-                )
+                state.value.copy(placeTextChangedByUser = true)
             )
         }
     }
@@ -131,7 +129,6 @@ class EditTripViewModel @AssistedInject constructor(
         val placeAddress = placesInteractor.getPlaceDetails(placeId)
         state.emit(
             state.value.copy(
-                expandAddressPredictions = false,
                 showConfirmAddressButton = true,
                 placeTextChangedByUser = false,
                 stops = state.value.stops
@@ -160,8 +157,7 @@ class EditTripViewModel @AssistedInject constructor(
                     state.value.copy(
                         isAddressEditEnabled = true,
                         showConfirmAddressButton = false,
-                        showExtraFields = false,
-                        showKeyboard = true
+                        showExtraFields = false
                     )
                 )
             }
@@ -318,17 +314,16 @@ class EditTripViewModel @AssistedInject constructor(
         )
     }
 
+    @Immutable
     data class State(
         val tripId: Trip.Id? = null,
         val tripName: String = "",
         val stops: List<EditTripStopItem> = listOf(),
         val predictions: List<AddressPrediction> = listOf(),
-        val expandAddressPredictions: Boolean = false,
         val showExtraFields: Boolean = true,
         val placeErrorText: String? = null,
         val placeTextChangedByUser: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
-        val showKeyboard: Boolean = false,
         val isAddressEditEnabled: Boolean = false,
         val currentStopId: Int = 0,
     ) {
