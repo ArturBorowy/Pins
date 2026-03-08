@@ -52,7 +52,6 @@ class EditTripViewModel @AssistedInject constructor(
 
             state.emit(
                 state.value.copy(
-                    isSavingTripEnabled = true,
                     tripId = trip.id,
                     tripName = trip.name,
                     stops = trip.stops.map {
@@ -97,23 +96,9 @@ class EditTripViewModel @AssistedInject constructor(
                         errorEvents.tryEmit(e.message ?: "")
                     }
                 }
-                validateTripInput()
             }
         }
     }
-
-    private fun validateTripInput() {
-        viewModelScope.launch {
-            val allowSaving = validateStopsInput() && state.value.tripName.isNotEmpty()
-            state.emit(state.value.copy(isSavingTripEnabled = allowSaving))
-        }
-    }
-
-    private fun validateStopsInput() =
-        state.value.stops.all { validateStopInput(it) }
-
-    private fun validateStopInput(stop: EditTripStopItem) =
-        stop.locationName.isNotEmpty() && stop.arrivalDateStr.isNotEmpty()
 
     private suspend fun showAddressPredictions(placeText: String) {
         val addressTexts = placesInteractor.getAddressPredictions(placeText)
@@ -173,8 +158,6 @@ class EditTripViewModel @AssistedInject constructor(
             } else {
                 state.emit(
                     state.value.copy(
-                        isPreviousStopAvailable = false,
-                        isNextStopAvailable = false,
                         isAddressEditEnabled = true,
                         showConfirmAddressButton = false,
                         showExtraFields = false,
@@ -192,8 +175,6 @@ class EditTripViewModel @AssistedInject constructor(
                     showExtraFields = true,
                     isAddressEditEnabled = false,
                     showConfirmAddressButton = false,
-                    isPreviousStopAvailable = state.value.currentStopId > 0,
-                    isNextStopAvailable = (state.value.currentStopId < state.value.stops.size - 1)
                 )
             )
         }
@@ -215,8 +196,6 @@ class EditTripViewModel @AssistedInject constructor(
                         )
                     }
             ))
-
-            validateTripInput()
         }
     }
 
@@ -257,8 +236,6 @@ class EditTripViewModel @AssistedInject constructor(
                         )
                     }
             ))
-
-            validateTripInput()
         }
     }
 
@@ -296,7 +273,6 @@ class EditTripViewModel @AssistedInject constructor(
     fun onTripNameChange(tripName: String) {
         viewModelScope.launch {
             state.emit(state.value.copy(tripName = tripName))
-            validateTripInput()
         }
     }
 
@@ -320,8 +296,6 @@ class EditTripViewModel @AssistedInject constructor(
         state.tryEmit(
             state.value.copy(
                 currentStopId = page,
-                isPreviousStopAvailable = page > 0,
-                isNextStopAvailable = (page < state.value.stops.size - 1)
             )
         )
     }
@@ -355,12 +329,20 @@ class EditTripViewModel @AssistedInject constructor(
         val placeTextChangedByUser: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
         val showKeyboard: Boolean = false,
-        val isSavingTripEnabled: Boolean = false,
         val isAddressEditEnabled: Boolean = false,
         val currentStopId: Int = 0,
-        val isPreviousStopAvailable: Boolean = false,
-        val isNextStopAvailable: Boolean = false,
-    )
+    ) {
+        val isSavingTripEnabled: Boolean
+            get() = tripName.isNotEmpty() && stops.all {
+                it.locationName.isNotEmpty() && it.arrivalDateStr.isNotEmpty()
+            }
+
+        val isPreviousStopAvailable: Boolean
+            get() = currentStopId > 0
+
+        val isNextStopAvailable: Boolean
+            get() = currentStopId < stops.size - 1
+    }
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
