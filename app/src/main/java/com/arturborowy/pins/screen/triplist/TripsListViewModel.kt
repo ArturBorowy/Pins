@@ -42,7 +42,7 @@ class TripsListViewModel @Inject constructor(
             trip.name,
             trip.stops.map { stop ->
                 TripListItemStopItem(
-                    stop.placeDetails.locationName,
+                    stop.placeDetailsWithCountry.locationName,
                     if (stop.departureDate == null) {
                         dateFormatter.format(stop.arrivalDate)
                     } else {
@@ -52,7 +52,7 @@ class TripsListViewModel @Inject constructor(
                             dateFormatter.format(stop.departureDate),
                         )
                     },
-                    stop.placeDetails.country
+                    stop.placeDetailsWithCountry.country
                 )
             }
         )

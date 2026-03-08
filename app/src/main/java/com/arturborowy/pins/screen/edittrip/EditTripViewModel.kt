@@ -13,7 +13,7 @@ import com.arturborowy.pins.data.system.LocaleRepository
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.data.system.ResourcesRepository
 import com.arturborowy.pins.domain.AddressPrediction
-import com.arturborowy.pins.domain.PlaceDetails
+import com.arturborowy.pins.domain.PlaceDetailsWithCountry
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.StopDetails
 import com.arturborowy.pins.domain.Trip
@@ -57,12 +57,12 @@ class EditTripViewModel @AssistedInject constructor(
                     tripName = trip.name,
                     stops = trip.stops.map {
                         EditTripStopItem(
-                            it.placeDetails.locationName,
+                            it.placeDetailsWithCountry.locationName,
                             dateToString(it.arrivalDate),
                             it.departureDate?.let { dateToString(it) },
-                            it.placeDetails.latitude,
-                            it.placeDetails.longitude,
-                            it.placeDetails.country
+                            it.placeDetailsWithCountry.latitude,
+                            it.placeDetailsWithCountry.longitude,
+                            it.placeDetailsWithCountry.country
                         )
                     },
                 )
@@ -272,7 +272,7 @@ class EditTripViewModel @AssistedInject constructor(
                         StopDetails(
                             stringToDate(stop.arrivalDateStr),
                             stop.departureDateStr?.let { stringToDate(it) },
-                            PlaceDetails(
+                            PlaceDetailsWithCountry(
                                 stop.locationName,
                                 stop.latitude,
                                 stop.longitude,

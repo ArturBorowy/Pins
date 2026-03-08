@@ -292,12 +292,20 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         goToSingleStopTripAddingViaTripListScreen()
         inputTripPlace()
         inputSingleStopTripDetails()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(R.string.main_bottom_nav_label_add),
+            5000L
+        )
     }
 
     protected fun addMultiStopTripViaTripList() {
         goToMultiStopTripAddingViaTripListScreen()
         inputTripPlace()
         inputMultiStopTripDetails()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(R.string.main_bottom_nav_label_add),
+            5000L
+        )
     }
 
     protected fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {

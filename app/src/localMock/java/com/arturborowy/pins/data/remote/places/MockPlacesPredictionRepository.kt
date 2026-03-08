@@ -1,6 +1,7 @@
 package com.arturborowy.pins.data.remote.places
 
 import com.arturborowy.pins.domain.AddressPrediction
+import com.arturborowy.pins.domain.PlaceDetails
 import com.ultimatelogger.android.output.ALog
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -31,7 +32,7 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
             }
         }
 
-    override suspend fun getPlaceDetails(id: AddressPrediction.Id) =
+    override suspend fun fetchPlaceDetailsDto(id: AddressPrediction.Id) =
         suspendCancellableCoroutine {
             ALog.d("placeId: $id")
 
@@ -58,19 +59,19 @@ class MockPlacesPredictionRepository : PlacesPredictionRepository {
         const val EXPECTED_ADDRESS_PREDICTION_STRING = "krak"
         val EXPECTED_PLACE_ID_FOR_DETAILS = AddressPrediction.Id("001")
 
-        val FETCHED_PLACE_DETAILS = PlaceDetailsDto("Kraków", 50.0647, 19.9450)
+        val FETCHED_PLACE_DETAILS = PlaceDetails("Kraków", 50.0647, 19.9450)
         val FETCHED_ADDRESS_PREDICTIONS = listOf(
-            AddressPredictionDto("001", "Kraków, Małopolskie, Poland"),
-            AddressPredictionDto("002", "Krakówek, Mazowieckie, Poland"),
-            AddressPredictionDto("003", "Krakówec, Bavaria, Germany"),
+            AddressPrediction(AddressPrediction.Id("001"), "Kraków, Małopolskie, Poland"),
+            AddressPrediction(AddressPrediction.Id("002"), "Krakówek, Mazowieckie, Poland"),
+            AddressPrediction(AddressPrediction.Id("003"), "Krakówec, Bavaria, Germany"),
         )
 
         const val ALTERNATIVE_EXPECTED_ADDRESS_PREDICTION_STRING = "war"
         val ALTERNATIVE_EXPECTED_PLACE_ID_FOR_DETAILS = AddressPrediction.Id("004")
 
-        val ALTERNATIVE_FETCHED_PLACE_DETAILS = PlaceDetailsDto("Warszawa", 52.2297, 21.0122)
+        val ALTERNATIVE_FETCHED_PLACE_DETAILS = PlaceDetails("Warszawa", 52.2297, 21.0122)
         val ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS = listOf(
-            AddressPredictionDto("004", "Warszawa, Mazowieckie, Poland"),
+            AddressPrediction(AddressPrediction.Id("004"), "Warszawa, Mazowieckie, Poland"),
         )
     }
 }

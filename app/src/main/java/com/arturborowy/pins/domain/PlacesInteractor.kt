@@ -9,23 +9,25 @@ class PlacesInteractor @Inject constructor(
     private val tripRepository: TripRepository,
     private val placesPredictionRepository: PlacesPredictionRepository,
     private val geocodingRepository: GeocodingRepository,
-    private val countryIconsRepository: CountryIconsRepository
+    private val countryIconsRepository: CountryIconsRepository,
 ) {
 
     suspend fun getAddressPredictions(inputString: String) =
         placesPredictionRepository.getAddressPredictions(inputString)
-            .map { AddressPrediction(AddressPrediction.Id(it.id), it.label) }
 
-    suspend fun getPlaceDetails(id: AddressPrediction.Id): PlaceDetails {
-        val placeDetailsDto = placesPredictionRepository.getPlaceDetails(id)
-        val country =
-            getCountryOfGivenLatLong(placeDetailsDto.latitude, placeDetailsDto.longitude)
+    suspend fun getPlaceDetails(id: AddressPrediction.Id): PlaceDetailsWithCountry {
+        val placeDetailsDto = placesPredictionRepository.fetchPlaceDetailsDto(id)
+        val countryDto = geocodingRepository.getCountryOfGivenLatLong(
+            placeDetailsDto.latitude,
+            placeDetailsDto.longitude
+        )
+        val countryIcon = countryIconsRepository.getIcon(countryDto.id.value)
 
-        return PlaceDetails(
+        return PlaceDetailsWithCountry(
             placeDetailsDto.locationName,
             placeDetailsDto.latitude,
             placeDetailsDto.longitude,
-            country
+            Country(countryDto.id, countryDto.label, countryIcon!!)
         )
     }
 
@@ -38,13 +40,6 @@ class PlacesInteractor @Inject constructor(
 
     suspend fun updateTrip(trip: Trip) {
         tripRepository.updateTrip(trip)
-    }
-
-    suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double): Country {
-        val countryDto = geocodingRepository.getCountryOfGivenLatLong(latitude, longitude)
-        val countryIcon = countryIconsRepository.getIcon(countryDto.id.value)
-
-        return Country(countryDto.id, countryDto.label, countryIcon!!)
     }
 
     suspend fun getPlaces() = tripRepository.getAllTrips()

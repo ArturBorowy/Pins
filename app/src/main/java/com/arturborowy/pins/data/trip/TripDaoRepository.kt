@@ -2,7 +2,7 @@ package com.arturborowy.pins.data.trip
 
 import com.arturborowy.pins.data.db.StopEntityDao
 import com.arturborowy.pins.data.db.TripDao
-import com.arturborowy.pins.domain.PlaceDetails
+import com.arturborowy.pins.domain.PlaceDetailsWithCountry
 import com.arturborowy.pins.domain.StopDetails
 import com.arturborowy.pins.domain.Trip
 import com.arturborowy.pins.domain.TripRepository
@@ -25,7 +25,7 @@ class TripDaoRepository @Inject constructor(
             StopDetails(
                 date(stopEntity.arrivalDate)!!,
                 date(stopEntity.departureDate),
-                PlaceDetails(
+                PlaceDetailsWithCountry(
                     stopEntity.locationName,
                     stopEntity.latitude,
                     stopEntity.longitude,
@@ -55,12 +55,12 @@ class TripDaoRepository @Inject constructor(
     }
 
     private fun mapToStopEntity(stopDetails: StopDetails, tripId: Long) = StopEntity(
-        stopDetails.placeDetails.locationName,
+        stopDetails.placeDetailsWithCountry.locationName,
         stopDetails.arrivalDate.time,
         stopDetails.departureDate?.time,
-        stopDetails.placeDetails.latitude,
-        stopDetails.placeDetails.longitude,
-        stopDetails.placeDetails.country,
+        stopDetails.placeDetailsWithCountry.latitude,
+        stopDetails.placeDetailsWithCountry.longitude,
+        stopDetails.placeDetailsWithCountry.country,
         tripId
     )
 

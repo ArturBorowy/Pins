@@ -5,5 +5,5 @@ import java.util.Date
 data class StopDetails(
     val arrivalDate: Date,
     val departureDate: Date?,
-    val placeDetails: PlaceDetails
+    val placeDetailsWithCountry: PlaceDetailsWithCountry
 )

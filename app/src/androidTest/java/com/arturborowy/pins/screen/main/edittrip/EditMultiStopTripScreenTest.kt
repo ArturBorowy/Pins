@@ -242,8 +242,19 @@ class EditMultiStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.waitUntilNodeCount(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            0,
+            5000L
+        )
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            5000L
+        )
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
+            .assertIsDisplayed()
     }
 
     private fun addMultiStopTripViaTripListAndGoToEdit() {

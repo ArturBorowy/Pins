@@ -46,6 +46,7 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
         addSingleStopTripViaTripListAndGoToEdit()
 
         //isTripNameCorrect_onEditingScreen
+        composeTestRule.waitUntilExactlyOneExists(hasText(MOCK_TRIP_NAME), 5000L)
         composeTestRule.onNodeWithText(MOCK_TRIP_NAME)
             .assertIsDisplayed()
 
@@ -69,6 +70,8 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
         composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
 
         chooseTripToEdit()
+
+        composeTestRule.waitUntilExactlyOneExists(hasText("10 Jun 2017"), 5000L)
 
         val newTripName = "newTripName"
 
@@ -95,6 +98,12 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+
+        composeTestRule.waitUntilNodeCount(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            0,
+            5000L
+        )
 
         //isAddressCleared_whenBackIsClicked
         composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
@@ -263,8 +272,19 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.waitUntilNodeCount(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            0,
+            5000L
+        )
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            5000L
+        )
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
+            .assertIsDisplayed()
     }
 
     private fun addSingleStopTripViaTripListAndGoToEdit() {

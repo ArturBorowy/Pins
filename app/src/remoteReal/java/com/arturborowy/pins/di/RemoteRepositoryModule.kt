@@ -16,7 +16,9 @@ import dagger.hilt.components.SingletonComponent
 object RemoteRepositoryModule {
 
     @Provides
-    fun placesPredictionRepository(placesClient: PlacesClient): PlacesPredictionRepository =
+    fun placesPredictionRepository(
+        placesClient: PlacesClient,
+    ): PlacesPredictionRepository =
         GooglePlacesClientRepository(placesClient)
 
     @Provides

@@ -13,7 +13,7 @@ import com.arturborowy.pins.data.system.LocaleRepository
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.data.system.ResourcesRepository
 import com.arturborowy.pins.domain.AddressPrediction
-import com.arturborowy.pins.domain.PlaceDetails
+import com.arturborowy.pins.domain.PlaceDetailsWithCountry
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.StopDetails
 import com.arturborowy.pins.domain.Trip
@@ -52,7 +52,7 @@ class MapViewModel @AssistedInject constructor(
     private var arrivalDate: Date? = null
     private var departureDate: Date? = null
 
-    private var selectedPlace: PlaceDetails? = null
+    private var selectedPlace: PlaceDetailsWithCountry? = null
 
     private val stops = mutableListOf<StopDetails>()
 
@@ -240,10 +240,10 @@ class MapViewModel @AssistedInject constructor(
         map { trip ->
             trip.stops.map { stop ->
                 MapMarkerItem(
-                    stop.placeDetails.locationName,
-                    stop.placeDetails.country.countryIcon,
-                    stop.placeDetails.latitude,
-                    stop.placeDetails.longitude
+                    stop.placeDetailsWithCountry.locationName,
+                    stop.placeDetailsWithCountry.country.countryIcon,
+                    stop.placeDetailsWithCountry.latitude,
+                    stop.placeDetailsWithCountry.longitude
                 )
             }
         }

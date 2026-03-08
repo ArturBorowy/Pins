@@ -1,10 +1,11 @@
 package com.arturborowy.pins.data.remote.places
 
 import com.arturborowy.pins.domain.AddressPrediction
+import com.arturborowy.pins.domain.PlaceDetails
 
 interface PlacesPredictionRepository {
 
-    suspend fun getAddressPredictions(inputString: String): List<AddressPredictionDto>
+    suspend fun getAddressPredictions(inputString: String): List<AddressPrediction>
 
-    suspend fun getPlaceDetails(id: AddressPrediction.Id): PlaceDetailsDto
+    suspend fun fetchPlaceDetailsDto(id: AddressPrediction.Id): PlaceDetails
 }

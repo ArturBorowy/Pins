@@ -1,9 +1,8 @@
 package com.arturborowy.pins.model.remote.places
 
-import com.arturborowy.pins.data.remote.places.AddressPredictionDto
-import com.arturborowy.pins.data.remote.places.PlaceDetailsDto
 import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
 import com.arturborowy.pins.domain.AddressPrediction
+import com.arturborowy.pins.domain.PlaceDetails
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -24,8 +23,8 @@ class GooglePlacesClientRepository @Inject constructor(
     override suspend fun getAddressPredictions(inputString: String) =
         getAutocompletePredictions(inputString)
             .map {
-                AddressPredictionDto(
-                    it.placeId,
+                AddressPrediction(
+                    AddressPrediction.Id(it.placeId),
                     it.getFullText(null).toString(),
                 )
             }
@@ -57,7 +56,7 @@ class GooglePlacesClientRepository @Inject constructor(
             .setQuery(inputString)
             .build()
 
-    override suspend fun getPlaceDetails(id: AddressPrediction.Id) =
+    override suspend fun fetchPlaceDetailsDto(id: AddressPrediction.Id) =
         suspendCancellableCoroutine {
             ALog.d("placeId: $id")
 
@@ -72,7 +71,7 @@ class GooglePlacesClientRepository @Inject constructor(
                         val fetchedPlace = completedTask.result.place
                         ALog.d("Fetched place: $fetchedPlace")
 
-                        val placeDetails = PlaceDetailsDto(
+                        val placeDetails = PlaceDetails(
                             fetchedPlace.displayName!!,
                             fetchedPlace.location!!.latitude,
                             fetchedPlace.location!!.longitude,
