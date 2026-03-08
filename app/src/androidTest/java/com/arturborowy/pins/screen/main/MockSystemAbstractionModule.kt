@@ -1,7 +1,7 @@
 package com.arturborowy.pins.screen.main
 
-import com.arturborowy.pins.model.system.LocaleRepository
-import com.arturborowy.pins.model.system.NetworkStateRepository
+import com.arturborowy.pins.data.system.LocaleRepository
+import com.arturborowy.pins.data.system.NetworkStateRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow

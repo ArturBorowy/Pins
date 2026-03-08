@@ -1,149 +1,54 @@
 package com.arturborowy.pins.domain
 
-import com.arturborowy.pins.model.com.arturborowy.pins.flags.CountryIconsRepository
-import com.arturborowy.pins.model.db.StopEntityDao
-import com.arturborowy.pins.model.db.TripDao
-import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
-import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
-import com.arturborowy.pins.model.trip.StopEntity
-import com.arturborowy.pins.model.trip.TripEntity
-import java.util.Calendar
+import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.data.remote.geocoding.GeocodingRepository
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
 import javax.inject.Inject
 
 class PlacesInteractor @Inject constructor(
-    private val tripDao: TripDao,
-    private val stopEntityDao: StopEntityDao,
+    private val tripRepository: TripRepository,
     private val placesPredictionRepository: PlacesPredictionRepository,
     private val geocodingRepository: GeocodingRepository,
-    private val countryIconsRepository: CountryIconsRepository
+    private val countryIconsRepository: CountryIconsRepository,
 ) {
 
     suspend fun getAddressPredictions(inputString: String) =
         placesPredictionRepository.getAddressPredictions(inputString)
 
-    suspend fun getPlaceDetails(id: String): PlaceDetails {
-        val placeDetailsDto = placesPredictionRepository.getPlaceDetails(id)
-        val country =
-            getCountryOfGivenLatLong(placeDetailsDto.latitude, placeDetailsDto.longitude)
+    suspend fun getPlaceDetails(id: AddressPrediction.Id): PlaceDetailsWithCountry {
+        val placeDetailsDto = placesPredictionRepository.fetchPlaceDetailsDto(id)
+        val countryDto = geocodingRepository.getCountryOfGivenLatLong(
+            placeDetailsDto.latitude,
+            placeDetailsDto.longitude
+        )
+        val countryIcon = countryIconsRepository.getIcon(countryDto.id.value)
 
-        return PlaceDetails(
+        return PlaceDetailsWithCountry(
             placeDetailsDto.locationName,
             placeDetailsDto.latitude,
             placeDetailsDto.longitude,
-            country
+            Country(countryDto.id, countryDto.label, countryIcon!!)
         )
     }
 
-    suspend fun getSingleStopTrip(tripId: String): Trip {
-        val tripEntity = tripDao.select(tripId)
-        return getTripFromTripEntity(tripEntity)
-    }
+    suspend fun getSingleStopTrip(tripId: Trip.Id): Trip =
+        tripRepository.getTrip(tripId)
 
-    suspend fun saveSingleStopTrip(
-        tripName: String,
-        stopDetails: StopDetails
-    ) {
-        val tripId = tripDao.insert(TripEntity(tripName))
-
-        val stopEntity = StopEntity(
-            stopDetails.placeDetails.locationName,
-            stopDetails.arrivalDate.time,
-            stopDetails.departureDate?.time,
-            stopDetails.placeDetails.latitude,
-            stopDetails.placeDetails.longitude,
-            stopDetails.placeDetails.country,
-            tripId
-        )
-
-        stopEntityDao.insert(stopEntity)
+    suspend fun saveSingleStopTrip(tripName: String, stopDetails: StopDetails) {
+        tripRepository.saveTrip(tripName, listOf(stopDetails))
     }
 
     suspend fun updateTrip(trip: Trip) {
-        tripDao.insert(TripEntity(trip.name, trip.id))
-
-        trip.stops.forEach { stop ->
-            stopEntityDao.insert(
-                StopEntity(
-                    stop.placeDetails.locationName,
-                    stop.arrivalDate.time,
-                    stop.departureDate?.time,
-                    stop.placeDetails.latitude,
-                    stop.placeDetails.longitude,
-                    stop.placeDetails.country,
-                    trip.id
-                )
-            )
-        }
+        tripRepository.updateTrip(trip)
     }
 
-    suspend fun getCountryOfGivenLatLong(latitude: Double, longitude: Double): Country {
-        val countryDto = geocodingRepository.getCountryOfGivenLatLong(latitude, longitude)
-        val countryIcon = countryIconsRepository.getIcon(countryDto.id)
+    suspend fun getPlaces() = tripRepository.getAllTrips()
 
-        return Country(countryDto.id, countryDto.label, countryIcon!!)
+    suspend fun removePlaceDetails(id: Trip.Id) {
+        tripRepository.removeTrip(id.value)
     }
 
-    suspend fun getPlaces() =
-        tripDao.select()
-            .map { getTripFromTripEntity(it) }
-
-    private suspend fun getTripFromTripEntity(tripEntity: TripEntity): Trip {
-        val stops = stopEntityDao.select(tripEntity.id)
-        return mapTripEntitiesToTrip(tripEntity, stops)
-    }
-
-    private fun mapTripEntitiesToTrip(
-        tripEntity: TripEntity,
-        stopEntities: List<StopEntity>
-    ): Trip {
-        val stops = stopEntities.map { stopEntity ->
-            StopDetails(
-                date(stopEntity.arrivalDate)!!,
-                date(stopEntity.departureDate),
-                PlaceDetails(
-                    stopEntity.locationName,
-                    stopEntity.latitude,
-                    stopEntity.longitude,
-                    stopEntity.country
-                )
-            )
-        }
-
-        return Trip(
-            tripEntity.id,
-            tripEntity.name,
-            stops
-        )
-    }
-
-    private fun date(timeInMillis: Long?) =
-        timeInMillis?.let {
-            Calendar.getInstance()
-                .apply { this.timeInMillis = timeInMillis }.time
-        }
-
-    suspend fun removePlaceDetails(id: Long) {
-        tripDao.remove(id)
-    }
-
-    suspend fun saveMultiStopTrip(
-        nameText: String,
-        stops: List<StopDetails>
-    ) {
-        val tripId = tripDao.insert(TripEntity(nameText))
-
-        stops.forEach { stop ->
-            stopEntityDao.insert(
-                StopEntity(
-                    stop.placeDetails.locationName,
-                    stop.arrivalDate.time,
-                    stop.departureDate?.time,
-                    stop.placeDetails.latitude,
-                    stop.placeDetails.longitude,
-                    stop.placeDetails.country,
-                    tripId
-                )
-            )
-        }
+    suspend fun saveMultiStopTrip(nameText: String, stops: List<StopDetails>) {
+        tripRepository.saveTrip(nameText, stops)
     }
 }

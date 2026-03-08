@@ -9,14 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
 import com.arturborowy.brand.designsystem.BrandTheme
-import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.ui.composable.PreviewTheme
 
 @Composable
 fun SearchResults(
     expandDropdown: Boolean,
-    predictions: List<AddressPredictionDto>,
-    onAddressPredictionClick: (AddressPredictionDto) -> Unit
+    predictions: List<AddressPrediction>,
+    onAddressPredictionClick: (AddressPrediction) -> Unit
 ) {
     DropdownMenu(
         modifier = Modifier.background(BrandTheme.colorScheme.surface),
@@ -45,9 +45,9 @@ fun SearchResultsPreview() = PreviewTheme {
     SearchResults(
         expandDropdown = true,
         predictions = listOf(
-            AddressPredictionDto(id = "1", label = "Lisbon, Portugal"),
-            AddressPredictionDto(id = "2", label = "London, United Kingdom"),
-            AddressPredictionDto(id = "3", label = "Lima, Peru"),
+            AddressPrediction(id = AddressPrediction.Id("1"), label = "Lisbon, Portugal"),
+            AddressPrediction(id = AddressPrediction.Id("2"), label = "London, United Kingdom"),
+            AddressPrediction(id = AddressPrediction.Id("3"), label = "Lima, Peru"),
         ),
         onAddressPredictionClick = {}
     )

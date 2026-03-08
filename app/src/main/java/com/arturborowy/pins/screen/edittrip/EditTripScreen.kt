@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -126,7 +128,11 @@ fun EditStop(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(BrandTheme.spacing.screenPadding)
+            .padding(
+                start = BrandTheme.spacing.screenPadding,
+                end = BrandTheme.spacing.screenPadding,
+                bottom = BrandTheme.spacing.screenPadding
+            )
     ) {
         TripAddCard(
             placeText = stop.locationName,
@@ -136,7 +142,7 @@ fun EditStop(
             showBackArrow = true,
             onConfirmClick = { viewModel.onConfirmAddress() },
             showConfirm = state.showConfirmAddressButton,
-            expandDropdown = state.expandAddressPredictions && state.placeTextChangedByUser,
+            expandDropdown = state.predictions.isNotEmpty() && state.placeTextChangedByUser,
             showExtraEditionFields = state.showExtraFields,
             predictions = state.predictions,
             onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
@@ -160,6 +166,9 @@ fun EditStop(
             isAddressEditEnabled = state.isAddressEditEnabled,
             multiStop = state.stops.size > 1
         )
+
+        Spacer(Modifier.height(BrandTheme.spacing.cardMargin))
+
         WideCard {
             SelectedPlaceMap(
                 MapMarkerItem(

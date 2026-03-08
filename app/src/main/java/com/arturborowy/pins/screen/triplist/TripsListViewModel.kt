@@ -1,12 +1,13 @@
 package com.arturborowy.pins.screen.triplist
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.R
+import com.arturborowy.pins.data.system.LocaleRepository
+import com.arturborowy.pins.data.system.ResourcesRepository
 import com.arturborowy.pins.domain.PlacesInteractor
 import com.arturborowy.pins.domain.Trip
-import com.arturborowy.pins.model.system.LocaleRepository
-import com.arturborowy.pins.model.system.ResourcesRepository
 import com.arturborowy.pins.ui.NavigationTarget
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.utils.BaseViewModel
@@ -42,7 +43,7 @@ class TripsListViewModel @Inject constructor(
             trip.name,
             trip.stops.map { stop ->
                 TripListItemStopItem(
-                    stop.placeDetails.locationName,
+                    stop.placeDetailsWithCountry.locationName,
                     if (stop.departureDate == null) {
                         dateFormatter.format(stop.arrivalDate)
                     } else {
@@ -52,7 +53,7 @@ class TripsListViewModel @Inject constructor(
                             dateFormatter.format(stop.departureDate),
                         )
                     },
-                    stop.placeDetails.country
+                    stop.placeDetailsWithCountry.country
                 )
             }
         )
@@ -70,6 +71,7 @@ class TripsListViewModel @Inject constructor(
         }
     }
 
+    @Immutable
     data class State(
         val isLoading: Boolean = true,
         val tripDetails: List<TripListItem> = listOf(),

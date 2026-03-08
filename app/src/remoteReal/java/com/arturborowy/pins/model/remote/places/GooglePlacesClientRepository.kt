@@ -1,5 +1,8 @@
 package com.arturborowy.pins.model.remote.places
 
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
+import com.arturborowy.pins.domain.AddressPrediction
+import com.arturborowy.pins.domain.PlaceDetails
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -8,10 +11,10 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.ultimatelogger.android.output.ALog
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class GooglePlacesClientRepository @Inject constructor(
     private val placesClient: PlacesClient,
@@ -20,14 +23,14 @@ class GooglePlacesClientRepository @Inject constructor(
     override suspend fun getAddressPredictions(inputString: String) =
         getAutocompletePredictions(inputString)
             .map {
-                AddressPredictionDto(
-                    it.placeId,
+                AddressPrediction(
+                    AddressPrediction.Id(it.placeId),
                     it.getFullText(null).toString(),
                 )
             }
 
     private suspend fun getAutocompletePredictions(inputString: String) =
-        suspendCoroutine<List<AutocompletePrediction>> {
+        suspendCancellableCoroutine<List<AutocompletePrediction>> {
             ALog.d("inputString: $inputString")
 
             val request = buildAutocompletePredictionsRequest(inputString)
@@ -53,25 +56,25 @@ class GooglePlacesClientRepository @Inject constructor(
             .setQuery(inputString)
             .build()
 
-    override suspend fun getPlaceDetails(id: String) =
-        suspendCoroutine {
+    override suspend fun fetchPlaceDetailsDto(id: AddressPrediction.Id) =
+        suspendCancellableCoroutine {
             ALog.d("placeId: $id")
 
             val placeFields = mutableListOf(
-                Place.Field.NAME,
-                Place.Field.LAT_LNG
+                Place.Field.DISPLAY_NAME,
+                Place.Field.LOCATION
             )
 
-            placesClient.fetchPlace(FetchPlaceRequest.newInstance(id, placeFields))
+            placesClient.fetchPlace(FetchPlaceRequest.newInstance(id.value, placeFields))
                 .addOnCompleteListener { completedTask ->
                     if (completedTask.exception == null) {
                         val fetchedPlace = completedTask.result.place
                         ALog.d("Fetched place: $fetchedPlace")
 
-                        val placeDetails = PlaceDetailsDto(
-                            fetchedPlace.name!!,
-                            fetchedPlace.latLng!!.latitude,
-                            fetchedPlace.latLng!!.longitude,
+                        val placeDetails = PlaceDetails(
+                            fetchedPlace.displayName!!,
+                            fetchedPlace.location!!.latitude,
+                            fetchedPlace.location!!.longitude,
                         )
                         ALog.d("result: $placeDetails")
 

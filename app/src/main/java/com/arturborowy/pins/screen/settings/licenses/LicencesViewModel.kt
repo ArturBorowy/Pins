@@ -1,5 +1,6 @@
 package com.arturborowy.pins.screen.settings.licenses
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.domain.licences.Licence
@@ -25,5 +26,6 @@ class LicensesViewModel @Inject constructor(
         }
     }
 
+    @Immutable
     data class State(val Licenses: List<Licence> = listOf())
 }

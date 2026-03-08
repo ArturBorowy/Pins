@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.arturborowy.pins.R
-import com.arturborowy.pins.model.remote.places.AddressPredictionDto
+import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.WideCard
 
@@ -25,8 +25,8 @@ fun TripAddCard(
     showConfirm: Boolean,
     expandDropdown: Boolean,
     showExtraEditionFields: Boolean,
-    predictions: List<AddressPredictionDto>,
-    onAddressPredictionClick: (AddressPredictionDto) -> Unit,
+    predictions: List<AddressPrediction>,
+    onAddressPredictionClick: (AddressPrediction) -> Unit,
     arrivalDate: String?,
     onArrivalDateChange: (Int, Int, Int) -> Unit,
     departureDate: String?,

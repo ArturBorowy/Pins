@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.Country
+import com.arturborowy.pins.domain.Trip
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.TripView
@@ -44,15 +45,15 @@ fun TripListViewPreview() = PreviewTheme {
     TripListView(
         listOf(
             TripListItem(
-                1L, "Portugal",
+                Trip.Id(1L), "Portugal",
                 listOf(
                     TripListItemStopItem(
                         "Porto", "11-11-2011",
-                        Country("1", "Portugal", com.arturborowy.flags.R.drawable.pt)
+                        Country(Country.Id("1"), "Portugal", com.arturborowy.flags.R.drawable.pt)
                     ),
                     TripListItemStopItem(
                         "Lisboa", "15-11-2011",
-                        Country("1", "Portugal", com.arturborowy.flags.R.drawable.pt)
+                        Country(Country.Id("1"), "Portugal", com.arturborowy.flags.R.drawable.pt)
                     )
                 )
             )

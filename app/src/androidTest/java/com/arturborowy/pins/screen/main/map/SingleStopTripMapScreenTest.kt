@@ -16,9 +16,9 @@ import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
-import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
-import com.arturborowy.pins.model.system.NetworkStateRepository
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
 import dagger.hilt.android.testing.BindValue

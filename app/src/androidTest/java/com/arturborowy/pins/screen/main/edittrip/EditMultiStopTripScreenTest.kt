@@ -18,9 +18,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
-import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
-import com.arturborowy.pins.model.system.NetworkStateRepository
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
@@ -242,8 +242,19 @@ class EditMultiStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.waitUntilNodeCount(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            0,
+            5000L
+        )
         composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
             .performClick()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(getString(R.string.edit_trip_btn_save_changes)),
+            5000L
+        )
+        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
+            .assertIsDisplayed()
     }
 
     private fun addMultiStopTripViaTripListAndGoToEdit() {

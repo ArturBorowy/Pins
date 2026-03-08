@@ -33,7 +33,7 @@ fun RoundFlagIcon(country: Country) {
 fun RoundFlagIconPreview() = PreviewTheme {
     RoundFlagIcon(
         country = Country(
-            countryId = "pl",
+            countryId = Country.Id("pl"),
             countryLabel = "Poland",
             countryIcon = FlagsR.drawable.pl
         )

@@ -27,10 +27,10 @@ import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.arturborowy.pins.model.db.AppDatabase
-import com.arturborowy.pins.model.remote.geocoding.MockGeocodingRepository
-import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
-import com.arturborowy.pins.model.system.ResourcesRepository
+import com.arturborowy.pins.data.db.AppDatabase
+import com.arturborowy.pins.data.remote.geocoding.MockGeocodingRepository
+import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.data.system.ResourcesRepository
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.ui.composable.TripViewTag
 import com.ultimatelogger.android.output.ALogInitializer
@@ -292,12 +292,20 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         goToSingleStopTripAddingViaTripListScreen()
         inputTripPlace()
         inputSingleStopTripDetails()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(R.string.main_bottom_nav_label_add),
+            5000L
+        )
     }
 
     protected fun addMultiStopTripViaTripList() {
         goToMultiStopTripAddingViaTripListScreen()
         inputTripPlace()
         inputMultiStopTripDetails()
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(R.string.main_bottom_nav_label_add),
+            5000L
+        )
     }
 
     protected fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {

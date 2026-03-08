@@ -1,4 +1,4 @@
-package com.arturborowy.pins.model.com.arturborowy.pins.flags
+package com.arturborowy.pins.data.com.arturborowy.pins.flags
 
 import com.arturborowy.flags.R
 

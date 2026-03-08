@@ -8,8 +8,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import com.arturborowy.pins.BaseComposeTest
 import com.arturborowy.pins.R
+import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
-import com.arturborowy.pins.model.system.NetworkStateRepository
 import com.arturborowy.pins.ui.composable.LicenceViewTag
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest

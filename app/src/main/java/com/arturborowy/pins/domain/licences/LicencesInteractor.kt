@@ -1,9 +1,9 @@
 package com.arturborowy.pins.domain.licences
 
 import com.arturborowy.pins.R
-import com.arturborowy.pins.model.Licenses.LicensesContentRepository
-import com.arturborowy.pins.model.licences.LibrariesRepository
-import com.arturborowy.pins.model.system.ResourcesRepository
+import com.arturborowy.pins.data.Licenses.LicensesContentRepository
+import com.arturborowy.pins.data.licences.LibrariesRepository
+import com.arturborowy.pins.data.system.ResourcesRepository
 
 class LicensesInteractor(
     private val resourcesRepository: ResourcesRepository,

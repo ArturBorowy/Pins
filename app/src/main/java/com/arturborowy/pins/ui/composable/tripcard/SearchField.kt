@@ -11,8 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -30,6 +32,7 @@ import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PinsOutlinedTextField
 import com.arturborowy.pins.ui.composable.PreviewTheme
+import com.arturborowy.pins.utils.TextFieldValueSaver
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -50,7 +53,7 @@ fun SearchField(
 
     var isFocused by remember { mutableStateOf(false) }
 
-    var textFieldValueState by remember {
+    var textFieldValueState by rememberSaveable(stateSaver = TextFieldValueSaver) {
         mutableStateOf(
             TextFieldValue(
                 placeText,
@@ -119,6 +122,7 @@ fun SearchField(
     LaunchedEffect(focusRequester) {
         snapshotFlow { windowInfo.isWindowFocused }.collect { isWindowFocused ->
             if (isWindowFocused && isFocused.not()) {
+                withFrameMillis {}
                 focusRequester.requestFocus()
                 keyboard?.show()
             }

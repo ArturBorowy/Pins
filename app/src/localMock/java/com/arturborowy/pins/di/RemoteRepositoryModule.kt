@@ -1,9 +1,9 @@
 package com.arturborowy.pins.di
 
-import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
-import com.arturborowy.pins.model.remote.geocoding.MockGeocodingRepository
-import com.arturborowy.pins.model.remote.places.MockPlacesPredictionRepository
-import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
+import com.arturborowy.pins.data.remote.geocoding.GeocodingRepository
+import com.arturborowy.pins.data.remote.geocoding.MockGeocodingRepository
+import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

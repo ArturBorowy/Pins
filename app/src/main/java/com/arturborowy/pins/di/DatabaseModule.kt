@@ -1,7 +1,7 @@
 package com.arturborowy.pins.di
 
 import android.content.Context
-import com.arturborowy.pins.model.db.AppDatabase
+import com.arturborowy.pins.data.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

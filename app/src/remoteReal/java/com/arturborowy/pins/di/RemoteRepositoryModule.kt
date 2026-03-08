@@ -1,10 +1,10 @@
 package com.arturborowy.pins.di
 
 import android.location.Geocoder
+import com.arturborowy.pins.data.remote.geocoding.GeocodingRepository
+import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
 import com.arturborowy.pins.model.remote.geocoding.AndroidGeocoderRepository
-import com.arturborowy.pins.model.remote.geocoding.GeocodingRepository
 import com.arturborowy.pins.model.remote.places.GooglePlacesClientRepository
-import com.arturborowy.pins.model.remote.places.PlacesPredictionRepository
 import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.Module
 import dagger.Provides
@@ -16,7 +16,9 @@ import dagger.hilt.components.SingletonComponent
 object RemoteRepositoryModule {
 
     @Provides
-    fun placesPredictionRepository(placesClient: PlacesClient): PlacesPredictionRepository =
+    fun placesPredictionRepository(
+        placesClient: PlacesClient,
+    ): PlacesPredictionRepository =
         GooglePlacesClientRepository(placesClient)
 
     @Provides
