@@ -1,14 +1,15 @@
 package com.arturborowy.pins.ui.composable.map
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.screen.map.MapMarkerItem
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun Map(
@@ -17,9 +18,20 @@ fun Map(
     cameraLatitude: Double,
     cameraLongitude: Double,
 ) {
-    val cameraLatLng = remember { LatLng(cameraLatitude, cameraLongitude) }
-    val cameraPosition =
-        remember { CameraPositionState(CameraPosition.fromLatLngZoom(cameraLatLng, zoom)) }
+    val cameraPosition = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(cameraLatitude, cameraLongitude), zoom)
+    }
+
+    LaunchedEffect(cameraLatitude, cameraLongitude) {
+        cameraPosition.move(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    cameraLatitude,
+                    cameraLongitude
+                ), zoom
+            )
+        )
+    }
 
     GoogleMap(
         cameraPositionState = cameraPosition,
