@@ -15,4 +15,9 @@ class BottomNavigationBarRobot(
         composeTestRule.onNodeWithContentDescription(BottomNavItem.SETTINGS.name)
             .performClick()
     }
+
+    fun openTripListScreen() {
+        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name)
+            .performClick()
+    }
 }
