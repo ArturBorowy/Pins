@@ -39,8 +39,8 @@ interface NavigationTarget {
         }
     }
 
-    object Licenses : NavigationTarget {
-        override val label = "Licenses"
+    object Licences : NavigationTarget {
+        override val label = "Licences"
     }
 
     object ADD_TRIP {

@@ -1,4 +1,4 @@
-package com.arturborowy.pins.screen.settings.licenses
+package com.arturborowy.pins.screen.settings.licences
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +26,7 @@ import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
-fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
+fun LicencesScreen(viewModel: LicencesViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
     val state by viewModel.state.collectAsState()
@@ -43,9 +43,9 @@ fun LicensesScreen(viewModel: LicensesViewModel = hiltViewModel()) {
         item { Spacer(Modifier.height(BrandTheme.spacing.cardPadding)) }
 
         item {
-            PageTitle(text = stringResource(R.string.Licenses_header))
+            PageTitle(text = stringResource(R.string.licences_header))
         }
-        items(state.Licenses) {
+        items(state.licences) {
             LicenceItem(it.name, it.products, it.content)
         }
 

@@ -1,22 +1,18 @@
-package com.arturborowy.pins.screen.main
+package com.arturborowy.pins.screen.main.settings
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import com.arturborowy.pins.BaseComposeTest
-import com.arturborowy.pins.BuildConfig
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
+import com.arturborowy.pins.screen.BottomNavigationBarRobot
+import com.arturborowy.pins.screen.main.MainActivity
+import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Test
 
 @UninstallModules(SystemAbstractionModule::class)
-@OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
 class SettingsScreenTest : BaseComposeTest<MainActivity>() {
 
@@ -33,9 +29,12 @@ class SettingsScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isVersionNumberCorrect_whenUserIsOnSettingsScreen() {
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.SETTINGS.name)
-            .performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openSettingsScreen()
+        }
 
-        composeTestRule.onNodeWithText(BuildConfig.VERSION_NAME).assertIsDisplayed()
+        with(SettingsScreenRobot(composeTestRule)) {
+            checkIfVersionNumberIsCorrect()
+        }
     }
 }
