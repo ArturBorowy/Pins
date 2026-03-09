@@ -18,8 +18,17 @@ class MapScreenRobot(
             .performClick()
     }
 
+    fun clickSingleStopButton() {
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop).performClick()
+    }
+
     fun checkAddTripButtonsAreDisplayed() {
         composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop).assertIsDisplayed()
         composeTestRule.onNodeWithText(R.string.add_trip_btn_multi_stop).assertIsDisplayed()
+    }
+
+    fun checkInternetUnavailableErrorIsDisplayed() {
+        composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)
+            .assertIsDisplayed()
     }
 }

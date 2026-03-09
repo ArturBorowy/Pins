@@ -1,14 +1,14 @@
 package com.arturborowy.pins.screen.internetunavailable
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.performClick
 import com.arturborowy.pins.BaseComposeTest
-import com.arturborowy.pins.R
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
+import com.arturborowy.pins.screen.BottomNavigationBarRobot
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
+import com.arturborowy.pins.screen.main.TripListScreenRobot
+import com.arturborowy.pins.screen.main.map.MapScreenRobot
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -27,28 +27,34 @@ class InternetUnavailableTest : BaseComposeTest<MainActivity>() {
     @JvmField
     val localeRepository = MockSystemAbstractionModule.localeRepository
 
-    @Test
-    fun isNetworkUnavailableErrorShown_whenAddTripFabIsClicked_onTripList() {
-        goToSingleStopTripAddingViaTripListScreen()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun isNetworkUnavailableErrorShown_whenAddTripFabIsClicked_onMap() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)
-            .assertIsDisplayed()
-    }
-
     @BindValue
     @JvmField
     val networkStateRepository = mockk<NetworkStateRepository>().apply {
         every { hasInternet } returns MutableStateFlow(false)
+    }
+
+    @Test
+    fun isNetworkUnavailableErrorShown_whenAddTripFabIsClicked_onTripList() {
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
+
+        with(TripListScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+        }
+
+        with(MapScreenRobot(composeTestRule)) {
+            clickSingleStopButton()
+            checkInternetUnavailableErrorIsDisplayed()
+        }
+    }
+
+    @Test
+    fun isNetworkUnavailableErrorShown_whenAddTripFabIsClicked_onMap() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            checkInternetUnavailableErrorIsDisplayed()
+        }
     }
 }

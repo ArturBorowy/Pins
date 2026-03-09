@@ -1,16 +1,11 @@
 package com.arturborowy.pins.screen.main
 
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.performClick
 import com.arturborowy.pins.BaseComposeTest
-import com.arturborowy.pins.R
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
-import com.arturborowy.pins.ui.composable.TripViewTag
+import com.arturborowy.pins.screen.BottomNavigationBarRobot
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -34,24 +29,13 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun headerHasEllipsize_whenTripListIsEmpty() {
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
 
-        composeTestRule.waitUntilExactlyOneExists(
-            hasText(R.string.trip_list_header_empty),
-            5000L
-        )
-
-        //headerHasEllipsize_whenTripListIsEmpty
-        composeTestRule.onNodeWithText(R.string.trip_list_header_empty)
-            .assertIsDisplayed()
-
-        //footerIsDisplayed_whenTripListIsEmpty
-        composeTestRule.onNodeWithText(R.string.trip_list_footer_empty)
-            .assertIsDisplayed()
-
-        //addTripBtnIsDisplayed_whenTripListIsEmpty
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .assertIsDisplayed()
+        with(TripListScreenRobot(composeTestRule)) {
+            checkEmptyStateIsDisplayed()
+        }
     }
 
     @Test
@@ -59,19 +43,22 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
         goToSingleStopTripDetailsInput()
         inputSingleStopTripDetails()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
 
-        composeTestRule.waitUntilExactlyOneExists(hasTestTag(TripViewTag.TRIP_DATES), 5000L)
-
-        composeTestRule.onNodeWithText(R.string.trip_list_header)
-            .assertIsDisplayed()
+        with(TripListScreenRobot(composeTestRule)) {
+            checkNonEmptyHeaderIsDisplayed()
+        }
     }
 
     @Test
     fun singleStopTripOnListHasCorrectName_whenIsAddedViaTripListScreen() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
 
         //tripOnListHasCorrectName_whenIsAddedViaTripListScreen
         assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
@@ -91,7 +78,9 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
         goToSingleStopTripDetailsInput()
         inputSingleStopTripDetails()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
 
         //tripOnListHasCorrectName_whenIsAddedViaMapScreen
         assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
@@ -110,7 +99,9 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
     fun multiStopTripOnListHasCorrectName_whenIsAddedViaTripListScreen() {
         addMultiStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
 
         //tripOnListHasCorrectName_whenIsAddedViaTripListScreen
         assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
@@ -128,7 +119,9 @@ class TripListScreenTest : BaseComposeTest<MainActivity>() {
         goToMultiStopTripDetailsInput()
         inputMultiStopTripDetails()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openTripListScreen()
+        }
 
         //tripOnListHasCorrectName_whenIsAddedViaMapScreen
         assertIsTripNameOnTripListCorrect(MOCK_TRIP_NAME)
