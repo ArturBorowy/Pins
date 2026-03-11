@@ -1,5 +1,7 @@
 package com.arturborowy.pins.screen.main.map
 
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
@@ -18,6 +20,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.platform.app.InstrumentationRegistry
 import com.arturborowy.pins.R
 import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
 import com.arturborowy.pins.screen.TestRobot
@@ -208,6 +211,60 @@ class MapScreenRobot(
     fun checkSaveButtonDoesNotExist() {
         composeTestRule.onNodeWithText(getString(R.string.create_trip_btn_confirm))
             .assertDoesNotExist()
+    }
+
+    // Multi-stop specific
+
+    fun clickMultiStopButton() {
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_multi_stop).performClick()
+    }
+
+    fun checkMultiStopButtonIsDisplayed() {
+        composeTestRule.onNodeWithText(R.string.add_trip_btn_multi_stop).assertIsDisplayed()
+    }
+
+    fun clickNextStopButton() {
+        composeTestRule.onNodeWithText(getString(R.string.create_trip_btn_next_stop)).performClick()
+    }
+
+    fun checkNextStopButtonIsDisplayed() {
+        composeTestRule.onNodeWithText(getString(R.string.create_trip_btn_next_stop))
+            .assertIsDisplayed()
+    }
+
+    fun checkNextStopButtonDoesNotExist() {
+        composeTestRule.onNodeWithText(getString(R.string.create_trip_btn_next_stop))
+            .assertDoesNotExist()
+    }
+
+    fun checkNextStopButtonIsEnabled() {
+        composeTestRule.onNodeWithText(getString(R.string.create_trip_btn_next_stop))
+            .assertIsEnabled()
+    }
+
+    fun checkNextStopButtonIsNotEnabled() {
+        composeTestRule.onNodeWithText(getString(R.string.create_trip_btn_next_stop))
+            .assertIsNotEnabled()
+    }
+
+    fun waitForKeyboard() {
+        composeTestRule.waitUntil(5000L) {
+            val inputMethodManager = InstrumentationRegistry.getInstrumentation()
+                .targetContext
+                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.isAcceptingText
+        }
+    }
+
+    fun inputAlternativeAddressAndConfirm() {
+        inputAddressSearchText(MockPlacesPredictionRepository.ALTERNATIVE_EXPECTED_ADDRESS_PREDICTION_STRING)
+        composeTestRule.waitUntilExactlyOneExists(
+            hasText(MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS[0].label),
+            5000L
+        )
+        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS[0].label)
+            .performClick()
+        clickAddressConfirmButton()
     }
 
     companion object {
