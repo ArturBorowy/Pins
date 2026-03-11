@@ -71,6 +71,7 @@ android {
 dependencies {
     implementation(project(":flags"))
     implementation(project(":brand-design-system"))
+    implementation(project(":data"))
 
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
