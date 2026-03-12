@@ -15,7 +15,7 @@ fun PreviewTheme(
     composable: @Composable () -> Unit,
 ) {
     Column {
-        BrandTheme(false, dynamicColor = false, content = {
+        BrandTheme(false, useDynamicColors = false, content = {
             Box(
                 Modifier
                     .background(BrandTheme.colorScheme.background)
@@ -25,7 +25,7 @@ fun PreviewTheme(
             }
         })
         Spacer(Modifier.height(BrandTheme.spacing.previewPadding))
-        BrandTheme(true, dynamicColor = false, content = {
+        BrandTheme(true, useDynamicColors = false, content = {
             Box(
                 Modifier
                     .background(BrandTheme.colorScheme.background)
