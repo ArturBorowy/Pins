@@ -19,7 +19,9 @@ fun MainScaffold(navigator: Navigator) {
     val navController = rememberNavController()
 
     val backStackEntry = navController.currentBackStackEntryAsState()
-    BrandTheme {
+    BrandTheme(
+
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxSize(),

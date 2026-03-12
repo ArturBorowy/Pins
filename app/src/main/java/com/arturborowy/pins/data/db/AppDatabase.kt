@@ -9,7 +9,8 @@ import com.arturborowy.pins.data.trip.TripEntity
 
 @Database(
     entities = [TripEntity::class, StopEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun tripDao(): TripDao

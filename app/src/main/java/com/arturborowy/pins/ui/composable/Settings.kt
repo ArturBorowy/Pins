@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.brand.designsystem.typography.titleSmallEmphasized
-import com.arturborowy.pins.screen.settings.SettingsViewModel
+import com.arturborowy.pins.data.AppVisualTheme
 
 @Composable
 fun SettingSectionLabel(text: String) {
@@ -89,19 +89,19 @@ fun SettingItem(
 
 @Composable
 fun SettingThemeSelector(
-    selectedTheme: SettingsViewModel.ThemeOption,
-    onThemeSelected: (SettingsViewModel.ThemeOption) -> Unit
+    selectedTheme: AppVisualTheme,
+    onThemeSelected: (AppVisualTheme) -> Unit
 ) {
     data class ThemeCard(
-        val option: SettingsViewModel.ThemeOption,
+        val option: AppVisualTheme,
         val label: String,
         val icon: ImageVector
     )
 
     val options = listOf(
-        ThemeCard(SettingsViewModel.ThemeOption.LIGHT, "Light", Icons.Default.WbSunny),
-        ThemeCard(SettingsViewModel.ThemeOption.DARK, "Dark", Icons.Default.DarkMode),
-        ThemeCard(SettingsViewModel.ThemeOption.SYSTEM, "System", Icons.Default.DesktopWindows),
+        ThemeCard(AppVisualTheme.LIGHT, "Light", Icons.Default.WbSunny),
+        ThemeCard(AppVisualTheme.DARK, "Dark", Icons.Default.DarkMode),
+        ThemeCard(AppVisualTheme.FOLLOW_SYSTEM, "System", Icons.Default.DesktopWindows),
     )
 
     Row(

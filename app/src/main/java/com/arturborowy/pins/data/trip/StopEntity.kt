@@ -3,6 +3,7 @@ package com.arturborowy.pins.data.trip
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.arturborowy.pins.domain.Country
 
@@ -13,7 +14,8 @@ import com.arturborowy.pins.domain.Country
         childColumns = arrayOf("tripId"),
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index("tripId")]
 )
 data class StopEntity(
     val locationName: String,
