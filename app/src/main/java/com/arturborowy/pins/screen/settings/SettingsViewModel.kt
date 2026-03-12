@@ -25,6 +25,18 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun onThemeSelected(theme: ThemeOption) { /* TODO */
+    }
+
+    fun onDynamicColorsToggled(enabled: Boolean) { /* TODO */
+    }
+
+    enum class ThemeOption { LIGHT, DARK, SYSTEM }
+
     @Immutable
-    data class State(val versionNumber: String)
+    data class State(
+        val versionNumber: String,
+        val selectedTheme: ThemeOption = ThemeOption.SYSTEM,
+        val isDynamicColorsEnabled: Boolean = false
+    )
 }
