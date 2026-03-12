@@ -18,3 +18,4 @@ rootProject.name = "Pins"
 include(":app")
 include(":flags")
 include(":brand-design-system")
+include(":data")

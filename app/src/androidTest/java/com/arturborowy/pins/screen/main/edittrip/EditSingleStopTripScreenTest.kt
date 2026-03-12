@@ -1,32 +1,19 @@
 package com.arturborowy.pins.screen.main.edittrip
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextReplacement
 import com.arturborowy.pins.BaseComposeTest
-import com.arturborowy.pins.R
 import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
-import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
-import com.arturborowy.pins.ui.composable.TripViewTag
+import com.arturborowy.pins.screen.main.map.MapScreenRobot
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Test
 
 @UninstallModules(SystemAbstractionModule::class)
-@OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
 class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
@@ -43,48 +30,33 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
 
     @Test
     fun isTripNameCorrect_onEditingScreen() {
-        addSingleStopTripViaTripListAndGoToEdit()
+        addSingleStopTripViaTripList()
 
-        //isTripNameCorrect_onEditingScreen
-        composeTestRule.waitUntilExactlyOneExists(hasText(MOCK_TRIP_NAME), 5000L)
-        composeTestRule.onNodeWithText(MOCK_TRIP_NAME)
-            .assertIsDisplayed()
-
-        //isPlaceNameCorrect_onEditingScreen
-        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
-            .assertIsDisplayed()
-
-        //isArrivalDateCorrect_onEditingScreen
-        composeTestRule.onNodeWithText("10 Jun 2017")
-            .assertIsDisplayed()
-
-        //addTripViaTripListAndGoToEdit
-        composeTestRule.onNodeWithText("30 Nov 2020")
-            .assertIsDisplayed()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+            checkTripNameIsDisplayed(EditTripScreenRobot.MOCK_TRIP_NAME)
+            checkPlaceNameIsDisplayed(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
+            checkDateIsDisplayed("10 Jun 2017")
+            checkDateIsDisplayed("30 Nov 2020")
+        }
     }
 
     @Test
     fun isTripChangedOnList_whenEdited() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+            waitForDateText("10 Jun 2017")
+            replaceTripName("newTripName")
+            inputDate("10 Jun 2017", 2000, 1, 1)
+            inputDate("30 Nov 2020", 2000, 4, 10)
+            clickSaveChangesButton()
+        }
 
-        chooseTripToEdit()
-
-        composeTestRule.waitUntilExactlyOneExists(hasText("10 Jun 2017"), 5000L)
-
-        val newTripName = "newTripName"
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .performTextReplacement(newTripName)
-
-        inputDate("10 Jun 2017", 2000, 1, 1)
-        inputDate("30 Nov 2020", 2000, 4, 10)
-
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
-            .performClick()
-
-        assertIsTripNameOnTripListCorrect(newTripName)
+        assertIsTripNameOnTripListCorrect("newTripName")
         assertAreDatesOnTripListCorrect("01 Jan 2000 - 10 Apr 2000")
     }
 
@@ -92,69 +64,47 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
     fun isAddressCleared_whenBackIsClicked() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+        }
 
-        chooseTripToEdit()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+        }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            waitForSaveChangesButtonCount(0)
+            checkTripNameFieldDoesNotExist()
+            checkArrivalDateFieldDoesNotExist()
+            checkDepartureDateFieldDoesNotExist()
+            checkDeleteButtonDoesNotExist()
+            checkSaveChangesButtonDoesNotExist()
+        }
 
-        composeTestRule.waitUntilNodeCount(
-            hasText(getString(R.string.edit_trip_btn_save_changes)),
-            0,
-            5000L
-        )
-
-        //isAddressCleared_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .assertTextContains(getString(R.string.add_trip_hint_name))
-
-        //isBackShown_evenWhenBackIsClicked
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .assertIsDisplayed()
-
-        //isTripNameHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .assertDoesNotExist()
-
-        //isArrivalDateHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date)
-            .assertDoesNotExist()
-
-        //isDepartureDateHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date)
-            .assertDoesNotExist()
-
-        //isDeleteTripBtnHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete)
-            .assertDoesNotExist()
-
-        //isSaveChangesBtnHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
-            .assertDoesNotExist()
+        with(MapScreenRobot(composeTestRule)) {
+            checkAddressHintContainsHintText()
+            checkAddressEditBackIsDisplayed()
+        }
     }
 
     @Test
     fun arePredictionsShown_whenPlaceNameIsProvided() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+        }
 
-        chooseTripToEdit()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-
-        composeTestRule.onNodeWithText(MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName)
-            .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.waitUntilExactlyOneExists(
-            hasText(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label),
-            5000L
-        )
-        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
-            composeTestRule.onNodeWithText(it.label)
-                .assertIsDisplayed()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+            replaceAddressFromCurrentPlaceName(
+                MockPlacesPredictionRepository.FETCHED_PLACE_DETAILS.locationName,
+                MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING
+            )
+            waitForPredictions(MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label)
+            checkPredictionsAreDisplayed()
         }
     }
 
@@ -162,28 +112,17 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
     fun isPlaceConfirmShown_whenPredictionIsChosen() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+        }
 
-        chooseTripToEdit()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        //isPlaceConfirmShown_whenPredictionIsChosen
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
-            .assertIsDisplayed()
-
-        //arePredictionsHidden_whenPredictionIsChosen
-        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
-            composeTestRule.onNodeWithText(it.label)
-                .assertDoesNotExist()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+            replaceAddressSearchText(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            clickFirstPrediction()
+            checkAddressConfirmButtonIsDisplayed()
+            checkPredictionsAreNotDisplayed()
         }
     }
 
@@ -191,142 +130,97 @@ class EditSingleStopTripScreenTest : BaseComposeTest<MainActivity>() {
     fun tripDoesNotAppearOnList_whenDeleted() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
-        chooseTripToEdit()
-
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).performClick()
-
-        composeTestRule.onNodeWithTag(TripViewTag.TRIP_DATES)
-            .assertDoesNotExist()
-        composeTestRule.onNodeWithTag(TripViewTag.TRIP_NAME)
-            .assertDoesNotExist()
-        composeTestRule.onNodeWithTag(TripViewTag.TRIP_PLACE)
-            .assertDoesNotExist()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+            clickDeleteButton()
+            checkTripDatesTagDoesNotExist()
+            checkTripNameTagDoesNotExist()
+            checkTripPlaceTagDoesNotExist()
+        }
     }
 
     @Test
     fun isTripNameShown_whenPlaceConfirmIsClicked() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+        }
 
-        chooseTripToEdit()
-        editPlace()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+            replaceAddressSearchText(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            clickFirstPrediction()
+            clickAddressConfirmButton()
+        }
 
-        //isTripNameShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(MOCK_TRIP_NAME)
-            .assertIsDisplayed()
+        with(EditTripScreenRobot(composeTestRule)) {
+            checkTripNameIsDisplayed(EditTripScreenRobot.MOCK_TRIP_NAME)
+            checkDeleteButtonIsDisplayed()
+            checkSaveChangesButtonIsDisplayed()
+        }
 
-        //isBackShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .assertIsDisplayed()
-
-        //isDepartureDateShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).assertIsDisplayed()
-
-        //isArrivalDateShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).assertIsDisplayed()
-
-        //isDeleteTripBtnShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).assertIsDisplayed()
-
-        //isSaveChangesBtnShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes).assertIsDisplayed()
+        with(MapScreenRobot(composeTestRule)) {
+            checkAddressEditBackIsDisplayed()
+            checkArrivalDateHintIsDisplayed()
+            checkDepartureDateHintIsDisplayed()
+        }
     }
 
     @Test
     fun isTripNameShown_whenBackIsClicked() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+        }
 
-        chooseTripToEdit()
-        editPlace()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+            replaceAddressSearchText(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            clickFirstPrediction()
+            clickAddressConfirmButton()
+        }
 
-        //isTripNameShown_whenBackIsClicked
-        composeTestRule.onNodeWithText(MOCK_TRIP_NAME)
-            .assertIsDisplayed()
+        with(EditTripScreenRobot(composeTestRule)) {
+            checkTripNameIsDisplayed(EditTripScreenRobot.MOCK_TRIP_NAME)
+            checkDeleteButtonIsDisplayed()
+        }
 
-        //isBackShown_whenBackIsClicked
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .assertIsDisplayed()
-
-        //isDepartureDateShown_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).assertIsDisplayed()
-
-        //isArrivalDateShown_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).assertIsDisplayed()
-
-        //isDeleteTripBtnShown_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_delete).assertIsDisplayed()
+        with(MapScreenRobot(composeTestRule)) {
+            checkAddressEditBackIsDisplayed()
+            checkArrivalDateHintIsDisplayed()
+            checkDepartureDateHintIsDisplayed()
+        }
     }
 
     @Test
     fun isSaveChangesBtnShown_whenBackIsClickedTwice() {
         addSingleStopTripViaTripList()
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            goToTripList()
+            chooseTripToEdit()
+        }
 
-        chooseTripToEdit()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+        }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-        composeTestRule.waitUntilNodeCount(
-            hasText(getString(R.string.edit_trip_btn_save_changes)),
-            0,
-            5000L
-        )
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-        composeTestRule.waitUntilExactlyOneExists(
-            hasText(getString(R.string.edit_trip_btn_save_changes)),
-            5000L
-        )
-        composeTestRule.onNodeWithText(R.string.edit_trip_btn_save_changes)
-            .assertIsDisplayed()
-    }
+        with(EditTripScreenRobot(composeTestRule)) {
+            waitForSaveChangesButtonCount(0)
+        }
 
-    private fun addSingleStopTripViaTripListAndGoToEdit() {
-        addSingleStopTripViaTripList()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddressEditBack()
+        }
 
-        composeTestRule.onNodeWithContentDescription(BottomNavItem.PIN_LIST.name).performClick()
-
-        chooseTripToEdit()
-    }
-
-    private fun chooseTripToEdit() {
-        val expectedContentDescription = resourcesRepository.getString(
-            R.string.trip_list_cd_edit,
-            MOCK_TRIP_NAME
-        )
-
-        composeTestRule.waitUntilExactlyOneExists(
-            hasContentDescription(expectedContentDescription),
-            5000L
-        )
-
-        composeTestRule.onNodeWithContentDescription(expectedContentDescription)
-            .performClick()
-
-        composeTestRule.waitUntilExactlyOneExists(
-            hasText(getString(R.string.edit_trip_btn_save_changes)),
-            5000L
-        )
-    }
-
-    private fun editPlace() {
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextReplacement(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
-            .performClick()
+        with(EditTripScreenRobot(composeTestRule)) {
+            waitForSaveChangesButtonToAppear()
+            checkSaveChangesButtonIsDisplayed()
+        }
     }
 }

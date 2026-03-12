@@ -1,10 +1,10 @@
-package com.arturborowy.pins.screen.settings.licenses
+package com.arturborowy.pins.screen.settings.licences
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.arturborowy.pins.domain.licences.Licence
-import com.arturborowy.pins.domain.licences.LicensesInteractor
+import com.arturborowy.pins.domain.licences.LicencesInteractor
 import com.arturborowy.pins.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LicensesViewModel @Inject constructor(
-    private val LicensesInteractor: LicensesInteractor,
+class LicencesViewModel @Inject constructor(
+    private val licencesInteractor: LicencesInteractor,
 ) : BaseViewModel() {
 
     val state = MutableStateFlow(State())
@@ -22,10 +22,10 @@ class LicensesViewModel @Inject constructor(
         super.onCreate(owner)
 
         viewModelScope.launch {
-            state.emit(state.value.copy(Licenses = LicensesInteractor.getLicenses()))
+            state.emit(state.value.copy(licences = licencesInteractor.getLicences()))
         }
     }
 
     @Immutable
-    data class State(val Licenses: List<Licence> = listOf())
+    data class State(val licences: List<Licence> = listOf())
 }

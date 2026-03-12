@@ -7,8 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasContentDescription
@@ -93,9 +91,6 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
         @StringRes textResId: Int
     ) =
         onNodeWithText(getString(textResId))
-
-    protected fun SemanticsNodeInteraction.assertTextContains(@StringRes textResId: Int) =
-        assertTextContains(getString(textResId))
 
     protected fun <
             ActivityT : ComponentActivity,
@@ -306,13 +301,6 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
             hasContentDescription(R.string.main_bottom_nav_label_add),
             5000L
         )
-    }
-
-    protected fun SemanticsNodeInteractionCollection.assertExist(): SemanticsNodeInteractionCollection {
-        fetchSemanticsNodes().forEachIndexed { index, _ ->
-            get(index).assertExists()
-        }
-        return this
     }
 
     protected fun isKeyboardShown(): Boolean {

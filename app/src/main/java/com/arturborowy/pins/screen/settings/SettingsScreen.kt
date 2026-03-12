@@ -48,8 +48,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
                 .fillMaxWidth(),
         ) {
             SettingItem(
-                stringResource(R.string.settings_item_Licenses),
-                onClick = viewModel::onLicensesClick,
+                stringResource(R.string.settings_item_licences),
+                onClick = viewModel::onLicencesClick,
             )
             SettingItem(
                 stringResource(R.string.settings_item_version),
@@ -68,7 +68,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         ) {
             SettingItem(
                 stringResource(R.string.settings_item_rate_on_store),
-                onClick = viewModel::onLicensesClick,
+                onClick = viewModel::onLicencesClick,
                 showDivider = false
             )
         }

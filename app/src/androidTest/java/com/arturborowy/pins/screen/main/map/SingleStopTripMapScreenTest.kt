@@ -1,22 +1,7 @@
 package com.arturborowy.pins.screen.main.map
 
-import android.widget.DatePicker
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsEnabled
-import androidx.compose.ui.test.assertIsFocused
-import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performTextReplacement
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.PickerActions
-import androidx.test.espresso.matcher.ViewMatchers
 import com.arturborowy.pins.BaseComposeTest
-import com.arturborowy.pins.R
-import com.arturborowy.pins.data.remote.places.MockPlacesPredictionRepository
 import com.arturborowy.pins.data.system.NetworkStateRepository
 import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.screen.main.MainActivity
@@ -24,7 +9,6 @@ import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.hamcrest.Matchers
 import org.junit.Test
 
 @UninstallModules(SystemAbstractionModule::class)
@@ -43,290 +27,192 @@ class SingleStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
     override val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun isAddTripFabHidden_whenAddTripFabIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        //isAddTripFabHidden_whenAddTripFabIsClicked
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .assertDoesNotExist()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
-
-        //isSearchBarShown_whenAddSingleStopTripIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertIsDisplayed()
-
-        //isKeyboardShown_whenAddTripFabIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .assertIsFocused()
+    fun isSearchBarDisplayedAndFocused_whenSingleStopBtnIsClicked() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            checkAddTripFabDoesNotExist()
+            clickSingleStopButton()
+            checkSearchBarIsDisplayed()
+            checkSearchBarIsFocused()
+        }
     }
 
     @Test
-    fun isSearchBarHidden_whenAddressEditBackIsClicked() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-
-        //isSearchBarHidden_whenAddressEditBackIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name).assertDoesNotExist()
-
-        //isAddTripFabShown_whenAddressEditBackIsClicked
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .assertIsDisplayed()
+    fun isAddTripFabDisplayed_whenAddressEditBackIsClicked() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            clickAddressEditBack()
+            checkSearchBarDoesNotExist()
+            checkAddTripFabIsDisplayed()
+        }
     }
 
     @Test
     fun arePredictionsShown_whenTextIsProvided() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
-            composeTestRule.onNodeWithText(it.label)
-                .assertExists()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressSearchText()
+            checkPredictionsAreDisplayed()
         }
     }
 
     @Test
     fun arePredictionsHidden_whenPredictionIsChosen() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
-
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        //arePredictionsHidden_whenPredictionIsChosen
-        MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS.forEach {
-            composeTestRule.onNodeWithText(it.label)
-                .assertDoesNotExist()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressSearchText()
+            clickFirstPrediction()
+            checkPredictionsAreNotDisplayed()
+            checkAddressConfirmButtonIsDisplayed()
         }
-
-        //isConfirmBtnShown_whenPredictionIsChosen
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm)
-            .assertIsDisplayed()
     }
 
     @Test
-    fun isTripNameCleared_whenAddressEditBackIsClickedTwice() {
-        goToSingleStopTripDetailsInput()
-        inputSingleStopTripDetails(confirm = false)
+    fun isFormCleared_whenAddressEditBackIsClickedTwice() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
 
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            clickAddressEditBack()
 
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
+            inputAddressSearchText()
+            clickFirstPrediction()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
+            clickAddressEditBack()
 
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            clickAddTripFab()
+            clickSingleStopButton()
 
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
-
-        //isTripNameCleared_whenAddressEditBackIsClickedTwice
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .assertIsDisplayed()
-
-        //isDepartureDateCleared_whenAddressEditBackIsClickedTwice
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date)
-            .assertIsDisplayed()
-
-        //isArrivalDateCleared_whenAddressEditBackIsClickedTwice
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date)
-            .assertIsDisplayed()
+            inputAddressAndConfirm()
+            checkTripNameHintIsDisplayed()
+            checkDepartureDateHintIsDisplayed()
+            checkArrivalDateHintIsDisplayed()
+        }
     }
 
     @Test
-    fun isTripNameCleared_whenCancelTripIsClicked() {
-        goToSingleStopTripDetailsInput()
-        inputSingleStopTripDetails(confirm = false)
+    fun isFormCleared_whenCancelTripIsClicked() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
 
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel)
-            .performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
 
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_name)
-            .performTextInput(MockPlacesPredictionRepository.EXPECTED_ADDRESS_PREDICTION_STRING)
+            clickCancelButton()
 
-        composeTestRule.onNodeWithText(
-            MockPlacesPredictionRepository.FETCHED_ADDRESS_PREDICTIONS[0].label
-        ).performClick()
+            clickAddTripFab()
+            clickSingleStopButton()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_btn_confirm).performClick()
-
-        //isTripNameCleared_whenCancelTripIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .assertIsDisplayed()
-
-        //isDepartureDateCleared_whenCancelTripIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date)
-            .assertIsDisplayed()
-
-        //isArrivalDateCleared_whenCancelTripIsClicked
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date)
-            .assertIsDisplayed()
+            inputAddressAndConfirm()
+            checkTripNameHintIsDisplayed()
+            checkDepartureDateHintIsDisplayed()
+            checkArrivalDateHintIsDisplayed()
+        }
     }
 
     @Test
-    fun isSaveTripBtnDisabled_whenTripNameIsNotProvided() {
-        goToSingleStopTripDetailsInput()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2017, 6, 10))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2020, 11, 30))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsNotEnabled()
+    fun isSaveTripBtnNotEnabled_whenTripNameIsNotProvided() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
+            checkSaveButtonIsNotEnabled()
+        }
     }
 
     @Test
-    fun isSaveTripBtnDisabled_whenTripNameIsErased() {
-        goToSingleStopTripDetailsInput()
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .performTextInput(MOCK_TRIP_NAME)
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2017, 6, 10))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2020, 11, 30))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .performTextReplacement("")
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsNotEnabled()
+    fun isSaveTripBtnNotEnabled_whenTripNameIsErased() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
+            clearTripName()
+            checkSaveButtonIsNotEnabled()
+        }
     }
 
     @Test
-    fun isSaveTripBtnDisabled_whenArrivalDateNotProvided() {
-        goToSingleStopTripDetailsInput()
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .performTextInput(MOCK_TRIP_NAME)
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2020, 11, 30))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsNotEnabled()
+    fun isSaveTripBtnNotEnabled_whenArrivalDateNotProvided() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputDepartureDate(2020, 11, 30)
+            checkSaveButtonIsNotEnabled()
+        }
     }
 
     @Test
-    fun isSaveTripBtnDisabled_whenDepartureDateIsNotProvided() {
-        goToSingleStopTripDetailsInput()
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .performTextInput(MOCK_TRIP_NAME)
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2017, 6, 10))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsNotEnabled()
+    fun isSaveTripBtnNotEnabled_whenDepartureDateIsNotProvided() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            checkSaveButtonIsNotEnabled()
+        }
     }
 
     @Test
     fun isSaveTripBtnEnabled_whenTripNameArrivalDepartureDateIsProvided() {
-        goToSingleStopTripDetailsInput()
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_trip_name)
-            .performTextInput(MOCK_TRIP_NAME)
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_arrival_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2017, 6, 10))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.add_trip_hint_departure_date).performClick()
-
-        Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker::class.qualifiedName)))
-            .perform(PickerActions.setDate(2020, 11, 30))
-        Espresso.onView(ViewMatchers.withId(android.R.id.button1)).perform(ViewActions.click())
-
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsEnabled()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
+            checkSaveButtonIsEnabled()
+        }
     }
 
     @Test
     fun isCancelTripBtnShown_whenPlaceConfirmIsClicked() {
-        goToSingleStopTripDetailsInput()
-
-        //isCancelTripBtnShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel).assertIsDisplayed()
-
-        //isSaveTripBtnShown_whenPlaceConfirmIsClicked
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertIsDisplayed()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            checkCancelButtonIsDisplayed()
+            checkSaveButtonIsDisplayed()
+        }
     }
 
     @Test
     fun isCancelTripBtnHidden_whenBackIsClicked() {
-        goToSingleStopTripDetailsInput()
-
-        composeTestRule.onNodeWithContentDescription(R.string.add_trip_cd_address_editing_back)
-            .performClick()
-
-        //isCancelTripBtnHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_cancel).assertDoesNotExist()
-
-        //isSaveTripBtnHidden_whenBackIsClicked
-        composeTestRule.onNodeWithText(R.string.create_trip_btn_confirm).assertDoesNotExist()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            clickAddressEditBack()
+            checkCancelButtonDoesNotExist()
+            checkSaveButtonDoesNotExist()
+        }
     }
 
     @Test
     fun isNetworkUnavailableErrorNotShown_whenAddTripFabIsClicked_whileInternetAvailable() {
-        composeTestRule.onNodeWithContentDescription(R.string.main_bottom_nav_label_add)
-            .performClick()
-        composeTestRule.onNodeWithText(R.string.add_trip_btn_single_stop)
-            .performClick()
-
-        composeTestRule.onNodeWithText(R.string.add_trip_error_internet_unavailable)
-            .assertDoesNotExist()
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            checkInternetUnavailableErrorDoesNotExist()
+        }
     }
 }
