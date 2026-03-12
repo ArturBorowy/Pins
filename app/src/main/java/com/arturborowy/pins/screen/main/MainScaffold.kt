@@ -19,7 +19,6 @@ fun MainScaffold(navigator: Navigator) {
     val navController = rememberNavController()
 
     val backStackEntry = navController.currentBackStackEntryAsState()
-
     BrandTheme {
         Surface(
             modifier = Modifier

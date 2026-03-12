@@ -4,12 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.utils.observeLifecycleEvents
@@ -18,7 +18,7 @@ import com.arturborowy.pins.utils.observeLifecycleEvents
 fun TripsListScreen(viewModel: TripsListViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
