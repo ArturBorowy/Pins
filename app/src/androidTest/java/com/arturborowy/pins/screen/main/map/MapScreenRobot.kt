@@ -8,6 +8,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -265,6 +266,29 @@ class MapScreenRobot(
         composeTestRule.onNodeWithText(MockPlacesPredictionRepository.ALTERNATIVE_FETCHED_ADDRESS_PREDICTIONS[0].label)
             .performClick()
         clickAddressConfirmButton()
+    }
+
+    fun replaceAddressFromCurrentPlaceName(currentName: String, newText: String) {
+        composeTestRule.onNodeWithText(currentName).performTextReplacement(newText)
+    }
+
+    fun replaceAddressSearchText(newText: String) {
+        composeTestRule.onNodeWithText(getString(R.string.add_trip_hint_name))
+            .performTextReplacement(newText)
+    }
+
+    fun waitForPredictions(label: String) {
+        composeTestRule.waitUntilExactlyOneExists(hasText(label), 5000L)
+    }
+
+    fun checkAddressHintContainsHintText() {
+        composeTestRule.onNodeWithText(getString(R.string.add_trip_hint_name))
+            .assertTextContains(getString(R.string.add_trip_hint_name))
+    }
+
+    fun checkAddressEditBackIsDisplayed() {
+        composeTestRule.onNodeWithContentDescription(getString(R.string.add_trip_cd_address_editing_back))
+            .assertIsDisplayed()
     }
 
     companion object {
