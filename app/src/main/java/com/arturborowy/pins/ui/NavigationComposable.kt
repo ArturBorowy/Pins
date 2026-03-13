@@ -40,7 +40,11 @@ fun NavigationComposable(
     NavHost(
         navController = navController,
         startDestination = BottomNavItem.MAP.label,
-        modifier = Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding),
+        enterTransition = { enterAnimation() },
+        exitTransition = { exitTransition() },
+        popEnterTransition = { popEnterTransition() },
+        popExitTransition = { popExitTransition() },
     ) {
         BottomNavItem.entries.forEach { screen ->
             composable(screen.name) { screen.screenComposable() }
