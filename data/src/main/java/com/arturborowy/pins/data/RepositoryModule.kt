@@ -3,10 +3,9 @@ package com.arturborowy.pins.data
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.datastore.preferences.preferencesDataStore
 import com.ultimatelogger.android.output.ALog
 import dagger.Module
 import dagger.Provides
@@ -22,18 +21,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
-    private const val USER_SETTINGS_FILE_NAME = "USER_SETTINGS_FILE_NAME"
-
     @Provides
     @Singleton
     fun userSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile(USER_SETTINGS_FILE_NAME) },
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            corruptionHandler = ReplaceFileCorruptionHandler {
-                ALog.e(it, "userSettingsDataStore corruption!")
-                emptyPreferences()
-            }
-        )
+        return context.userSettingsDataStore
     }
 }
+
+private const val USER_SETTINGS_FILE_NAME = "userSettings"
+
+private val Context.userSettingsDataStore by preferencesDataStore(
+    name = USER_SETTINGS_FILE_NAME,
+    scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+    corruptionHandler = ReplaceFileCorruptionHandler {
+        ALog.e(it, "$USER_SETTINGS_FILE_NAME DataStore corruption!")
+        emptyPreferences()
+    }
+)
