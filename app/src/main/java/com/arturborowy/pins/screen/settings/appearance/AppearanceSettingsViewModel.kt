@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AppearanceViewModel @Inject constructor(
+class AppearanceSettingsViewModel @Inject constructor(
     private val navigator: Navigator,
     private val userSettingsRepository: UserSettingsRepository
 ) : BaseViewModel() {

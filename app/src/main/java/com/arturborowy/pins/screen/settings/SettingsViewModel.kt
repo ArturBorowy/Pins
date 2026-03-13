@@ -31,7 +31,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onAppearanceClick() {
         viewModelScope.launch {
-            navigator.navigateTo(NavigationTarget.Appearance)
+            navigator.navigateTo(NavigationTarget.AppearanceSettings)
         }
     }
 

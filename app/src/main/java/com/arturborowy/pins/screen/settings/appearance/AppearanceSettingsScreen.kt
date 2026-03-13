@@ -26,7 +26,7 @@ import com.arturborowy.pins.ui.composable.settings.SettingToggleItem
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
-fun AppearanceScreen(viewModel: AppearanceViewModel = hiltViewModel()) {
+fun AppearanceSettingsScreen(viewModel: AppearanceSettingsViewModel = hiltViewModel()) {
     viewModel.observeLifecycleEvents(LocalLifecycleOwner.current.lifecycle)
 
     val state by viewModel.state.collectAsStateWithLifecycle()
