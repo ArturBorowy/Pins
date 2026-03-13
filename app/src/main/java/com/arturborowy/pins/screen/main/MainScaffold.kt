@@ -1,13 +1,17 @@
 package com.arturborowy.pins.screen.main
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,6 +37,15 @@ fun MainScaffold(
         AppVisualTheme.DARK -> true
         AppVisualTheme.LIGHT -> false
         AppVisualTheme.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !useDarkTheme
+        }
     }
 
     BrandTheme(

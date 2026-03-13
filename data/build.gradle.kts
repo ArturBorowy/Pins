@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -31,6 +33,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
+    }
 }
 
 dependencies {
@@ -39,6 +46,7 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
     implementation("com.google.dagger:hilt-android:2.59.2")
+    implementation("androidx.core:core-ktx:1.18.0")
     ksp("com.google.dagger:hilt-android-compiler:2.59.2")
 
     implementation("com.github.ArturBorowy:ultimate-logger-android:0.1.1")

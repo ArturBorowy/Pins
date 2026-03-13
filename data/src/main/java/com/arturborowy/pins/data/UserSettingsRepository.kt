@@ -9,7 +9,7 @@ class UserSettingsRepository @Inject constructor(
 
     companion object {
         private val DEFAULT_APP_VISUAL_THEME = AppVisualTheme.FOLLOW_SYSTEM
-        private const val DEFAULT_USE_DYNAMIC_COLORS = true
+        private const val DEFAULT_USE_DYNAMIC_COLORS = false
     }
 
     fun getAppVisualTheme() =
