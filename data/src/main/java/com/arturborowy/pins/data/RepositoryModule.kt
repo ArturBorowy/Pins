@@ -30,6 +30,8 @@ object RepositoryModule {
 
 private const val USER_SETTINGS_FILE_NAME = "userSettings"
 
+// We need it handled by delegate instead of factory to avoid creating new hilt component per
+// every test = multiple instances of DataStore handling same file
 private val Context.userSettingsDataStore by preferencesDataStore(
     name = USER_SETTINGS_FILE_NAME,
     scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),

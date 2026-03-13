@@ -15,6 +15,14 @@ fun AllTripsMap(markerLists: List<List<MapMarkerItem>>) {
     var randomListIndex by rememberSaveable { mutableIntStateOf(-1) }
     var randomItemIndex by rememberSaveable { mutableIntStateOf(-1) }
 
+    if (randomListIndex >= markerLists.size ||
+        (randomListIndex >= 0 && randomItemIndex >= (markerLists.getOrNull(randomListIndex)?.size
+            ?: 0))
+    ) {
+        randomListIndex = -1
+        randomItemIndex = -1
+    }
+
     if (randomListIndex < 0 && markerLists.isNotEmpty()) {
         randomListIndex = markerLists.indices.random()
         randomItemIndex = markerLists[randomListIndex].indices.randomOrNull() ?: -1

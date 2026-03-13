@@ -251,7 +251,7 @@ class SingleStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
     }
 
     @Test
-    fun isFormEmpty_whenStartingSecondTrip_afterFirstTripIsSaved() {
+    fun isFormEmpty_whenStartingAddingSecondTrip_afterFirstTripIsSaved() {
         with(MapScreenRobot(composeTestRule)) {
             clickAddTripFab()
             clickSingleStopButton()
