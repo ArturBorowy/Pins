@@ -9,6 +9,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -62,6 +63,13 @@ class MapScreenRobot(
     fun checkAddTripFabIsDisplayed() {
         composeTestRule.onNodeWithContentDescription(getString(R.string.main_bottom_nav_label_add))
             .assertIsDisplayed()
+    }
+
+    fun waitForAddTripFab() {
+        composeTestRule.waitUntilExactlyOneExists(
+            hasContentDescription(getString(R.string.main_bottom_nav_label_add)),
+            5000L
+        )
     }
 
     fun checkSearchBarIsDisplayed() {

@@ -215,4 +215,58 @@ class SingleStopTripMapScreenTest : BaseComposeTest<MainActivity>() {
             checkInternetUnavailableErrorDoesNotExist()
         }
     }
+
+    @Test
+    fun isAddTripFabDisplayed_afterFirstSingleStopTripIsSaved() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
+            clickSaveButton()
+            waitForAddTripFab()
+            checkAddTripFabIsDisplayed()
+        }
+    }
+
+    @Test
+    fun isSearchBarDisplayedAndFocused_whenSingleStopBtnIsClicked_afterFirstTripIsSaved() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
+            clickSaveButton()
+            waitForAddTripFab()
+            clickAddTripFab()
+            checkAddTripFabDoesNotExist()
+            clickSingleStopButton()
+            checkSearchBarIsDisplayed()
+            checkSearchBarIsFocused()
+        }
+    }
+
+    @Test
+    fun isFormEmpty_whenStartingSecondTrip_afterFirstTripIsSaved() {
+        with(MapScreenRobot(composeTestRule)) {
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            inputTripName()
+            inputArrivalDate(2017, 6, 10)
+            inputDepartureDate(2020, 11, 30)
+            clickSaveButton()
+            waitForAddTripFab()
+            clickAddTripFab()
+            clickSingleStopButton()
+            inputAddressAndConfirm()
+            checkTripNameHintIsDisplayed()
+            checkArrivalDateHintIsDisplayed()
+            checkDepartureDateHintIsDisplayed()
+        }
+    }
 }
