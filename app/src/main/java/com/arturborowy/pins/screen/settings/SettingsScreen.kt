@@ -20,10 +20,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
-import com.arturborowy.pins.ui.composable.SettingItem
-import com.arturborowy.pins.ui.composable.SettingSectionLabel
-import com.arturborowy.pins.ui.composable.SettingThemeSelector
-import com.arturborowy.pins.ui.composable.SettingToggleItem
+import com.arturborowy.pins.ui.composable.settings.SettingItem
+import com.arturborowy.pins.ui.composable.settings.SettingSectionLabel
+import com.arturborowy.pins.ui.composable.settings.SettingThemeSelector
+import com.arturborowy.pins.ui.composable.settings.SettingToggleItem
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
