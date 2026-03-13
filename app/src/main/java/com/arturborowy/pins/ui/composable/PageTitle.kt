@@ -22,6 +22,6 @@ fun PageTitle(
 
 @Preview
 @Composable
-fun PageTitlePreview() = PreviewTheme {
+private fun PageTitlePreview() = PreviewTheme {
     PageTitle(text = "My Trips")
 }
