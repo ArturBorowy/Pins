@@ -46,12 +46,6 @@ class AppearanceSettingsViewModel @Inject constructor(
         }
     }
 
-    fun onBackClick() {
-        viewModelScope.launch {
-            navigator.goBack()
-        }
-    }
-
     @Immutable
     data class State(
         val selectedTheme: AppVisualTheme = AppVisualTheme.FOLLOW_SYSTEM,

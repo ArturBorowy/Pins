@@ -17,6 +17,11 @@ class SettingsScreenRobot(
             .performClick()
     }
 
+    fun openAppearanceScreen() {
+        composeTestRule.onNodeWithText(R.string.settings_item_appearance)
+            .performClick()
+    }
+
     fun checkIfVersionNumberIsCorrect() {
         assertTextBesideText(getString(R.string.settings_item_version), BuildConfig.VERSION_NAME)
     }
