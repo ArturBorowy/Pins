@@ -5,12 +5,12 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 internal val DarkColorScheme = darkColorScheme(
-    primary = BrandColors.Primary,
+    primary = Color(0xFF818CF8),
     onPrimary = Color.White,
     primaryContainer = Color(0xFF3730A3),
     onPrimaryContainer = Color(0xFFC7D2FE),
 
-    secondary = BrandColors.Primary,
+    secondary = Color(0xFF818CF8),
     onSecondary = Color(0xFF1E1B4B),
     secondaryContainer = Color(0xFF312E81),
     onSecondaryContainer = Color(0xFFC7D2FE),
