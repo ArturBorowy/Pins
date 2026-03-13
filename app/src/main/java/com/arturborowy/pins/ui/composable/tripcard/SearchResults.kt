@@ -41,7 +41,7 @@ fun SearchResults(
 
 @Preview
 @Composable
-fun SearchResultsPreview() = PreviewTheme {
+private fun SearchResultsPreview() = PreviewTheme {
     SearchResults(
         expandDropdown = true,
         predictions = listOf(

@@ -131,12 +131,12 @@ private val previewTrip = TripListItem(
 
 @Preview
 @Composable
-fun TripViewPreview() = PreviewTheme {
+private fun TripViewPreview() = PreviewTheme {
     TripView(tripListItem = previewTrip, onEditTripClick = {})
 }
 
 @Preview
 @Composable
-fun TripRowPreview() = PreviewTheme {
+private fun TripRowPreview() = PreviewTheme {
     TripRow(tripListItemStopItem = previewStop)
 }

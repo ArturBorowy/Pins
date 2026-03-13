@@ -76,28 +76,28 @@ fun SettingItem(
 
 @Preview
 @Composable
-fun SettingSectionLabelPreview() =
+private fun SettingSectionLabelPreview() =
     PreviewTheme {
         SettingSectionLabel(text = "Account")
     }
 
 @Preview
 @Composable
-fun SettingItemClickablePreview() =
+private fun SettingItemClickablePreview() =
     PreviewTheme {
         SettingItem(label = "Privacy policy", onClick = {})
     }
 
 @Preview
 @Composable
-fun SettingItemSecondaryValuePreview() =
+private fun SettingItemSecondaryValuePreview() =
     PreviewTheme {
         SettingItem(label = "App version", secondaryValue = "1.0.0")
     }
 
 @Preview
 @Composable
-fun SettingItemNoDividerPreview() =
+private fun SettingItemNoDividerPreview() =
     PreviewTheme {
         SettingItem(label = "Sign out", onClick = {}, showDivider = false)
     }

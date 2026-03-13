@@ -38,7 +38,7 @@ fun Fab(
 
 @Preview
 @Composable
-fun FabPreview() = PreviewTheme {
+private fun FabPreview() = PreviewTheme {
     Fab(
         iconResId = R.drawable.ic_add_trip,
         contentDescriptionResId = R.string.app_name,

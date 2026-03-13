@@ -41,7 +41,7 @@ fun TripListView(trips: List<TripListItem>, onEditTripClick: (TripListItem) -> U
 
 @Preview
 @Composable
-fun TripListViewPreview() = PreviewTheme {
+private fun TripListViewPreview() = PreviewTheme {
     TripListView(
         listOf(
             TripListItem(

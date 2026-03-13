@@ -46,7 +46,7 @@ fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
 
 @Preview
 @Composable
-fun EmptyListViewPreview() = PreviewTheme {
+private fun EmptyListViewPreview() = PreviewTheme {
     Box(Modifier.size(300.dp)) {
         EmptyListView {}
     }

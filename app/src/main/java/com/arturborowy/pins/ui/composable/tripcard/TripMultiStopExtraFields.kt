@@ -74,7 +74,7 @@ fun TripMultiStopExtraFields(
 
 @Preview
 @Composable
-fun TripMultiStopExtraFieldsPreview() = PreviewTheme {
+private fun TripMultiStopExtraFieldsPreview() = PreviewTheme {
     TripMultiStopExtraFields(
         nameText = "Name text",
         onNameTextChange = {},

@@ -89,7 +89,7 @@ fun TripSingleStopExtraFields(
 
 @Preview
 @Composable
-fun TripSingleStopExtraFieldsPreview() = PreviewTheme {
+private fun TripSingleStopExtraFieldsPreview() = PreviewTheme {
     TripSingleStopExtraFields(
         nameText = "Name text",
         onNameTextChange = {},

@@ -32,7 +32,7 @@ fun TripNameField(
 
 @Preview
 @Composable
-fun TripNameFieldPreview() = PreviewTheme {
+private fun TripNameFieldPreview() = PreviewTheme {
     TripNameField(
         nameText = "Summer in Portugal",
         onNameTextChange = {}

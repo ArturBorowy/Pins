@@ -83,7 +83,7 @@ fun AddTripTypesBar(
 
 @Preview
 @Composable
-fun AddTripTypesBarPreview() = PreviewTheme {
+private fun AddTripTypesBarPreview() = PreviewTheme {
     AddTripTypesBar(
         modifier = Modifier,
         onSingleStopTripClick = {},

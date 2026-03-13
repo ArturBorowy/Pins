@@ -47,18 +47,18 @@ fun FilledButton(
 
 @Preview
 @Composable
-fun OutlinedButtonPreview() = PreviewTheme {
+private fun OutlinedButtonPreview() = PreviewTheme {
     OutlinedButton(text = "Cancel", onClick = {})
 }
 
 @Preview
 @Composable
-fun FilledButtonPreview() = PreviewTheme {
+private fun FilledButtonPreview() = PreviewTheme {
     FilledButton(text = "Confirm", onClick = {})
 }
 
 @Preview
 @Composable
-fun FilledButtonDisabledPreview() = PreviewTheme {
+private fun FilledButtonDisabledPreview() = PreviewTheme {
     FilledButton(text = "Confirm", onClick = {}, enabled = false)
 }

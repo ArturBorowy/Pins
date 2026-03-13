@@ -31,7 +31,7 @@ fun WideCard(
 
 @Preview
 @Composable
-fun WideCardPreview() = PreviewTheme {
+private fun WideCardPreview() = PreviewTheme {
     WideCard {
         Text(text = "Card content")
     }

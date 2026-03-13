@@ -71,7 +71,7 @@ fun SettingToggleItem(
 
 @Preview
 @Composable
-fun SettingToggleItemChecked() = PreviewTheme {
+private fun SettingToggleItemChecked() = PreviewTheme {
     SettingToggleItem(
         Icons.Default.Palette,
         "Style",
@@ -84,7 +84,7 @@ fun SettingToggleItemChecked() = PreviewTheme {
 
 @Preview
 @Composable
-fun SettingToggleItemUnchecked() = PreviewTheme {
+private fun SettingToggleItemUnchecked() = PreviewTheme {
     SettingToggleItem(
         Icons.Default.Accessibility,
         "Accessibility",
