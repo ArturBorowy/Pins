@@ -123,7 +123,7 @@ fun SettingThemeSelector(
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(borderWidth, borderColor),
                 elevation = CardDefaults.cardElevation(defaultElevation = BrandTheme.sizing.shadow),
-                colors = CardDefaults.cardColors(containerColor = BrandTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(containerColor = BrandTheme.colorScheme.surfaceContainerHigh)
             ) {
                 Column(
                     modifier = Modifier

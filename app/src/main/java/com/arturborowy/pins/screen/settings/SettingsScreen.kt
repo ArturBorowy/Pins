@@ -54,7 +54,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             modifier = Modifier
                 .padding(top = BrandTheme.spacing.textSpacing)
                 .shadow(BrandTheme.sizing.shadow, RoundedCornerShape(8.dp))
-                .background(BrandTheme.colorScheme.surface, RoundedCornerShape(8.dp))
+                .background(BrandTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(8.dp))
                 .fillMaxWidth(),
         ) {
             SettingToggleItem(
@@ -72,7 +72,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         Column(
             modifier = Modifier
                 .shadow(BrandTheme.sizing.shadow, RoundedCornerShape(8.dp))
-                .background(BrandTheme.colorScheme.surface, RoundedCornerShape(8.dp))
+                .background(BrandTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(8.dp))
                 .fillMaxWidth(),
         ) {
             SettingItem(
@@ -91,7 +91,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         Column(
             modifier = Modifier
                 .shadow(BrandTheme.sizing.shadow, RoundedCornerShape(8.dp))
-                .background(BrandTheme.colorScheme.surface, RoundedCornerShape(8.dp))
+                .background(BrandTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(8.dp))
                 .fillMaxWidth(),
         ) {
             SettingItem(

@@ -22,7 +22,7 @@ fun WideCard(
     Column(
         modifier = modifier
             .shadow(BrandTheme.sizing.shadow, RoundedCornerShape(8.dp))
-            .background(BrandTheme.colorScheme.surface, RoundedCornerShape(8.dp))
+            .background(BrandTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(8.dp))
             .padding(BrandTheme.spacing.cardPadding)
             .fillMaxWidth(),
         content = content

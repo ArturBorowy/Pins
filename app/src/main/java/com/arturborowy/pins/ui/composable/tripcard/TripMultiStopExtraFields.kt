@@ -34,7 +34,7 @@ fun TripMultiStopExtraFields(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(BrandTheme.colorScheme.surface),
+            .background(BrandTheme.colorScheme.surfaceContainerHigh),
     ) {
         TripNameField(
             nameText,
