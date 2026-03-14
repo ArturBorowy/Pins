@@ -43,6 +43,10 @@ interface NavigationTarget {
         override val label = "Licences"
     }
 
+    object AppearanceSettings : NavigationTarget {
+        override val label = "AppearanceSettings"
+    }
+
     object ADD_TRIP {
         val SHOW_TRIP_TYPE_BAR_KEY = "SHOW_TRIP_TYPE_BAR_KEY"
 

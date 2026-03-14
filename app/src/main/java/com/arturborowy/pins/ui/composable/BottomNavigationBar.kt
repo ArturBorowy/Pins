@@ -53,7 +53,7 @@ fun BottomNavigationBar(
 
 @Preview
 @Composable
-fun BottomNavigationBar() = PreviewTheme {
+private fun BottomNavigationBar() = PreviewTheme {
     BottomNavigationBar(
         BottomNavItem.MAP.label,
         {}

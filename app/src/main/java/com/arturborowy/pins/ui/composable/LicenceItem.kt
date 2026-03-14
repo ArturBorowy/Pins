@@ -76,7 +76,7 @@ fun LicenceContent(licenceContent: String) {
 
 @Preview
 @Composable
-fun LicenceItemPreview() = PreviewTheme {
+private fun LicenceItemPreview() = PreviewTheme {
     LicenceItem(
         licenceName = "MIT License",
         products = listOf(

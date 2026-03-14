@@ -36,7 +36,7 @@ fun TripSingleStopExtraFields(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(BrandTheme.colorScheme.surface),
+            .background(BrandTheme.colorScheme.surfaceContainerHigh),
     ) {
         TripNameField(
             nameText,
@@ -89,7 +89,7 @@ fun TripSingleStopExtraFields(
 
 @Preview
 @Composable
-fun TripSingleStopExtraFieldsPreview() = PreviewTheme {
+private fun TripSingleStopExtraFieldsPreview() = PreviewTheme {
     TripSingleStopExtraFields(
         nameText = "Name text",
         onNameTextChange = {},

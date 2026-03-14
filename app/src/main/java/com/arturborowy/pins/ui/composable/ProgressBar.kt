@@ -17,6 +17,6 @@ fun PrimaryColorCircularProgressIndicator(modifier: Modifier) {
 
 @Preview
 @Composable
-fun PrimaryColorCircularProgressIndicatorPreview() = PreviewTheme {
+private fun PrimaryColorCircularProgressIndicatorPreview() = PreviewTheme {
     PrimaryColorCircularProgressIndicator(modifier = Modifier)
 }

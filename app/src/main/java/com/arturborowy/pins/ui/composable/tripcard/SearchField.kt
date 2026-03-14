@@ -141,7 +141,7 @@ fun TextFieldIcon(@DrawableRes drawableResId: Int, contentDescription: String?) 
 
 @Preview
 @Composable
-fun SearchFieldPreview() = PreviewTheme {
+private fun SearchFieldPreview() = PreviewTheme {
     SearchField(
         placeText = "Lisbon, Portugal",
         onTextChange = {},
@@ -156,7 +156,7 @@ fun SearchFieldPreview() = PreviewTheme {
 
 @Preview
 @Composable
-fun SearchFieldErrorPreview() = PreviewTheme {
+private fun SearchFieldErrorPreview() = PreviewTheme {
     SearchField(
         placeText = "",
         errorText = "No internet connection",

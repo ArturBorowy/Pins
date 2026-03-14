@@ -26,7 +26,7 @@ fun AddTripTypesBar(
 ) {
     Card(
         shape = RoundedCornerShape(percent = 100),
-        colors = CardDefaults.cardColors(containerColor = BrandTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = BrandTheme.colorScheme.surfaceContainerHigh),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = BrandTheme.sizing.shadow)
     ) {
@@ -83,7 +83,7 @@ fun AddTripTypesBar(
 
 @Preview
 @Composable
-fun AddTripTypesBarPreview() = PreviewTheme {
+private fun AddTripTypesBarPreview() = PreviewTheme {
     AddTripTypesBar(
         modifier = Modifier,
         onSingleStopTripClick = {},

@@ -1,4 +1,4 @@
-package com.arturborowy.pins.ui.composable
+package com.arturborowy.pins.ui.composable.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.brand.designsystem.typography.titleSmallEmphasized
+import com.arturborowy.pins.ui.composable.PreviewTheme
 
 @Composable
 fun SettingSectionLabel(text: String) {
@@ -75,24 +76,28 @@ fun SettingItem(
 
 @Preview
 @Composable
-fun SettingSectionLabelPreview() = PreviewTheme {
-    SettingSectionLabel(text = "Account")
-}
+private fun SettingSectionLabelPreview() =
+    PreviewTheme {
+        SettingSectionLabel(text = "Account")
+    }
 
 @Preview
 @Composable
-fun SettingItemClickablePreview() = PreviewTheme {
-    SettingItem(label = "Privacy policy", onClick = {})
-}
+private fun SettingItemClickablePreview() =
+    PreviewTheme {
+        SettingItem(label = "Privacy policy", onClick = {})
+    }
 
 @Preview
 @Composable
-fun SettingItemSecondaryValuePreview() = PreviewTheme {
-    SettingItem(label = "App version", secondaryValue = "1.0.0")
-}
+private fun SettingItemSecondaryValuePreview() =
+    PreviewTheme {
+        SettingItem(label = "App version", secondaryValue = "1.0.0")
+    }
 
 @Preview
 @Composable
-fun SettingItemNoDividerPreview() = PreviewTheme {
-    SettingItem(label = "Sign out", onClick = {}, showDivider = false)
-}
+private fun SettingItemNoDividerPreview() =
+    PreviewTheme {
+        SettingItem(label = "Sign out", onClick = {}, showDivider = false)
+    }

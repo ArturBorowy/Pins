@@ -88,7 +88,7 @@ private fun showDatePicker(
 
 @Preview
 @Composable
-fun DatePickingButtonEmptyPreview() = PreviewTheme {
+private fun DatePickingButtonEmptyPreview() = PreviewTheme {
     DatePickingButton(
         label = "Arrival date",
         date = null,
@@ -98,7 +98,7 @@ fun DatePickingButtonEmptyPreview() = PreviewTheme {
 
 @Preview
 @Composable
-fun DatePickingButtonFilledPreview() = PreviewTheme {
+private fun DatePickingButtonFilledPreview() = PreviewTheme {
     DatePickingButton(
         label = "Arrival date",
         date = "01.01.2024",

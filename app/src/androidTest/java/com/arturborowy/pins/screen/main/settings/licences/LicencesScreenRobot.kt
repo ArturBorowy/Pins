@@ -14,6 +14,10 @@ class LicencesScreenRobot(
     composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>
 ) : TestRobot(composeTestRule) {
 
+    fun checkIfOnLicencesScreen() {
+        composeTestRule.onNodeWithTag(LicenceViewTag.LICENCES_LIST).assertExists()
+    }
+
     fun checkIfApacheLicenceIsShown() {
         composeTestRule.onAllNodesWithTag(LicenceViewTag.LICENCE_NAME)[0]
             .assertTextContains(R.string.licence_apache_2_0_name)

@@ -30,7 +30,7 @@ fun RoundFlagIcon(country: Country) {
 
 @Preview
 @Composable
-fun RoundFlagIconPreview() = PreviewTheme {
+private fun RoundFlagIconPreview() = PreviewTheme {
     RoundFlagIcon(
         country = Country(
             countryId = Country.Id("pl"),

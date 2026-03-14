@@ -90,9 +90,9 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation("com.google.dagger:hilt-android:2.59.2")
-    implementation("androidx.test.espresso:espresso-contrib:3.7.0")
     ksp("com.google.dagger:hilt-android-compiler:2.59.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.test.espresso:espresso-contrib:3.7.0")
 
     implementation("com.google.maps.android:maps-compose:8.2.0")
     implementation("com.google.android.gms:play-services-maps:20.0.0")

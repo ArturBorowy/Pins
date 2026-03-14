@@ -50,7 +50,8 @@ The app follows **MVVM** with a single-activity design:
 
 - **Single Activity** (`MainActivity`) hosts a `NavHost` with bottom navigation
 - **3 tabs:** Map, Trip List, Settings
-- **ViewModels** expose `StateFlow<State>` consumed by Compose screens via `collectAsState()`
+- **ViewModels** expose `StateFlow<State>` consumed by Compose screens via
+  `collectAsStateWithLifecycle()`
 - **Hilt** provides dependencies; `@AssistedInject` is used for ViewModels that require navigation
   arguments (e.g. trip ID, place ID)
 - **Room** persists trips and stops locally

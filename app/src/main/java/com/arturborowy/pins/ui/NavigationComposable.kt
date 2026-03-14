@@ -15,6 +15,7 @@ import com.arturborowy.pins.screen.edittrip.editTripViewModel
 import com.arturborowy.pins.screen.main.BottomNavItem
 import com.arturborowy.pins.screen.map.MapScreen
 import com.arturborowy.pins.screen.map.mapViewModel
+import com.arturborowy.pins.screen.settings.appearance.AppearanceSettingsScreen
 import com.arturborowy.pins.screen.settings.licences.LicencesScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -40,13 +41,18 @@ fun NavigationComposable(
     NavHost(
         navController = navController,
         startDestination = BottomNavItem.MAP.label,
-        modifier = Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding),
+        enterTransition = { enterAnimation() },
+        exitTransition = { exitTransition() },
+        popEnterTransition = { popEnterTransition() },
+        popExitTransition = { popExitTransition() },
     ) {
         BottomNavItem.entries.forEach { screen ->
             composable(screen.name) { screen.screenComposable() }
         }
 
         composable(NavigationTarget.Licences.label) { LicencesScreen() }
+        composable(NavigationTarget.AppearanceSettings.label) { AppearanceSettingsScreen() }
 
         val mapArgs = listOf(navArgument(NavigationTarget.ADD_TRIP.SHOW_TRIP_TYPE_BAR_KEY) {
             type = NavType.BoolType

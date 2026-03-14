@@ -7,6 +7,8 @@ import com.arturborowy.pins.di.SystemAbstractionModule
 import com.arturborowy.pins.screen.BottomNavigationBarRobot
 import com.arturborowy.pins.screen.main.MainActivity
 import com.arturborowy.pins.screen.main.MockSystemAbstractionModule
+import com.arturborowy.pins.screen.main.settings.appearance.AppearanceScreenRobot
+import com.arturborowy.pins.screen.main.settings.licences.LicencesScreenRobot
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -35,6 +37,32 @@ class SettingsScreenTest : BaseComposeTest<MainActivity>() {
 
         with(SettingsScreenRobot(composeTestRule)) {
             checkIfVersionNumberIsCorrect()
+        }
+    }
+
+    @Test
+    fun navigatesToLicencesScreen_whenLicencesItemClicked() {
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openSettingsScreen()
+        }
+        with(SettingsScreenRobot(composeTestRule)) {
+            openLicencesScreen()
+        }
+        with(LicencesScreenRobot(composeTestRule)) {
+            checkIfOnLicencesScreen()
+        }
+    }
+
+    @Test
+    fun navigatesToAppearanceScreen_whenAppearanceItemClicked() {
+        with(BottomNavigationBarRobot(composeTestRule)) {
+            openSettingsScreen()
+        }
+        with(SettingsScreenRobot(composeTestRule)) {
+            openAppearanceScreen()
+        }
+        with(AppearanceScreenRobot(composeTestRule)) {
+            checkIfOnAppearanceScreen()
         }
     }
 }

@@ -1,29 +1,59 @@
 package com.arturborowy.pins.screen.main
 
+import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arturborowy.brand.designsystem.BrandTheme
+import com.arturborowy.pins.data.AppVisualTheme
 import com.arturborowy.pins.ui.NavigationComposable
 import com.arturborowy.pins.ui.Navigator
 import com.arturborowy.pins.ui.composable.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScaffold(navigator: Navigator) {
+fun MainScaffold(
+    navigator: Navigator,
+    viewModel: MainScaffoldViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
-
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    BrandTheme {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val useDarkTheme = when (state.appVisualTheme) {
+        AppVisualTheme.DARK -> true
+        AppVisualTheme.LIGHT -> false
+        AppVisualTheme.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !useDarkTheme
+        }
+    }
+
+    BrandTheme(
+        useDarkTheme = useDarkTheme,
+        useDynamicColors = state.useDynamicColors
+    ) {
         Surface(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             color = BrandTheme.colorScheme.background
         ) {
             Scaffold(
@@ -43,4 +73,3 @@ fun MainScaffold(navigator: Navigator) {
         }
     }
 }
-
