@@ -94,9 +94,9 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.test.espresso:espresso-contrib:3.7.0")
 
-    implementation("com.google.maps.android:maps-compose:8.2.0")
+    implementation("com.google.maps.android:maps-compose:8.3.0")
     implementation("com.google.android.gms:play-services-maps:20.0.0")
-    implementation("com.google.android.libraries.places:places:5.1.1")
+    implementation("com.google.android.libraries.places:places:5.2.0")
 
     implementation("com.github.ArturBorowy:ultimate-logger-android:0.1.1")
 
