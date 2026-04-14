@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 plugins {
     id("com.android.application") version "9.0.0" apply false
     id("com.android.library") version "9.0.0" apply false
@@ -13,4 +15,10 @@ detekt {
     allRules = false
     source.setFrom(files(projectDir))
     config.setFrom("$projectDir/detekt/detekt.yml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    exclude("**/build/**")
+    exclude("**/resources/**")
+    exclude("**/tmp/**")
 }

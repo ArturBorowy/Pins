@@ -82,6 +82,7 @@ private fun LicenceItemPreview() = PreviewTheme {
         products = listOf(
             Product(name = "Retrofit", year = "2023", copyrightOwner = "Square, Inc.")
         ),
-        licenceContent = "Permission is hereby granted, free of charge, to any person obtaining a copy of this software..."
+        licenceContent = "Permission is hereby granted, " +
+                "free of charge, to any person obtaining a copy of this software..."
     )
 }

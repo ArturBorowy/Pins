@@ -9,12 +9,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 
+private const val MARKER_OFFSET = 0.5f
+
 @Composable
 fun MapMarker(marker: MapMarkerItem) {
     val context = LocalContext.current
 
     Marker(
-        anchor = Offset(0.5f, 0.5f),
+        anchor = Offset(MARKER_OFFSET, MARKER_OFFSET),
         icon = mapIconBitmapDescriptor(context, marker.iconResId),
         state = MarkerState(LatLng(marker.latitude, marker.longitude)),
         title = marker.label,

@@ -28,7 +28,7 @@ interface NavigationTarget {
 
     object EDIT_TRIP {
 
-        val TRIP_ID_KEY = "TRIP_ID_KEY"
+        const val TRIP_ID_KEY = "TRIP_ID_KEY"
 
         val label = create("{$TRIP_ID_KEY}").label
 
@@ -48,7 +48,7 @@ interface NavigationTarget {
     }
 
     object ADD_TRIP {
-        val SHOW_TRIP_TYPE_BAR_KEY = "SHOW_TRIP_TYPE_BAR_KEY"
+        const val SHOW_TRIP_TYPE_BAR_KEY = "SHOW_TRIP_TYPE_BAR_KEY"
 
         val label = create("{$SHOW_TRIP_TYPE_BAR_KEY}").label
 
