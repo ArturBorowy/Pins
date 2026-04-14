@@ -1,7 +1,6 @@
 package com.arturborowy.pins.ui.composable.tripcard
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -10,7 +9,6 @@ import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.WideCard
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TripAddCard(
     modifier: Modifier = Modifier,
@@ -93,7 +91,6 @@ fun TripAddCard(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 private fun TripAddCardPreview() = PreviewTheme {
