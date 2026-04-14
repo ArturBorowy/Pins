@@ -1,0 +1,11 @@
+style:
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: [ 'Preview', 'PreviewLightAndDark' ]
+
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    excludeClassPattern: '.*Test$'
+    ignoreAnnotated: [ 'Composable' ]
