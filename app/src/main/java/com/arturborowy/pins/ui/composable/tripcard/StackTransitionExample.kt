@@ -11,8 +11,11 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -151,12 +154,13 @@ private fun ExpandedSheet(
                 )
                 .fillMaxWidth()
                 .aspectRatio(1f)
+                .shadow(8.dp, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                 .clickable { onCollapse() },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             colors = CardDefaults.cardColors(containerColor = card.color)
         ) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Expanded: ${card.title}\nTap to collapse", color = Color.White)
+                CardContent(card)
             }
         }
     }
@@ -218,11 +222,37 @@ private fun StackedCards(
                                 .padding(top = if (offsetMultiplier > 0) 8.dp else 0.dp),
                             contentAlignment = if (offsetMultiplier > 0) Alignment.TopCenter else Alignment.Center
                         ) {
-                            Text(card.title, color = Color.White)
+                            CardContent(card)
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CardContent(card: CardData) {
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(card.color)
+                .padding(32.dp)
+        ) {
+            Text(card.title, color = Color.White)
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(16.dp)
+        ) {
+            Text(
+                "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+                color = Color.Black,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
