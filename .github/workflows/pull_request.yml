@@ -14,11 +14,11 @@ jobs:
           distribution: temurin
           cache: 'gradle'
 
-      - name: Grant Execute Permission for Gradlew
-        run: chmod +x gradlew
-
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
 
       - name: Create keys.xml from secret
         env:
