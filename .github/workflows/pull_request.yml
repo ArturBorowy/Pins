@@ -27,5 +27,11 @@ jobs:
       - name: assembleDebug
         run: bash ./gradlew assembleDebug
 
-      - name: testDebugUnitTest
+      - name: Run unit tests
         run: bash ./gradlew testDebugUnitTest
+
+      - name: Run UI tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedLocalMockDebugAndroidTest
