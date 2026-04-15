@@ -20,9 +20,7 @@ import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.ui.composable.Fab
-import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
-import com.arturborowy.pins.ui.composable.map.AllTripsMap
-import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
+import com.arturborowy.pins.ui.composable.tripcard.StackTransitionExample
 import com.arturborowy.pins.ui.slideInFromBottom
 import com.arturborowy.pins.ui.slideInFromTop
 import com.arturborowy.pins.ui.slideOutToBottom
@@ -46,46 +44,7 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
             .fillMaxSize()
             .background(BrandTheme.colorScheme.background)
     ) {
-        PrimaryColorCircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-
-        if (state.marker == null) {
-            AllTripsMap(state.tripMarkers)
-        } else {
-            SelectedPlaceMap(state.marker!!)
-        }
-
-        MapScreenOverlays(
-            addingTripStep = state.addingTripStep,
-            placeText = state.placeText,
-            placeErrorText = state.placeErrorText,
-            showConfirmAddressButton = state.showConfirmAddressButton,
-            predictions = state.predictions,
-            placeTextChangedByUser = state.placeTextChangedByUser,
-            showExtraFields = state.showExtraFields,
-            nameText = state.nameText,
-            arrivalDate = state.arrivalDate,
-            departureDate = state.departureDate,
-            isSavingTripEnabled = state.isSavingTripEnabled,
-            isAddressEditEnabled = state.isAddressEditEnabled,
-            multiStop = state.multiStop,
-            onAddressSearchTextChange = { viewModel.onAddressSearchTextChange(it) },
-            onBackEditingAddress = { viewModel.onBackEditingAddress() },
-            onConfirmAddress = { viewModel.onConfirmAddress() },
-            onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
-            onTripNameChange = { viewModel.onTripNameChange(it) },
-            onArrivalDateChange = { year, month, day ->
-                viewModel.onArrivalDateChange(year, month, day)
-            },
-            onDepartureDateChange = { year, month, day ->
-                viewModel.onDepartureDateChange(year, month, day)
-            },
-            onTripConfirmClick = { viewModel.onTripConfirmClick() },
-            onTripCancelClick = { viewModel.onTripCancelClick() },
-            onAddNextStopClick = { viewModel.onAddNextStopClick() },
-            onAddTripClick = { viewModel.onAddTripClick() },
-            onAddSingleStopTripClick = { viewModel.onAddSingleStopTripClick() },
-            onAddMultiStopTripClick = { viewModel.onAddMultiStopTripClick() },
-        )
+        StackTransitionExample()
     }
 }
 
