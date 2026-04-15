@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 
 plugins {
     id("com.android.application") version "9.0.0" apply false
@@ -15,10 +16,19 @@ detekt {
     allRules = false
     source.setFrom(files(projectDir))
     config.setFrom("$projectDir/detekt/detekt.yml")
+    baseline = file("$projectDir/detekt/baseline.xml")
 }
 
 tasks.withType<Detekt>().configureEach {
     exclude("**/build/**")
     exclude("**/resources/**")
     exclude("**/tmp/**")
+    exclude("**/.gradle/**")
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    exclude("**/build/**")
+    exclude("**/resources/**")
+    exclude("**/tmp/**")
+    exclude("**/.gradle/**")
 }

@@ -1,50 +1,30 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-    <ManuallySuppressedIssues />
-    <CurrentIssues>
-        <ID>CyclomaticComplexMethod:CountryIconsRepository.kt$CountryIconsRepository$fun
-            getIcon(countryCode: String)
-        </ID>
-        <ID>EmptyClassBlock:BaseViewModel.kt$BaseViewModel${ }</ID>
-        <ID>InvalidPackageDeclaration:CountryIconsRepository.kt$package
-            com.arturborowy.pins.data.com.arturborowy.pins.flags
-        </ID>
-        <ID>LongMethod:CountryIconsRepository.kt$CountryIconsRepository$fun getIcon(countryCode:
-            String)
-        </ID>
-        <ID>LongMethod:EditTripScreen.kt$@Composable fun EditTripScreen(viewModel: EditTripViewModel
-            = hiltViewModel())
-        </ID>
-        <ID>LongMethod:SearchField.kt$@OptIn(ExperimentalComposeUiApi::class) @Composable fun
-            SearchField( placeText: String, errorText: String? = null, onTextChange: (String) -&gt;
-            Unit, onBackClick: () -&gt; Unit, showBackArrow: Boolean, onConfirmClick: () -&gt; Unit,
-            showConfirm: Boolean, isAddressEditEnabled: Boolean, showExtraEditionFields: Boolean, )
-        </ID>
-        <ID>MagicNumber:AllTripsMap.kt$9f</ID>
-        <ID>MagicNumber:AppearanceSettingsViewModel.kt$AppearanceSettingsViewModel$5000</ID>
-        <ID>MagicNumber:MainScaffoldViewModel.kt$MainScaffoldViewModel$5000</ID>
-        <ID>MagicNumber:SettingsViewModel.kt$SettingsViewModel$5000</ID>
-        <ID>MatchingDeclarationName:LicenceItem.kt$LicenceViewTag</ID>
-        <ID>MatchingDeclarationName:LicenceScreenTest.kt$LicencesScreenTest : BaseComposeTest</ID>
-        <ID>MatchingDeclarationName:PreviewTheme.kt$PreviewLightAndDark</ID>
-        <ID>MatchingDeclarationName:TripView.kt$TripViewTag</ID>
-        <ID>MaxLineLength:MapViewModel.kt$MapViewModel.State$placeText.isNotEmpty() &amp;&amp;
-            nameText.isNotEmpty() &amp;&amp; arrivalDate?.isNotEmpty() == true &amp;&amp;
-            departureDate?.isNotEmpty() == true
-        </ID>
-        <ID>MaxLineLength:TestRobot.kt$TestRobot$abstract</ID>
-        <ID>TooGenericExceptionCaught:EditTripViewModel.kt$EditTripViewModel$e: Exception</ID>
-        <ID>TooGenericExceptionCaught:MapViewModel.kt$MapViewModel$e: Exception</ID>
-        <ID>TooManyFunctions:EditTripViewModel.kt$EditTripViewModel : BaseViewModel</ID>
-        <ID>TooManyFunctions:MapViewModel.kt$MapViewModel : BaseViewModel</ID>
-        <ID>TopLevelPropertyNaming:Transitions.kt$const val durationMs = 300</ID>
-        <ID>UnusedPrivateProperty:AppearanceSettingsViewModel.kt$AppearanceSettingsViewModel$private
-            val navigator: Navigator
-        </ID>
-        <ID>VariableNaming:LicencesContentRepository.kt$LicencesContentRepository$val apache_2_0 =
-            resourcesRepository.getString(R.string.licence_apache_2_0_content)
-        </ID>
-        <ID>VariableNaming:build.gradle.kts$val mockk_version = "1.14.9"</ID>
-        <ID>VariableNaming:build.gradle.kts$val room_version = "2.8.4"</ID>
-    </CurrentIssues>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:CountryIconsRepository.kt$CountryIconsRepository$fun getIcon(countryCode: String)</ID>
+    <ID>EmptyClassBlock:BaseViewModel.kt$BaseViewModel${ }</ID>
+    <ID>LongMethod:CountryIconsRepository.kt$CountryIconsRepository$fun getIcon(countryCode: String)</ID>
+    <ID>LongMethod:EditTripScreen.kt$@Composable fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel())</ID>
+    <ID>LongMethod:SearchField.kt$@OptIn(ExperimentalComposeUiApi::class) @Composable fun SearchField( placeText: String, errorText: String? = null, onTextChange: (String) -&gt; Unit, onBackClick: () -&gt; Unit, showBackArrow: Boolean, onConfirmClick: () -&gt; Unit, showConfirm: Boolean, isAddressEditEnabled: Boolean, showExtraEditionFields: Boolean, )</ID>
+    <ID>MagicNumber:AllTripsMap.kt$9f</ID>
+    <ID>MagicNumber:AppearanceSettingsViewModel.kt$AppearanceSettingsViewModel$5000</ID>
+    <ID>MagicNumber:MainScaffoldViewModel.kt$MainScaffoldViewModel$5000</ID>
+    <ID>MagicNumber:SettingsViewModel.kt$SettingsViewModel$5000</ID>
+    <ID>MatchingDeclarationName:LicenceItem.kt$LicenceViewTag</ID>
+    <ID>MatchingDeclarationName:LicenceScreenTest.kt$LicencesScreenTest : BaseComposeTest</ID>
+    <ID>MatchingDeclarationName:PreviewTheme.kt$PreviewLightAndDark</ID>
+    <ID>MatchingDeclarationName:TripView.kt$TripViewTag</ID>
+    <ID>MaxLineLength:MapViewModel.kt$MapViewModel.State$placeText.isNotEmpty() &amp;&amp; nameText.isNotEmpty() &amp;&amp; arrivalDate?.isNotEmpty() == true &amp;&amp; departureDate?.isNotEmpty() == true</ID>
+    <ID>MaxLineLength:TestRobot.kt$TestRobot$abstract</ID>
+    <ID>TooGenericExceptionCaught:EditTripViewModel.kt$EditTripViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MapViewModel.kt$MapViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:EditTripViewModel.kt$EditTripViewModel : BaseViewModel</ID>
+    <ID>TooManyFunctions:MapViewModel.kt$MapViewModel : BaseViewModel</ID>
+    <ID>TopLevelPropertyNaming:Transitions.kt$const val durationMs = 300</ID>
+    <ID>UnusedPrivateProperty:AppearanceSettingsViewModel.kt$AppearanceSettingsViewModel$private val navigator: Navigator</ID>
+    <ID>VariableNaming:LicencesContentRepository.kt$LicencesContentRepository$val apache_2_0 = resourcesRepository.getString(R.string.licence_apache_2_0_content)</ID>
+    <ID>VariableNaming:build.gradle.kts$val mockk_version = "1.14.9"</ID>
+    <ID>VariableNaming:build.gradle.kts$val room_version = "2.8.4"</ID>
+  </CurrentIssues>
 </SmellBaseline>
