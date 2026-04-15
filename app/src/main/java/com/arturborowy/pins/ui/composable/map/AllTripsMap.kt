@@ -8,7 +8,9 @@ import androidx.compose.runtime.setValue
 import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.google.android.gms.maps.model.LatLng
 
-private var portoPortugalLatLng = LatLng(41.1579, -8.6291)
+private const val PORTO_PORTUGAL_LONGITUDE = -8.6291
+private const val PORTO_PORTUGAL_LATITUDE = 41.1579
+private val portoPortugalLatLng = LatLng(PORTO_PORTUGAL_LATITUDE, PORTO_PORTUGAL_LONGITUDE)
 
 @Composable
 fun AllTripsMap(markerLists: List<List<MapMarkerItem>>) {

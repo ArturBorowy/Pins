@@ -1,0 +1,19 @@
+style:
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: [ 'Preview', 'PreviewLightAndDark' ]
+  MagicNumber:
+    active: true
+    excludes: [ '**/color/ColorScheme.kt', '**/color/BrandColors.kt', '**/test/**' , '**/androidTest/**', '**/*.kts' ]
+
+naming:
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    excludeClassPattern: '.*Test$'
+    ignoreAnnotated: [ 'Composable' ]
+
+complexity:
+  LongParameterList:
+    active: true
+    ignoreAnnotated: [ 'Composable' ]

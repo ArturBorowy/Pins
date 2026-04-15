@@ -1,6 +1,6 @@
 package com.arturborowy.pins.domain
 
-import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.flags.CountryIconsRepository
 import com.arturborowy.pins.data.remote.geocoding.GeocodingRepository
 import com.arturborowy.pins.data.remote.places.PlacesPredictionRepository
 import javax.inject.Inject

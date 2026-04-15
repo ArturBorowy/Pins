@@ -21,6 +21,9 @@ jobs:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
         run: printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <string name="maps_api_key">%s</string>\n</resources>' "$MAPS_API_KEY" > app/src/main/res/values/keys.xml
 
+      - name: Run Detekt
+        run: bash ./gradlew detekt
+
       - name: assembleDebug
         run: bash ./gradlew assembleDebug
 
