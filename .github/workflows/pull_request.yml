@@ -12,6 +12,10 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
+          cache: 'gradle'
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
 
       - name: Checkout
         uses: actions/checkout@v4
