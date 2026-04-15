@@ -33,6 +33,10 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
+enum class AddingTripStep {
+    ADD_TRIP_BUTTON, TRIP_TYPE_BAR, FORM
+}
+
 class MapViewModel @AssistedInject constructor(
     private val placesInteractor: PlacesInteractor,
     private val localeRepository: LocaleRepository,
@@ -42,10 +46,7 @@ class MapViewModel @AssistedInject constructor(
 ) : BaseViewModel() {
 
     val state = MutableStateFlow(
-        State(
-            showTripTypeBar = showTripTypeBar,
-            showAddPinButton = showTripTypeBar.not(),
-        )
+        State(addingTripStep = if (showTripTypeBar) AddingTripStep.TRIP_TYPE_BAR else AddingTripStep.ADD_TRIP_BUTTON)
     )
 
     val errorEvents = MutableSharedFlow<String>(extraBufferCapacity = 1)
@@ -146,12 +147,7 @@ class MapViewModel @AssistedInject constructor(
 
     fun onAddTripClick() {
         viewModelScope.launch {
-            state.emit(
-                state.value.copy(
-                    showTripTypeBar = true,
-                    showAddPinButton = false,
-                )
-            )
+            state.emit(state.value.copy(addingTripStep = AddingTripStep.TRIP_TYPE_BAR))
         }
     }
 
@@ -163,9 +159,8 @@ class MapViewModel @AssistedInject constructor(
         viewModelScope.launch {
             state.emit(
                 state.value.copy(
-                    showAddressTextField = true,
+                    addingTripStep = AddingTripStep.FORM,
                     tripMarkers = listOf(),
-                    showTripTypeBar = false,
                     isAddressEditEnabled = true,
                     multiStop = multiStop
                 )
@@ -198,8 +193,7 @@ class MapViewModel @AssistedInject constructor(
         val tripMarkers = placesInteractor.getPlaces().toTripMarkers()
         state.emit(
             state.value.copy(
-                showAddPinButton = true,
-                showAddressTextField = false,
+                addingTripStep = AddingTripStep.ADD_TRIP_BUTTON,
                 tripMarkers = tripMarkers,
                 marker = null,
                 showConfirmAddressButton = false,
@@ -336,14 +330,12 @@ class MapViewModel @AssistedInject constructor(
         val placeTextChangedByUser: Boolean = false,
         val marker: MapMarkerItem? = null,
         val tripMarkers: List<List<MapMarkerItem>> = listOf(),
-        val showAddressTextField: Boolean = false,
         val showConfirmAddressButton: Boolean = false,
         val arrivalDate: String? = null,
         val departureDate: String? = null,
         val isAddressEditEnabled: Boolean = false,
-        val showTripTypeBar: Boolean = false,
-        val showAddPinButton: Boolean = true,
-        val multiStop: Boolean = false
+        val multiStop: Boolean = false,
+        val addingTripStep: AddingTripStep = AddingTripStep.ADD_TRIP_BUTTON,
     ) {
         val isSavingTripEnabled: Boolean
             get() = if (multiStop) {

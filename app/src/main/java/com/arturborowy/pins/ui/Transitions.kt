@@ -7,6 +7,8 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.navigation.NavBackStackEntry
 
 const val durationMs = 300
@@ -41,3 +43,8 @@ fun AnimatedContentTransitionScope<NavBackStackEntry>.popExitTransition(): ExitT
 
 fun defaultFadeIn() = fadeIn(animationSpec = tween(durationMs, easing = LinearEasing))
 fun defaultFadeOut() = fadeOut(animationSpec = tween(durationMs, easing = LinearEasing))
+
+val slideInFromBottom get() = slideInVertically { height -> height } + fadeIn()
+val slideInFromTop get() = slideInVertically { height -> -height } + fadeIn()
+val slideOutToBottom get() = slideOutVertically { height -> -height } + fadeOut()
+val slideOutToTop get() = slideOutVertically { height -> height } + fadeOut()
