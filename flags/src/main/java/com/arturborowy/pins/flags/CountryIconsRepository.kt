@@ -1,4 +1,4 @@
-package com.arturborowy.pins.data.com.arturborowy.pins.flags
+package com.arturborowy.pins.flags
 
 import com.arturborowy.flags.R
 
@@ -263,8 +263,8 @@ class CountryIconsRepository {
             "zm" -> R.drawable.zm
             "ws" -> R.drawable.ws
             "xk" -> R.drawable.xk
-            "xx" -> com.arturborowy.flags.R.drawable.xx
-            "zw" -> com.arturborowy.flags.R.drawable.zw
+            "xx" -> R.drawable.xx
+            "zw" -> R.drawable.zw
             else -> null
         }
 }

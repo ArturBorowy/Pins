@@ -1,7 +1,7 @@
 package com.arturborowy.pins.di
 
 import android.content.Context
-import com.arturborowy.pins.data.com.arturborowy.pins.flags.CountryIconsRepository
+import com.arturborowy.pins.flags.CountryIconsRepository
 import com.arturborowy.pins.data.db.StopEntityDao
 import com.arturborowy.pins.data.db.TripDao
 import com.arturborowy.pins.data.licences.LibrariesRepository
