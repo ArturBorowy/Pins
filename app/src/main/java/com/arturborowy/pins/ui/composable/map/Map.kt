@@ -23,14 +23,16 @@ fun Map(
     }
 
     LaunchedEffect(cameraLatitude, cameraLongitude) {
-        cameraPosition.move(
-            CameraUpdateFactory.newLatLngZoom(
-                LatLng(
-                    cameraLatitude,
-                    cameraLongitude
-                ), zoom
+        runCatching {
+            cameraPosition.move(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        cameraLatitude,
+                        cameraLongitude
+                    ), zoom
+                )
             )
-        )
+        }
     }
 
     GoogleMap(

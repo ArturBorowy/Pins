@@ -28,3 +28,6 @@ jobs:
 
       - name: testDebugUnitTest
         run: bash ./gradlew testDebugUnitTest
+
+      - name: compareRoborazziLocalMockDebug
+        run: bash ./gradlew compareRoborazziLocalMockDebug
