@@ -2,6 +2,8 @@ package com.arturborowy.pins.ui.composable.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalInspectionMode
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.screen.map.MapMarkerItem
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -17,6 +19,34 @@ fun Map(
     zoom: Float,
     cameraLatitude: Double,
     cameraLongitude: Double,
+    modifier: Modifier = Modifier,
+) {
+    if (LocalUseMockMap.current || LocalInspectionMode.current) {
+        MockGoogleMap(
+            markerLists = markerLists,
+            zoom = zoom,
+            cameraLatitude = cameraLatitude,
+            cameraLongitude = cameraLongitude,
+            modifier = modifier
+        )
+    } else {
+        RealGoogleMap(
+            markerLists = markerLists,
+            zoom = zoom,
+            cameraLatitude = cameraLatitude,
+            cameraLongitude = cameraLongitude,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun RealGoogleMap(
+    markerLists: List<List<MapMarkerItem>>,
+    zoom: Float,
+    cameraLatitude: Double,
+    cameraLongitude: Double,
+    modifier: Modifier = Modifier,
 ) {
     val cameraPosition = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(cameraLatitude, cameraLongitude), zoom)
@@ -36,6 +66,7 @@ fun Map(
     }
 
     GoogleMap(
+        modifier = modifier,
         cameraPositionState = cameraPosition,
         properties = themedMapProperties()
     ) {
@@ -59,5 +90,3 @@ fun Map(
         }
     }
 }
-
-//Can't render preview with GoogleMap @Composable
