@@ -13,7 +13,7 @@ class PinsApp : Application() {
         super.onCreate()
 
         initLogger()
-        Places.initialize(this, getString(R.string.maps_api_key))
+        Places.initialize(this, BuildConfig.MAPS_API_KEY)
     }
 
     private fun initLogger() {
