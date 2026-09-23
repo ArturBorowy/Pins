@@ -129,11 +129,11 @@ dependencies {
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 
-    val roborazzi_version = "1.75.0"
-    testImplementation("io.github.takahirom.roborazzi:roborazzi:$roborazzi_version")
-    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:$roborazzi_version")
-    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:${roborazzi_version}")
-    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:$roborazzi_version")
+    val roborazziVersion = "1.75.0"
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:$roborazziVersion")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:$roborazziVersion")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:${roborazziVersion}")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:$roborazziVersion")
 
 
     testImplementation(platform("androidx.compose:compose-bom:2026.02.01"))
