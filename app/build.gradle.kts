@@ -1,3 +1,5 @@
+import com.github.takahirom.roborazzi.AnnotationFilter
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,6 +9,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("io.github.takahirom.roborazzi")
 }
 
 android {
@@ -66,6 +69,24 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
+    roborazzi {
+        outputDir.set(layout.projectDirectory.dir("src/test/screenshots"))
+
+        @OptIn(ExperimentalRoborazziApi::class)
+        generateComposePreviewRobolectricTests {
+            enable = true
+            packages = listOf("com.arturborowy.pins")
+            includePrivatePreviews = true
+
+            annotationFilter = AnnotationFilter.Include("com.arturborowy.pins.utils.ScreenshotTest")
+        }
+    }
 }
 
 
@@ -108,7 +129,19 @@ dependencies {
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 
+    val roborazzi_version = "1.75.0"
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:$roborazzi_version")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:$roborazzi_version")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:${roborazzi_version}")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:$roborazzi_version")
+
+
+    testImplementation(platform("androidx.compose:compose-bom:2026.02.01"))
+    testImplementation("io.github.sergio-sastre.ComposablePreviewScanner:android:0.9.3")
+    testImplementation("org.robolectric:robolectric:4.17")
+
     testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 
     val mockk_version = "1.14.9"
