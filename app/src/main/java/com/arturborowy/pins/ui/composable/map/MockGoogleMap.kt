@@ -54,7 +54,8 @@ fun MockGoogleMap(
             Spacer(modifier = Modifier.height(BrandTheme.spacing.textSpacing))
 
             Text(
-                text = "Lat: ${"%.4f".format(cameraLatitude)}, Lng: ${"%.4f".format(cameraLongitude)} (Zoom: ${zoom.toInt()})",
+                text = "Lat: ${"%.4f".format(cameraLatitude)}, " +
+                        "Lng: ${"%.4f".format(cameraLongitude)} (Zoom: ${zoom.toInt()})",
                 style = BrandTheme.typography.bodySmall,
                 color = BrandTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp
