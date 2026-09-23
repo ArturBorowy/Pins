@@ -19,6 +19,7 @@ import com.arturborowy.pins.domain.Trip
 import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.TripView
+import com.arturborowy.pins.utils.ScreenshotTest
 
 @Composable
 fun TripListView(trips: List<TripListItem>, onEditTripClick: (TripListItem) -> Unit) {
@@ -40,6 +41,7 @@ fun TripListView(trips: List<TripListItem>, onEditTripClick: (TripListItem) -> U
 }
 
 @Preview
+@ScreenshotTest
 @Composable
 private fun TripListViewPreview() = PreviewTheme {
     TripListView(

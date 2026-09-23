@@ -1,29 +1,20 @@
 package com.arturborowy.pins.screen.edittrip
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,11 +24,11 @@ import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.domain.Country
 import com.arturborowy.pins.screen.map.MapMarkerItem
-import com.arturborowy.pins.ui.composable.PageTitle
 import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.WideCard
 import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
 import com.arturborowy.pins.ui.composable.tripcard.TripAddCard
+import com.arturborowy.pins.utils.ScreenshotTest
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -112,112 +103,7 @@ fun EditTripScreen(viewModel: EditTripViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun EditTripTopBar(
-    isPreviousStopAvailable: Boolean,
-    onPreviousStopClick: () -> Unit,
-    isNextStopAvailable: Boolean,
-    onNextStopClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconButton(
-            modifier = Modifier.alpha(if (isPreviousStopAvailable) 1f else 0f),
-            onClick = onPreviousStopClick
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(BrandTheme.sizing.icon),
-                painter = painterResource(R.drawable.ic_arrow_back),
-                tint = BrandTheme.colorScheme.onBackground,
-                contentDescription = stringResource(R.string.edit_trip_cd_previous_stop)
-            )
-        }
-        PageTitle(
-            text = stringResource(R.string.edit_trip_header),
-        )
-
-        IconButton(
-            modifier = Modifier.alpha(if (isNextStopAvailable) 1f else 0f),
-            onClick = onNextStopClick
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(BrandTheme.sizing.icon),
-                painter = painterResource(R.drawable.ic_arrow_forward),
-                tint = BrandTheme.colorScheme.onBackground,
-                contentDescription = stringResource(R.string.edit_trip_cd_next_stop)
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun EditTripTopBarBothAvailablePreview() {
-    PreviewTheme {
-        EditTripTopBar(
-            isPreviousStopAvailable = true,
-            onPreviousStopClick = {},
-            isNextStopAvailable = true,
-            onNextStopClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun EditTripTopBarNoneAvailablePreview() {
-    PreviewTheme {
-        EditTripTopBar(
-            isPreviousStopAvailable = false,
-            onPreviousStopClick = {},
-            isNextStopAvailable = false,
-            onNextStopClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun EditStopPreview() {
-    PreviewTheme {
-        EditStop(
-            stop = EditTripStopItem(
-                locationName = "London",
-                arrivalDateStr = "21 Jun 2023",
-                departureDateStr = "24 Jun 2023",
-                latitude = 51.5073509,
-                longitude = -0.1277583,
-                country = Country(Country.Id("GB"), "United Kingdom", R.drawable.ic_single_stop)
-            ),
-            tripName = "Trip to London",
-            predictions = listOf(),
-            placeErrorText = null,
-            showConfirmAddressButton = false,
-            showExtraFields = true,
-            isSavingTripEnabled = true,
-            isAddressEditEnabled = true,
-            placeTextChangedByUser = false,
-            multiStop = false,
-            onSearchTextChange = {},
-            onBackEditingAddress = {},
-            onConfirmAddress = {},
-            onAddressSelect = {},
-            onTripNameChange = {},
-            onArrivalDateChange = { _, _, _ -> },
-            onDepartureDateChange = { _, _, _ -> },
-            onSaveChangesClick = {},
-            onTripRemoveClick = {}
-        )
-    }
-}
-
-@Composable
-fun EditStop(
+private fun EditStop(
     stop: EditTripStopItem,
     tripName: String,
     predictions: List<AddressPrediction>,
@@ -288,5 +174,41 @@ fun EditStop(
                 )
             )
         }
+    }
+}
+
+@Preview
+@ScreenshotTest
+@Composable
+private fun EditStopPreview() {
+    PreviewTheme {
+        EditStop(
+            stop = EditTripStopItem(
+                locationName = "London",
+                arrivalDateStr = "21 Jun 2023",
+                departureDateStr = "24 Jun 2023",
+                latitude = 51.5073509,
+                longitude = -0.1277583,
+                country = Country(Country.Id("GB"), "United Kingdom", R.drawable.ic_single_stop)
+            ),
+            tripName = "Trip to London",
+            predictions = listOf(),
+            placeErrorText = null,
+            showConfirmAddressButton = false,
+            showExtraFields = true,
+            isSavingTripEnabled = true,
+            isAddressEditEnabled = true,
+            placeTextChangedByUser = false,
+            multiStop = false,
+            onSearchTextChange = {},
+            onBackEditingAddress = {},
+            onConfirmAddress = {},
+            onAddressSelect = {},
+            onTripNameChange = {},
+            onArrivalDateChange = { _, _, _ -> },
+            onDepartureDateChange = { _, _, _ -> },
+            onSaveChangesClick = {},
+            onTripRemoveClick = {}
+        )
     }
 }
