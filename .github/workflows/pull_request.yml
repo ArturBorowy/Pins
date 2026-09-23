@@ -16,11 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create keys.xml from secret
+      - name: Create local.properties from secret
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
-        run: printf '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <string name="maps_api_key">%s</string>\n</resources>' "$MAPS_API_KEY" > app/src/main/res/values/keys.xml
-
+        run: echo "MAPS_API_KEY=$MAPS_API_KEY" > local.properties
       - name: Run Detekt
         run: bash ./gradlew detekt
 

@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.10" apply false
     id("com.google.devtools.ksp") version "2.3.0" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1" apply false
 }
 
 detekt {
