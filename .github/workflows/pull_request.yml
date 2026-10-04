@@ -20,11 +20,16 @@ jobs:
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
         run: echo "MAPS_API_KEY=$MAPS_API_KEY" > local.properties
-      - name: Run Detekt
-        run: bash ./gradlew detekt
 
-      - name: assembleDebug
-        run: bash ./gradlew assembleDebug
+      - parallel:
+          - name: Run Detekt
+            run: bash ./gradlew detekt
 
-      - name: testDebugUnitTest
-        run: bash ./gradlew testDebugUnitTest
+          - name: Assemble debug
+            run: bash ./gradlew assembleDebug
+
+      - name: Verify screenshot tests
+        run: bash ./gradlew verifyRoborazziLocalMockDebug
+
+      - name: Run unit tests
+        run: bash ./gradlew testLocalMockDebugUnitTest
