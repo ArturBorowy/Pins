@@ -18,8 +18,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.PageTitle
+import com.arturborowy.pins.ui.composable.PreviewLightAndDark
+import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.settings.SettingItem
 import com.arturborowy.pins.ui.composable.settings.SettingSectionLabel
+import com.arturborowy.pins.utils.ScreenshotTest
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
@@ -28,11 +31,24 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    SettingsView(
+        versionNumber = state.versionNumber,
+        onAppearanceClick = viewModel::onAppearanceClick,
+        onLicencesClick = viewModel::onLicencesClick
+    )
+}
+
+@Composable
+private fun SettingsView(
+    versionNumber: String,
+    onAppearanceClick: () -> Unit,
+    onLicencesClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(BrandTheme.spacing.screenPadding)
             .background(BrandTheme.colorScheme.background)
+            .padding(BrandTheme.spacing.screenPadding)
     ) {
         PageTitle(
             stringResource(R.string.settings_header),
@@ -49,7 +65,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         ) {
             SettingItem(
                 stringResource(R.string.settings_item_appearance),
-                onClick = viewModel::onAppearanceClick,
+                onClick = onAppearanceClick,
                 showDivider = false
             )
         }
@@ -64,11 +80,11 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         ) {
             SettingItem(
                 stringResource(R.string.settings_item_licences),
-                onClick = viewModel::onLicencesClick,
+                onClick = onLicencesClick,
             )
             SettingItem(
                 stringResource(R.string.settings_item_version),
-                secondaryValue = state.versionNumber,
+                secondaryValue = versionNumber,
                 showDivider = false
             )
         }
@@ -83,9 +99,20 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         ) {
             SettingItem(
                 stringResource(R.string.settings_item_rate_on_store),
-                onClick = viewModel::onLicencesClick,
+                onClick = onLicencesClick,
                 showDivider = false
             )
         }
     }
+}
+
+@PreviewLightAndDark
+@ScreenshotTest
+@Composable
+private fun SettingsViewPreview() = PreviewTheme {
+    SettingsView(
+        versionNumber = "1.0.0",
+        onAppearanceClick = {},
+        onLicencesClick = {}
+    )
 }
