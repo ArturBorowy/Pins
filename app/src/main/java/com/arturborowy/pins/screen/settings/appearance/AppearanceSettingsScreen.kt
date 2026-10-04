@@ -19,10 +19,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
+import com.arturborowy.pins.data.AppVisualTheme
 import com.arturborowy.pins.ui.composable.PageTitle
+import com.arturborowy.pins.ui.composable.PreviewLightAndDark
+import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.settings.SettingSectionLabel
 import com.arturborowy.pins.ui.composable.settings.SettingThemeSelector
 import com.arturborowy.pins.ui.composable.settings.SettingToggleItem
+import com.arturborowy.pins.utils.ScreenshotTest
 import com.arturborowy.pins.utils.observeLifecycleEvents
 
 @Composable
@@ -31,11 +35,26 @@ fun AppearanceSettingsScreen(viewModel: AppearanceSettingsViewModel = hiltViewMo
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    AppearanceSettingsView(
+        selectedTheme = state.selectedTheme,
+        isDynamicColorsEnabled = state.isDynamicColorsEnabled,
+        onThemeSelected = viewModel::onThemeSelected,
+        onDynamicColorsToggled = viewModel::onDynamicColorsToggled,
+    )
+}
+
+@Composable
+private fun AppearanceSettingsView(
+    selectedTheme: AppVisualTheme,
+    isDynamicColorsEnabled: Boolean,
+    onThemeSelected: (AppVisualTheme) -> Unit,
+    onDynamicColorsToggled: (Boolean) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(BrandTheme.spacing.screenPadding)
             .background(BrandTheme.colorScheme.background)
+            .padding(BrandTheme.spacing.screenPadding)
     ) {
         PageTitle(
             text = stringResource(R.string.settings_item_appearance),
@@ -45,8 +64,8 @@ fun AppearanceSettingsScreen(viewModel: AppearanceSettingsViewModel = hiltViewMo
         SettingSectionLabel(stringResource(R.string.settings_section_theme))
 
         SettingThemeSelector(
-            selectedTheme = state.selectedTheme,
-            onThemeSelected = viewModel::onThemeSelected
+            selectedTheme = selectedTheme,
+            onThemeSelected = onThemeSelected
         )
 
         Column(
@@ -60,10 +79,22 @@ fun AppearanceSettingsScreen(viewModel: AppearanceSettingsViewModel = hiltViewMo
                 icon = Icons.Default.Palette,
                 label = stringResource(R.string.settings_item_dynamic_colors),
                 description = stringResource(R.string.settings_item_dynamic_colors_description),
-                checked = state.isDynamicColorsEnabled,
-                onCheckedChange = viewModel::onDynamicColorsToggled,
+                checked = isDynamicColorsEnabled,
+                onCheckedChange = onDynamicColorsToggled,
                 showDivider = false
             )
         }
     }
+}
+
+@PreviewLightAndDark
+@ScreenshotTest
+@Composable
+private fun AppearanceSettingsViewPreview() = PreviewTheme {
+    AppearanceSettingsView(
+        selectedTheme = AppVisualTheme.FOLLOW_SYSTEM,
+        isDynamicColorsEnabled = true,
+        onThemeSelected = {},
+        onDynamicColorsToggled = {}
+    )
 }

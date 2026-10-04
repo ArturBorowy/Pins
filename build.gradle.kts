@@ -10,6 +10,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.3.0" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1" apply false
+    id("io.github.takahirom.roborazzi") version "1.75.0" apply false
 }
 
 detekt {

@@ -20,6 +20,8 @@ import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.domain.AddressPrediction
 import com.arturborowy.pins.ui.composable.Fab
+import com.arturborowy.pins.ui.composable.PreviewLightAndDark
+import com.arturborowy.pins.ui.composable.PreviewTheme
 import com.arturborowy.pins.ui.composable.PrimaryColorCircularProgressIndicator
 import com.arturborowy.pins.ui.composable.map.AllTripsMap
 import com.arturborowy.pins.ui.composable.map.SelectedPlaceMap
@@ -27,6 +29,7 @@ import com.arturborowy.pins.ui.slideInFromBottom
 import com.arturborowy.pins.ui.slideInFromTop
 import com.arturborowy.pins.ui.slideOutToBottom
 import com.arturborowy.pins.ui.slideOutToTop
+import com.arturborowy.pins.utils.ScreenshotTest
 import com.arturborowy.pins.utils.observeLifecycleEvents
 import com.arturborowy.pins.utils.showShortToast
 
@@ -41,50 +44,113 @@ fun MapScreen(viewModel: MapViewModel = mapViewModel(false)) {
         viewModel.errorEvents.collect { showShortToast(context, it) }
     }
 
+    MapView(
+        marker = state.marker,
+        tripMarkers = state.tripMarkers,
+        addingTripStep = state.addingTripStep,
+        placeText = state.placeText,
+        placeErrorText = state.placeErrorText,
+        showConfirmAddressButton = state.showConfirmAddressButton,
+        predictions = state.predictions,
+        placeTextChangedByUser = state.placeTextChangedByUser,
+        showExtraFields = state.showExtraFields,
+        nameText = state.nameText,
+        arrivalDate = state.arrivalDate,
+        departureDate = state.departureDate,
+        isSavingTripEnabled = state.isSavingTripEnabled,
+        isAddressEditEnabled = state.isAddressEditEnabled,
+        multiStop = state.multiStop,
+        onAddressSearchTextChange = { viewModel.onAddressSearchTextChange(it) },
+        onBackEditingAddress = { viewModel.onBackEditingAddress() },
+        onConfirmAddress = { viewModel.onConfirmAddress() },
+        onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
+        onTripNameChange = { viewModel.onTripNameChange(it) },
+        onArrivalDateChange = { year, month, day ->
+            viewModel.onArrivalDateChange(year, month, day)
+        },
+        onDepartureDateChange = { year, month, day ->
+            viewModel.onDepartureDateChange(year, month, day)
+        },
+        onTripConfirmClick = { viewModel.onTripConfirmClick() },
+        onTripCancelClick = { viewModel.onTripCancelClick() },
+        onAddNextStopClick = { viewModel.onAddNextStopClick() },
+        onAddTripClick = { viewModel.onAddTripClick() },
+        onAddSingleStopTripClick = { viewModel.onAddSingleStopTripClick() },
+        onAddMultiStopTripClick = { viewModel.onAddMultiStopTripClick() },
+    )
+}
+
+@Composable
+private fun MapView(
+    marker: MapMarkerItem?,
+    tripMarkers: List<List<MapMarkerItem>>,
+    addingTripStep: AddingTripStep,
+    placeText: String,
+    placeErrorText: String?,
+    showConfirmAddressButton: Boolean,
+    predictions: List<AddressPrediction>,
+    placeTextChangedByUser: Boolean,
+    showExtraFields: Boolean,
+    nameText: String,
+    arrivalDate: String?,
+    departureDate: String?,
+    isSavingTripEnabled: Boolean,
+    isAddressEditEnabled: Boolean,
+    multiStop: Boolean,
+    onAddressSearchTextChange: (String) -> Unit,
+    onBackEditingAddress: () -> Unit,
+    onConfirmAddress: () -> Unit,
+    onAddressPredictionClick: (AddressPrediction) -> Unit,
+    onTripNameChange: (String) -> Unit,
+    onArrivalDateChange: (Int, Int, Int) -> Unit,
+    onDepartureDateChange: (Int, Int, Int) -> Unit,
+    onTripConfirmClick: () -> Unit,
+    onTripCancelClick: () -> Unit,
+    onAddNextStopClick: () -> Unit,
+    onAddTripClick: () -> Unit,
+    onAddSingleStopTripClick: () -> Unit,
+    onAddMultiStopTripClick: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BrandTheme.colorScheme.background)
+            .background(BrandTheme.colorScheme.background),
     ) {
         PrimaryColorCircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
-        if (state.marker == null) {
-            AllTripsMap(state.tripMarkers)
+        if (marker == null) {
+            AllTripsMap(tripMarkers)
         } else {
-            SelectedPlaceMap(state.marker!!)
+            SelectedPlaceMap(marker)
         }
 
         MapScreenOverlays(
-            addingTripStep = state.addingTripStep,
-            placeText = state.placeText,
-            placeErrorText = state.placeErrorText,
-            showConfirmAddressButton = state.showConfirmAddressButton,
-            predictions = state.predictions,
-            placeTextChangedByUser = state.placeTextChangedByUser,
-            showExtraFields = state.showExtraFields,
-            nameText = state.nameText,
-            arrivalDate = state.arrivalDate,
-            departureDate = state.departureDate,
-            isSavingTripEnabled = state.isSavingTripEnabled,
-            isAddressEditEnabled = state.isAddressEditEnabled,
-            multiStop = state.multiStop,
-            onAddressSearchTextChange = { viewModel.onAddressSearchTextChange(it) },
-            onBackEditingAddress = { viewModel.onBackEditingAddress() },
-            onConfirmAddress = { viewModel.onConfirmAddress() },
-            onAddressPredictionClick = { viewModel.onAddressSelect(it.id) },
-            onTripNameChange = { viewModel.onTripNameChange(it) },
-            onArrivalDateChange = { year, month, day ->
-                viewModel.onArrivalDateChange(year, month, day)
-            },
-            onDepartureDateChange = { year, month, day ->
-                viewModel.onDepartureDateChange(year, month, day)
-            },
-            onTripConfirmClick = { viewModel.onTripConfirmClick() },
-            onTripCancelClick = { viewModel.onTripCancelClick() },
-            onAddNextStopClick = { viewModel.onAddNextStopClick() },
-            onAddTripClick = { viewModel.onAddTripClick() },
-            onAddSingleStopTripClick = { viewModel.onAddSingleStopTripClick() },
-            onAddMultiStopTripClick = { viewModel.onAddMultiStopTripClick() },
+            addingTripStep = addingTripStep,
+            placeText = placeText,
+            placeErrorText = placeErrorText,
+            showConfirmAddressButton = showConfirmAddressButton,
+            predictions = predictions,
+            placeTextChangedByUser = placeTextChangedByUser,
+            showExtraFields = showExtraFields,
+            nameText = nameText,
+            arrivalDate = arrivalDate,
+            departureDate = departureDate,
+            isSavingTripEnabled = isSavingTripEnabled,
+            isAddressEditEnabled = isAddressEditEnabled,
+            multiStop = multiStop,
+            onAddressSearchTextChange = onAddressSearchTextChange,
+            onBackEditingAddress = onBackEditingAddress,
+            onConfirmAddress = onConfirmAddress,
+            onAddressPredictionClick = onAddressPredictionClick,
+            onTripNameChange = onTripNameChange,
+            onArrivalDateChange = onArrivalDateChange,
+            onDepartureDateChange = onDepartureDateChange,
+            onTripConfirmClick = onTripConfirmClick,
+            onTripCancelClick = onTripCancelClick,
+            onAddNextStopClick = onAddNextStopClick,
+            onAddTripClick = onAddTripClick,
+            onAddSingleStopTripClick = onAddSingleStopTripClick,
+            onAddMultiStopTripClick = onAddMultiStopTripClick,
         )
     }
 }
@@ -169,7 +235,8 @@ private fun MapScreenOverlays(
                             .align(Alignment.BottomCenter)
                             .padding(BrandTheme.spacing.fabMargin),
                         { onAddSingleStopTripClick() },
-                        { onAddMultiStopTripClick() })
+                        { onAddMultiStopTripClick() },
+                    )
                 }
             }
         }
@@ -186,5 +253,113 @@ private val AnimatedContentTransitionScope<AddingTripStep>.overlayTransition
 
         else -> slideInFromBottom togetherWith slideOutToTop
     }.using(
-        SizeTransform(clip = false)
+        SizeTransform(clip = false),
     )
+
+@PreviewLightAndDark
+@ScreenshotTest
+@Composable
+private fun MapViewPreview() = PreviewTheme {
+    MapView(
+        marker = null,
+        tripMarkers = emptyList(),
+        addingTripStep = AddingTripStep.ADD_TRIP_BUTTON,
+        placeText = "",
+        placeErrorText = null,
+        showConfirmAddressButton = false,
+        predictions = emptyList(),
+        placeTextChangedByUser = false,
+        showExtraFields = false,
+        nameText = "",
+        arrivalDate = null,
+        departureDate = null,
+        isSavingTripEnabled = false,
+        isAddressEditEnabled = false,
+        multiStop = false,
+        onAddressSearchTextChange = {},
+        onBackEditingAddress = {},
+        onConfirmAddress = {},
+        onAddressPredictionClick = {},
+        onTripNameChange = {},
+        onArrivalDateChange = { _, _, _ -> },
+        onDepartureDateChange = { _, _, _ -> },
+        onTripConfirmClick = {},
+        onTripCancelClick = {},
+        onAddNextStopClick = {},
+        onAddTripClick = {},
+        onAddSingleStopTripClick = {},
+        onAddMultiStopTripClick = {},
+    )
+}
+
+@PreviewLightAndDark
+@ScreenshotTest
+@Composable
+private fun MapViewTripTypeBarPreview() = PreviewTheme {
+    MapView(
+        marker = null,
+        tripMarkers = emptyList(),
+        addingTripStep = AddingTripStep.TRIP_TYPE_BAR,
+        placeText = "",
+        placeErrorText = null,
+        showConfirmAddressButton = false,
+        predictions = emptyList(),
+        placeTextChangedByUser = false,
+        showExtraFields = false,
+        nameText = "",
+        arrivalDate = null,
+        departureDate = null,
+        isSavingTripEnabled = false,
+        isAddressEditEnabled = false,
+        multiStop = false,
+        onAddressSearchTextChange = {},
+        onBackEditingAddress = {},
+        onConfirmAddress = {},
+        onAddressPredictionClick = {},
+        onTripNameChange = {},
+        onArrivalDateChange = { _, _, _ -> },
+        onDepartureDateChange = { _, _, _ -> },
+        onTripConfirmClick = {},
+        onTripCancelClick = {},
+        onAddNextStopClick = {},
+        onAddTripClick = {},
+        onAddSingleStopTripClick = {},
+        onAddMultiStopTripClick = {},
+    )
+}
+
+@PreviewLightAndDark
+@ScreenshotTest
+@Composable
+private fun MapViewFormPreview() = PreviewTheme {
+    MapView(
+        marker = null,
+        tripMarkers = emptyList(),
+        addingTripStep = AddingTripStep.FORM,
+        placeText = "Paris, France",
+        placeErrorText = null,
+        showConfirmAddressButton = false,
+        predictions = emptyList(),
+        placeTextChangedByUser = false,
+        showExtraFields = true,
+        nameText = "Summer Trip",
+        arrivalDate = "12/07/2024",
+        departureDate = "20/07/2024",
+        isSavingTripEnabled = true,
+        isAddressEditEnabled = true,
+        multiStop = false,
+        onAddressSearchTextChange = {},
+        onBackEditingAddress = {},
+        onConfirmAddress = {},
+        onAddressPredictionClick = {},
+        onTripNameChange = {},
+        onArrivalDateChange = { _, _, _ -> },
+        onDepartureDateChange = { _, _, _ -> },
+        onTripConfirmClick = {},
+        onTripCancelClick = {},
+        onAddNextStopClick = {},
+        onAddTripClick = {},
+        onAddSingleStopTripClick = {},
+        onAddMultiStopTripClick = {},
+    )
+}

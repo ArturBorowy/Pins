@@ -8,13 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arturborowy.brand.designsystem.BrandTheme
 import com.arturborowy.pins.R
 import com.arturborowy.pins.ui.composable.Fab
 import com.arturborowy.pins.ui.composable.PageTitle
+import com.arturborowy.pins.ui.composable.PreviewLightAndDark
 import com.arturborowy.pins.ui.composable.PreviewTheme
+import com.arturborowy.pins.utils.ScreenshotTest
 
 @Composable
 fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
@@ -44,7 +45,8 @@ fun BoxScope.EmptyListView(onAddTrip: () -> Unit) {
     )
 }
 
-@Preview
+@PreviewLightAndDark
+@ScreenshotTest
 @Composable
 private fun EmptyListViewPreview() = PreviewTheme {
     Box(Modifier.size(300.dp)) {
