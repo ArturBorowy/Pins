@@ -48,6 +48,9 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
     @get:Rule(order = 1)
     abstract val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<ActivityT>, ActivityT>
 
+    @get:Rule(order = 2)
+    val screenshotOnFailureRule = ScreenshotOnFailureRule { composeTestRule }
+
     protected val resourcesRepository by lazy { ResourcesRepository(composeTestRule.activity) }
 
     @Inject

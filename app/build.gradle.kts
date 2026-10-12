@@ -92,7 +92,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation(project(":flags"))
     implementation(project(":brand-design-system"))
@@ -160,6 +159,10 @@ dependencies {
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.59.2")
 
     androidTestImplementation("io.mockk:mockk-android:${mockk_version}")
+
+    androidTestImplementation("androidx.test.services:test-services:1.5.0")
+    androidTestUtil("androidx.test.services:test-services:1.5.0")
+    androidTestUtil("androidx.test:orchestrator:1.5.1")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
