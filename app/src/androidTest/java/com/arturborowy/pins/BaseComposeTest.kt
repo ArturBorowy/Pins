@@ -19,6 +19,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.PickerActions
@@ -35,6 +36,7 @@ import com.ultimatelogger.android.output.ALogInitializer
 import com.ultimatelogger.multiplatform.tag.TagSettings
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.hamcrest.Matchers
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -319,6 +321,13 @@ abstract class BaseComposeTest<ActivityT : ComponentActivity> {
 
     protected fun hasContentDescription(@StringRes resId: Int): SemanticsMatcher =
         hasContentDescription(getString(resId))
+
+    protected fun assertAppIsInBackground() {
+        assertEquals(
+            Lifecycle.State.DESTROYED,
+            composeTestRule.activityRule.scenario.state
+        )
+    }
 
     companion object {
         const val MOCK_TRIP_NAME = "trip"

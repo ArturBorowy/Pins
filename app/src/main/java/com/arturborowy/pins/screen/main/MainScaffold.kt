@@ -59,9 +59,16 @@ fun MainScaffold(
             Scaffold(
                 bottomBar = {
                     BottomNavigationBar(
-                        backStackEntry.value?.destination?.route,
-                        navController::navigate
-                    )
+                        backStackEntry.value?.destination?.route
+                    ) {
+                        navController.navigate(it) {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+
+                            launchSingleTop = true
+                        }
+                    }
                 },
                 content = { innerPadding ->
                     NavigationComposable(

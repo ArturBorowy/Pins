@@ -14,6 +14,7 @@ import androidx.compose.ui.test.hasTextExactly
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.arturborowy.pins.screen.main.MainActivity
 
@@ -39,7 +40,9 @@ abstract class TestRobot(val composeTestRule: AndroidComposeTestRule<ActivitySce
     ) =
         onNodeWithText(getString(textResId))
 
-    fun goBack() = clickIconButton("Back button")
+    fun goBack() {
+        Espresso.pressBackUnconditionally()
+    }
 
     fun assertIconButton(description: String) =
         composeTestRule.onNode(hasContentDescription(description).and(hasClickAction()))
