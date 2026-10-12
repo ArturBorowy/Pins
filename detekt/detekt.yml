@@ -4,6 +4,7 @@ style:
     ignoreAnnotated: [ 'Preview', 'PreviewLightAndDark' ]
   MagicNumber:
     active: true
+    ignorePropertyDeclaration: true
     excludes: [ '**/color/ColorScheme.kt', '**/color/BrandColors.kt', '**/test/**' , '**/androidTest/**', '**/*.kts' ]
 
 naming:

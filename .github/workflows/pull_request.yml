@@ -5,7 +5,10 @@ on: [ pull_request ]
 
 jobs:
   buildAndTest:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -20,11 +23,42 @@ jobs:
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
         run: echo "MAPS_API_KEY=$MAPS_API_KEY" > local.properties
-      - name: Run Detekt
-        run: bash ./gradlew detekt
 
-      - name: assembleDebug
-        run: bash ./gradlew assembleDebug
+      - parallel:
+          - name: Run Detekt
+            run: ./gradlew detekt --no-daemon
 
-      - name: testDebugUnitTest
-        run: bash ./gradlew testDebugUnitTest
+          - name: Assemble debug
+            run: ./gradlew assembleDebug --no-daemon
+
+      - name: Run screenshot tests
+        run: ./gradlew verifyRoborazziLocalMockDebug --no-daemon
+
+      - parallel:
+          - name: Run unit tests
+            if: always()
+            run: ./gradlew testLocalMockDebugUnitTest --no-daemon
+
+          - name: Generate Roborazzi summary text
+            if: always()
+            run: |
+              echo "### 📸 Roborazzi Screenshot Test Report" >> $GITHUB_STEP_SUMMARY
+              if ls app/build/outputs/roborazzi/*_compare.png 1> /dev/null 2>&1; then
+                echo "The following screenshot tests showed visual differences on CI:" >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+                for file in app/build/outputs/roborazzi/*_compare.png; do
+                  filename=$(basename "$file" _compare.png)
+                  echo "- ❌ **\`$filename\`**" >> $GITHUB_STEP_SUMMARY
+                done
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "Download the \`roborazzi-report\` artifact below to inspect the comparison images." >> $GITHUB_STEP_SUMMARY
+              else
+                echo "✅ All screenshot tests passed!" >> $GITHUB_STEP_SUMMARY
+              fi
+
+          - name: Upload Roborazzi diff artifacts
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: roborazzi-report
+              path: app/build/outputs/roborazzi/
